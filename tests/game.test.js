@@ -5,7 +5,7 @@ import * as core from '../core.js';
 
 // Run the actual game module against a small browser adapter. Rendering and
 // sound are replaced; combat, input, progression, and persistence are unchanged.
-function createGame() {
+function createGame(reducedMotion=false) {
   const elements=new Map(),storage=new Map(),windowEvents=new Map();
   class Element {
     constructor(){this.hidden=false;this.style={};this.dataset={};this.children=[];this.value=60;this.checked=true;this.listeners={};this.classList={add(){},remove(){},toggle(){}};}
@@ -21,10 +21,10 @@ function createGame() {
   const window={addEventListener:(event,fn)=>windowEvents.set(event,fn)};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
   class Audio{async init(){} configure(){} setActive(){} play(){} update(){}}
-  class Renderer{resize(){} draw(){}}
+  class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
-  const game=factory(document,window,localStorage,()=>({matches:false}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
   return{...game,elements,storage,windowEvents};
 }
 function enemy(overrides={}){return{x:600,y:300,type:'tank',health:4,maxHealth:4,speed:0,points:110,radius:25,angle:0,turret:0,cooldown:10,charge:0,hit:0,seed:0,...overrides};}
@@ -81,4 +81,58 @@ test('wave five spawns a boss and destruction saves the record before restart',a
   assert.ok(game.g.enemies.some(e=>e.type==='boss'));game.g.score=1234;game.g.player.invulnerable=0;game.damagePlayer(200);
   assert.equal(game.g.state,'over');assert.equal(JSON.parse(game.storage.get('blackout.best')),1234);
   await game.start();assert.equal(game.g.score,0);assert.equal(game.g.player.health,100);assert.equal(game.g.best,1234);assert.equal(game.g.enemies.length,0);
+});
+test('helicopter coasts after release and eventually stops without crossing the boundary',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  game.keys.add('KeyD');for(let i=0;i<60;i++)game.update(1/60);
+  game.keys.delete('KeyD');const p=game.g.player,x=p.x,initial=p.vx;
+  game.update(1/60);assert.ok(p.vx>0&&p.vx<initial);
+  for(let i=0;i<180;i++)game.update(1/60);
+  assert.ok(p.x>x+50);assert.ok(p.vx<.1);
+  p.x=game.g.world.width-34;p.vx=100;game.update(1/60);assert.equal(p.vx,0);
+});
+test('gun overheats, locks while cooling, and fires again after three seconds',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player;game.keys.add('Space');
+  for(let i=0;i<300&&!p.overheated;i++)game.update(1/60);
+  assert.equal(p.overheated,true);assert.equal(p.heat,1);
+  game.g.bullets=[];for(let i=0;i<120;i++)game.update(1/60);
+  assert.equal(p.overheated,true);assert.equal(game.g.bullets.filter(b=>b.kind==='gun').length,0);
+  for(let i=0;i<65;i++)game.update(1/60);
+  assert.equal(p.overheated,false);assert.ok(p.heat>0);assert.ok(game.g.bullets.some(b=>b.kind==='gun'));
+});
+test('gun cools when fire is released before overheating and pause freezes heat',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  game.keys.add('Space');for(let i=0;i<30;i++)game.update(1/60);
+  const p=game.g.player,heat=p.heat;assert.ok(heat>0&&heat<1);
+  game.keys.delete('Space');for(let i=0;i<30;i++)game.update(1/60);
+  assert.ok(p.heat<heat);const cooling=p.heat;
+  game.pause();game.frame(1000);game.frame(2000);assert.equal(p.heat,cooling);
+});
+test('rockets accelerate with and without a target and keep their heading',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player;p.angle=0;game.launchRocket();
+  const rocket=game.g.bullets[0],initial=Math.hypot(rocket.vx,rocket.vy);
+  game.update(.1);assert.equal(initial,150);assert.ok(Math.hypot(rocket.vx,rocket.vy)>initial);assert.equal(rocket.vy,0);
+  for(let i=0;i<10;i++)game.update(.05);
+  assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-650)<1e-8);
+});
+test('camera follows the player while pointer world coordinates remain aligned',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  game.pointerPosition({clientX:900,clientY:300});const camera=game.g.camera,old=camera.x;
+  game.keys.add('KeyD');for(let i=0;i<120;i++)game.update(1/60);
+  assert.ok(camera.x>old);
+  assert.ok(Math.abs((game.g.pointer.x-camera.x)*camera.zoom-game.g.pointer.screenX)<1e-8);
+  assert.ok(Math.abs((game.g.pointer.y-camera.y)*camera.zoom-game.g.pointer.screenY)<1e-8);
+});
+test('reduced motion disables camera tracking and zoom',async()=>{
+  const game=createGame(true);await game.start();game.g.spawnRemaining=100;
+  game.keys.add('KeyD');for(let i=0;i<60;i++)game.update(1/60);
+  assert.deepEqual(game.g.camera,{x:0,y:0,zoom:1});
+});
+test('next wave changes sector and clears decals from the previous map',async()=>{
+  const game=createGame();await game.start();const first=game.g.map;
+  game.g.decals.push({x:100,y:100});game.nextWave();
+  assert.notEqual(game.g.map,first);assert.equal(game.g.map,core.mapForWave(2));
+  assert.equal(game.g.decals.length,0);assert.equal(game.elements.get('sector-name').textContent,game.g.map.name);
 });

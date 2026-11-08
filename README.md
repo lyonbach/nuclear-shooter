@@ -29,9 +29,9 @@ No dependency installation, asset downloads, or API keys are needed. All visuals
 | Mute | M | Speaker button |
 | Choose an upgrade | Click / 1, 2, 3 | Tap a card |
 
-Rockets recharge individually. Dash briefly prevents damage. Green field supplies repair 30 hull points. Consecutive kills raise the score multiplier up to ×5. Each cleared wave awards bonus points and a choice of upgrades. Every fifth wave includes a boss.
+Rockets accelerate after launch and recharge individually. The machine gun heats with each shot; release fire to cool it, or wait three seconds for a fully overheated gun to cool before it can fire again. Faster firing upgrades build heat faster. The helicopter coasts briefly when movement is released, while dash briefly prevents damage. Green field supplies repair 30 hull points. Consecutive kills raise the score multiplier up to ×5. Each cleared wave awards bonus points and a choice of upgrades. The battlefield rotates through desert, valley, and red-zone sectors each wave; every fifth wave includes a boss.
 
-Choose Çaylak, Pilot, or As before a new run. Sound volume, procedural music, screen shake, effects quality, difficulty, and your best score are saved locally when browser storage is available. Switching tabs automatically pauses the action. Reduced-motion preferences disable screen shake by default.
+Choose Çaylak, Pilot, or As before a new run. Sound volume, procedural music, screen shake, effects quality, difficulty, and your best score are saved locally when browser storage is available. Switching tabs automatically pauses the action. Reduced-motion preferences disable the tracking camera and screen shake by default.
 
 ## Checks
 
@@ -45,7 +45,7 @@ npm run build
 
 Rebuild `blackout.js` after editing `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines those source modules into a browser script.
 
-The 12 tests cover continuous projectile collision, wave scaling, enemy unlocks, aiming across the angle boundary, deterministic terrain, movement, pause, rocket damage and replenishment, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
+The tests cover continuous projectile collision, wave scaling, sector rotation, aiming, camera tracking, terrain generation, movement and drift, gun overheating, rocket acceleration and damage, pause, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
 
 ## GitHub Pages
 
