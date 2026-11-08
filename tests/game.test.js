@@ -23,7 +23,7 @@ function createGame(reducedMotion=false) {
   class Audio{constructor(){this.scene='menu';}async init(){} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,updateEffects,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
   return{...game,elements,storage,windowEvents,sound:game.sound};
 }
@@ -50,6 +50,21 @@ test('swept bullets destroy targets crossed entirely in a single frame',async()=
   game.g.bullets=[{x:120,y:300,vx:10000,vy:0,life:1,friendly:true,kind:'gun',damage:1}];
   game.update(.02);assert.equal(game.g.enemies.length,0);assert.equal(game.g.kills,1);assert.equal(game.g.score,110);
   assert.equal(game.g.bullets.length,0);
+});
+test('helicopter banks smoothly toward its movement direction',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;game.keys.add('KeyD');
+  for(let i=0;i<30;i++)game.update(1/60);
+  assert.ok(Math.abs(game.g.player.bank)>0.05);
+  assert.ok(Math.abs(game.g.player.pitch)<0.11);
+});
+test('armored vehicle wrecks emit lingering black smoke',async()=>{
+  const game=createGame();await game.start();game.g.enemies=[enemy()];
+  game.hitEnemy(game.g.enemies[0],100);
+  assert.equal(game.g.wreckSmoke.length,1);
+  game.updateEffects(.1);
+  assert.ok(game.g.particles.some(p=>p.persistent&&p.smoke&&p.color==='#111812b8'));
+  game.updateEffects(7.9);
+  assert.equal(game.g.wreckSmoke.length,0);
 });
 test('rockets consume ammunition, deal area damage, and replenish over time',async()=>{
   const game=createGame();await game.start();const p=game.g.player;
@@ -123,9 +138,9 @@ test('rockets accelerate with and without a target and keep their heading',async
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   const p=game.g.player;p.angle=0;game.launchRocket();
   const rocket=game.g.bullets[0],initial=Math.hypot(rocket.vx,rocket.vy);
-  game.update(.1);assert.equal(initial,150);assert.ok(Math.hypot(rocket.vx,rocket.vy)>initial);assert.equal(rocket.vy,0);
+  game.update(.1);assert.equal(initial,100);assert.equal(Math.hypot(rocket.vx,rocket.vy),340);assert.equal(rocket.vy,0);
   for(let i=0;i<10;i++)game.update(.05);
-  assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-650)<1e-8);
+  assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-820)<1e-8);
 });
 test('camera follows the player while pointer world coordinates remain aligned',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;

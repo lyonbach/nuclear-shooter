@@ -81,6 +81,7 @@ export class SoundEngine {
     }
   }
   startMusicTrack(track) {
+    if (this.musicScene !== track.scene) { track.audio.pause(); return; }
     if (this.musicTrack && this.musicTrack !== track) {
       this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
       const previous = this.musicTrack;

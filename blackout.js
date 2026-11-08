@@ -132,6 +132,7 @@ class SoundEngine {
     }
   }
   startMusicTrack(track) {
+    if (this.musicScene !== track.scene) { track.audio.pause(); return; }
     if (this.musicTrack && this.musicTrack !== track) {
       this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
       const previous = this.musicTrack;
@@ -241,6 +242,16 @@ class Renderer {
       const x=r()*W,y=r()*H,rx=35+r()*140,ry=15+r()*65;
       c.globalAlpha=.12;ellipse(c,x,y,rx,ry,this.map.accent);c.globalAlpha=1;
     }
+    // Fine, broken contour rings add a surveyed topographic-map texture.
+    for(let i=0;i<25;i++){
+      const x=r()*W,y=r()*H,rx=18+r()*55,ry=12+r()*32,rotation=r()*Math.PI;
+      c.save();c.translate(x,y);c.rotate(rotation);
+      for(let ring=0;ring<4;ring++){
+        c.beginPath();c.ellipse(0,0,rx+ring*12,ry+ring*8,0,0,TAU);
+        c.strokeStyle=ring===0?'#d9d4ad20':'#d9d4ad12';c.lineWidth=ring===0?1.4:1;c.stroke();
+      }
+      c.restore();
+    }
     if(this.map.layout==='valley'){
       c.beginPath();c.moveTo(W*.1,-60);c.bezierCurveTo(W*.3,H*.2,W*.06,H*.54,W*.32,H+60);
       c.strokeStyle='#356b7b';c.lineWidth=105;c.stroke();c.strokeStyle='#75b5b566';c.lineWidth=70;c.stroke();
@@ -272,9 +283,16 @@ class Renderer {
     c.strokeStyle='#d2d1a44d';c.lineWidth=2;c.strokeRect(-87,-82,164,152);c.beginPath();c.arc(-5,-6,57,0,TAU);c.stroke();
     c.fillStyle='#d1d0a45c';c.font='bold 63px Arial';c.textAlign='center';c.fillText('H',-5,16);
     c.font='8px monospace';c.fillStyle='#c4c69a77';c.fillText('NIGHTHAWK / 07',-5,63);c.restore();
-    if(this.map.layout==='valley'){this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);}
-    else if(this.map.layout==='canyon'){this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);}
-    else{this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);}
+    if(this.map.layout==='valley'){
+      this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);
+      this.compound(c,W*.17,H*.7,.5);this.compound(c,W*.57,H*.52,.48);
+    }else if(this.map.layout==='canyon'){
+      this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);
+      this.compound(c,W*.17,H*.32,.5);this.compound(c,W*.84,H*.65,.48);
+    }else{
+      this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);
+      this.compound(c,W*.52,H*.3,.5);this.compound(c,W*.68,H*.68,.48);
+    }
     // Sector grid and survey marks.
     c.strokeStyle='#e4edb009';c.lineWidth=1;
     for(let x=0;x<W;x+=100){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
@@ -303,7 +321,7 @@ class Renderer {
   helicopter(c,p,t,ghost=false) {
     c.save();c.translate(p.x,p.y);
     if(!ghost){c.save();c.translate(13,19);c.rotate(p.angle);ellipse(c,-3,0,37,16,'#0b170c4d');c.fillStyle='#0b170c33';c.fillRect(-31,-43,3,86);c.restore();}
-    c.rotate(p.angle);if(ghost)c.globalAlpha=.3;
+    c.rotate(p.angle);c.transform(1,p.bank||0,-(p.pitch||0),1,0,0);if(ghost)c.globalAlpha=.3;
     // Tail boom, horizontal stabilizers, pods and skids.
     path(c,[[-14,-6],[-55,-3],[-62,0],[-54,4],[-14,6]],'#728471','#c2cba755');
     path(c,[[-46,-3],[-53,-18],[-57,-18],[-55,0],[-54,17],[-48,17]],'#81947b');
@@ -408,7 +426,7 @@ const keys=new Set();
 const pointer={x:600,y:230,screenX:null,screenY:null,down:false};
 const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
-  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],floaters:[],decals:[],time:0,visualTime:0,shake:0,
+  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],floaters:[],decals:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
   combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
   camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
@@ -417,14 +435,14 @@ let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
   g.touch=matchMedia('(pointer:coarse), (max-width:600px)').matches;
   g.world.width=clamp(rect.width*1.3,680,1700);g.world.height=g.world.width*rect.height/rect.width;
   if(old.width&&old.height){
-  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
+  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
     if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
@@ -455,7 +473,7 @@ async function start(){
   if(dialog.open||starting)return;
   starting=true;
   await sound.init();
-  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.floaters=[];g.decals=[];
+  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.floaters=[];g.decals=[];g.wreckSmoke=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
   pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
   updateCamera(0,true);
@@ -508,7 +526,7 @@ function launchRocket(){
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
   const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.angle;
-  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*150,vy:Math.sin(a)*150,life:3,friendly:true,damage:18+(upgrades.damage||0)*3,kind:'rocket',target,trail:0});
+  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*100,vy:Math.sin(a)*100,life:3,friendly:true,damage:18+(upgrades.damage||0)*3,kind:'rocket',target,trail:0});
   p.rockets--;p.rocketCooldown=.45;sound.play('rocket');updateHud();
 }
 function dash(){
@@ -539,6 +557,7 @@ function hitEnemy(e,damage){
     const multiplier=Math.min(5,1+Math.floor(g.combo/3)),points=e.points*multiplier;g.score+=points;
     float(`+${points}${multiplier>1?' ×'+multiplier:''}`,e.x,e.y-35,'#e0efa6',multiplier>1);
     explosion(e.x,e.y,e.type==='boss'?155:e.type==='drone'?40:72);
+    if(e.type==='tank'||e.type==='artillery')g.wreckSmoke.push({x:e.x,y:e.y,life:8,timer:0});
     if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
     if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
@@ -575,6 +594,11 @@ function update(dt){
   updateCamera(dt);
   if(g.touch){let nearest=null,near=Infinity;for(const e of g.enemies){if(e.health<=0)continue;const d=distance(p,e);if(d<near){nearest=e;near=d;}}if(nearest)p.angle=turn(p.angle,Math.atan2(nearest.y-p.y,nearest.x-p.x),dt*14);else if(Math.hypot(move.x,move.y)>.2)p.angle=turn(p.angle,Math.atan2(move.y,move.x),dt*8);}
   else p.angle=turn(p.angle,Math.atan2(pointer.y-p.y,pointer.x-p.x),dt*22);
+  const forward=p.vx*Math.cos(p.angle)+p.vy*Math.sin(p.angle);
+  const lateral=-p.vx*Math.sin(p.angle)+p.vy*Math.cos(p.angle);
+  const tiltResponse=1-Math.exp(-7*dt);
+  p.bank+=(clamp(lateral/360,-1,1)*.18-p.bank)*tiltResponse;
+  p.pitch+=(clamp(forward/360,-1,1)*.1-p.pitch)*tiltResponse;
   const firing=pointer.down||keys.has('Space');
   if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/3);if(p.overheated&&p.heat===0)p.overheated=false;}
   if(firing&&!p.overheated&&p.cooldown<=0)gun();
@@ -599,7 +623,7 @@ function update(dt){
     const ox=b.x,oy=b.y;
     if(b.kind==='rocket'){
       if(b.target?.health<=0)b.target=g.enemies.find(e=>e.health>0)||null;
-      const speed=Math.min(650,Math.hypot(b.vx,b.vy)+1200*dt);
+      const speed=Math.min(820,Math.hypot(b.vx,b.vy)+2400*dt);
       const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*5):Math.atan2(b.vy,b.vx);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
@@ -629,7 +653,19 @@ function update(dt){
   g.hudTimer-=dt;if(g.hudTimer<=0){updateHud();g.hudTimer=.08;}
 }
 function updateEffects(dt){
-  for(const p of g.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*(p.smoke?1.5:3));p.vy*=Math.exp(-dt*(p.smoke?1.5:3));p.life-=dt;}
+  for(const source of g.wreckSmoke){
+    source.life-=dt;source.timer-=dt;
+    if(source.life>0&&source.timer<=0&&g.particles.length<(settings.effects?650:180)){
+      const life=3.5+Math.random()*1.5;
+      g.particles.push({x:source.x+(Math.random()-.5)*12,y:source.y-10,vx:(Math.random()-.5)*12,vy:-28-Math.random()*24,life,maxLife:life,smoke:true,persistent:true,color:'#111812b8',size:8+Math.random()*7});
+      source.timer=settings.effects?0.24:0.5;
+    }
+  }
+  g.wreckSmoke=g.wreckSmoke.filter(source=>source.life>0);
+  for(const p of g.particles){
+    const drag=p.persistent?0.35:p.smoke?1.5:3;
+    p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*drag);p.vy*=Math.exp(-dt*drag);p.life-=dt;
+  }
   g.particles=g.particles.filter(p=>p.life>0);
   for(const e of g.explosions)e.life-=dt;g.explosions=g.explosions.filter(e=>e.life>0);
   for(const f of g.floaters){f.y-=dt*30;f.life-=dt;}g.floaters=g.floaters.filter(f=>f.life>0);

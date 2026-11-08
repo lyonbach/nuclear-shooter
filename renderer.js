@@ -31,6 +31,16 @@ export class Renderer {
       const x=r()*W,y=r()*H,rx=35+r()*140,ry=15+r()*65;
       c.globalAlpha=.12;ellipse(c,x,y,rx,ry,this.map.accent);c.globalAlpha=1;
     }
+    // Fine, broken contour rings add a surveyed topographic-map texture.
+    for(let i=0;i<25;i++){
+      const x=r()*W,y=r()*H,rx=18+r()*55,ry=12+r()*32,rotation=r()*Math.PI;
+      c.save();c.translate(x,y);c.rotate(rotation);
+      for(let ring=0;ring<4;ring++){
+        c.beginPath();c.ellipse(0,0,rx+ring*12,ry+ring*8,0,0,TAU);
+        c.strokeStyle=ring===0?'#d9d4ad20':'#d9d4ad12';c.lineWidth=ring===0?1.4:1;c.stroke();
+      }
+      c.restore();
+    }
     if(this.map.layout==='valley'){
       c.beginPath();c.moveTo(W*.1,-60);c.bezierCurveTo(W*.3,H*.2,W*.06,H*.54,W*.32,H+60);
       c.strokeStyle='#356b7b';c.lineWidth=105;c.stroke();c.strokeStyle='#75b5b566';c.lineWidth=70;c.stroke();
@@ -62,9 +72,16 @@ export class Renderer {
     c.strokeStyle='#d2d1a44d';c.lineWidth=2;c.strokeRect(-87,-82,164,152);c.beginPath();c.arc(-5,-6,57,0,TAU);c.stroke();
     c.fillStyle='#d1d0a45c';c.font='bold 63px Arial';c.textAlign='center';c.fillText('H',-5,16);
     c.font='8px monospace';c.fillStyle='#c4c69a77';c.fillText('NIGHTHAWK / 07',-5,63);c.restore();
-    if(this.map.layout==='valley'){this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);}
-    else if(this.map.layout==='canyon'){this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);}
-    else{this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);}
+    if(this.map.layout==='valley'){
+      this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);
+      this.compound(c,W*.17,H*.7,.5);this.compound(c,W*.57,H*.52,.48);
+    }else if(this.map.layout==='canyon'){
+      this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);
+      this.compound(c,W*.17,H*.32,.5);this.compound(c,W*.84,H*.65,.48);
+    }else{
+      this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);
+      this.compound(c,W*.52,H*.3,.5);this.compound(c,W*.68,H*.68,.48);
+    }
     // Sector grid and survey marks.
     c.strokeStyle='#e4edb009';c.lineWidth=1;
     for(let x=0;x<W;x+=100){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
@@ -93,7 +110,7 @@ export class Renderer {
   helicopter(c,p,t,ghost=false) {
     c.save();c.translate(p.x,p.y);
     if(!ghost){c.save();c.translate(13,19);c.rotate(p.angle);ellipse(c,-3,0,37,16,'#0b170c4d');c.fillStyle='#0b170c33';c.fillRect(-31,-43,3,86);c.restore();}
-    c.rotate(p.angle);if(ghost)c.globalAlpha=.3;
+    c.rotate(p.angle);c.transform(1,p.bank||0,-(p.pitch||0),1,0,0);if(ghost)c.globalAlpha=.3;
     // Tail boom, horizontal stabilizers, pods and skids.
     path(c,[[-14,-6],[-55,-3],[-62,0],[-54,4],[-14,6]],'#728471','#c2cba755');
     path(c,[[-46,-3],[-53,-18],[-57,-18],[-55,0],[-54,17],[-48,17]],'#81947b');
