@@ -1,4 +1,4 @@
-import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, UPGRADES } from './core.js';
+import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES } from './core.js';
 import { SoundEngine } from './audio.js';
 import { Renderer } from './renderer.js';
 
@@ -16,18 +16,19 @@ const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}c
 const saveSettings=()=>write('blackout.settings',settings);
 const sound=new SoundEngine(settings),renderer=new Renderer(canvas,settings);
 const keys=new Set();
-const pointer={x:600,y:230,down:false};
+const pointer={x:600,y:230,screenX:null,screenY:null,down:false};
 const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
   enemies:[],bullets:[],particles:[],pickups:[],explosions:[],floaters:[],decals:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
-  combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0};
+  combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
+  camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
 let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,settingsPaused=false,starting=false;
 let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,health:100,maxHealth:100,cooldown:0,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -36,8 +37,10 @@ function resize(){
   if(old.width&&old.height){
   for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
+    if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
-  renderer.resize(g.world,rect);
+  renderer.resize(g.world,rect,g.map);
+  updateCamera(0,true);
 }
 new ResizeObserver(resize).observe(arena);resize();
 function clearInput(){
@@ -64,14 +67,17 @@ async function start(){
   await sound.init();
   g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.floaters=[];g.decals=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
-  pointer.x=g.player.x;pointer.y=g.player.y-150;
+  pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
+  updateCamera(0,true);
   setState('playing');nextWave();updateHud();canvas.focus({preventScroll:true});
   starting=false;
 }
 function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
+  g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
+  $('sector-name').textContent=g.map.name;
   $('wave').innerHTML=`DALGA <b>${pad(g.wave,2)}</b>`;
-  announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,g.plan.boss?'Roketlerini hazırla. Ağır zırh devrede.':g.wave===1?'Hareket et. Mesafeni koru. Hattı tut.':'Yeni hedefler. Aynı görev.',3.2);
+  announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
 }
@@ -102,6 +108,8 @@ function gun(){
   const p=g.player,a=p.angle+(Math.random()-.5)*.024,speed=980;
   g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:1.6,friendly:true,damage:1+(upgrades.damage||0)*.25,kind:'gun'});
   p.cooldown=.13*Math.pow(.82,upgrades.fireRate||0);p.muzzle=.045;
+  p.heat=Math.min(1,p.heat+.09);
+  if(p.heat>=1){p.overheated=true;float('TOP AŞIRI ISINDI',p.x,p.y-55,'#ffb586',true);}
   sound.play('shot',p.x/g.world.width*1.4-.7);
 }
 function launchRocket(){
@@ -109,7 +117,7 @@ function launchRocket(){
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
   const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.angle;
-  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*420,vy:Math.sin(a)*420,life:3,friendly:true,damage:18+(upgrades.damage||0)*3,kind:'rocket',target,trail:0});
+  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*150,vy:Math.sin(a)*150,life:3,friendly:true,damage:18+(upgrades.damage||0)*3,kind:'rocket',target,trail:0});
   p.rockets--;p.rocketCooldown=.45;sound.play('rocket');updateHud();
 }
 function dash(){
@@ -122,6 +130,15 @@ function movement(){
   let x=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft'))+joystick.x;
   let y=Number(keys.has('KeyS')||keys.has('ArrowDown'))-Number(keys.has('KeyW')||keys.has('ArrowUp'))+joystick.y;
   const length=Math.hypot(x,y);if(length>1){x/=length;y/=length;}return{x,y};
+}
+function updateCamera(dt,instant=false){
+  const {width:W,height:H}=g.world,camera=g.camera,p=g.player;
+  camera.zoom=matchMedia('(prefers-reduced-motion: reduce)').matches?1:1.08;
+  const x=clamp(p.x-W/(2*camera.zoom),0,W-W/camera.zoom),y=clamp(p.y-H/(2*camera.zoom),0,H-H/camera.zoom);
+  const response=instant?1:1-Math.exp(-3*dt);
+  camera.x=clamp(camera.x+(x-camera.x)*response,0,W-W/camera.zoom);
+  camera.y=clamp(camera.y+(y-camera.y)*response,0,H-H/camera.zoom);
+  if(pointer.screenX!==null){pointer.x=camera.x+pointer.screenX/camera.zoom;pointer.y=camera.y+pointer.screenY/camera.zoom;}
 }
 function hitEnemy(e,damage){
   if(e.health<=0)return;
@@ -158,12 +175,17 @@ function fireEnemy(e){
 function update(dt){
   const p=g.player,W=g.world.width,H=g.world.height;g.time+=dt;g.shake=Math.max(0,g.shake-dt*35);
   p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.rocketCooldown-=dt;p.muzzle-=dt;
-  const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-10*dt);
+  const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-(Math.hypot(move.x,move.y)>.01?10:3)*dt);
   if(p.dashTime<=0){p.vx+=(move.x*speed-p.vx)*response;p.vy+=(move.y*speed-p.vy)*response;}
   p.x=clamp(p.x+p.vx*dt,34,W-34);p.y=clamp(p.y+p.vy*dt,104,H-42);
+  if((p.x===34&&p.vx<0)||(p.x===W-34&&p.vx>0))p.vx=0;
+  if((p.y===104&&p.vy<0)||(p.y===H-42&&p.vy>0))p.vy=0;
+  updateCamera(dt);
   if(g.touch){let nearest=null,near=Infinity;for(const e of g.enemies){if(e.health<=0)continue;const d=distance(p,e);if(d<near){nearest=e;near=d;}}if(nearest)p.angle=turn(p.angle,Math.atan2(nearest.y-p.y,nearest.x-p.x),dt*14);else if(Math.hypot(move.x,move.y)>.2)p.angle=turn(p.angle,Math.atan2(move.y,move.x),dt*8);}
   else p.angle=turn(p.angle,Math.atan2(pointer.y-p.y,pointer.x-p.x),dt*22);
-  if((pointer.down||keys.has('Space'))&&p.cooldown<=0)gun();
+  const firing=pointer.down||keys.has('Space');
+  if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/3);if(p.overheated&&p.heat===0)p.overheated=false;}
+  if(firing&&!p.overheated&&p.cooldown<=0)gun();
   if(p.rockets<p.maxRockets){p.rocketTimer+=dt;const delay=7*Math.pow(.8,upgrades.rockets||0);if(p.rocketTimer>=delay){p.rockets++;p.rocketTimer=0;}}else p.rocketTimer=0;
   if(g.spawnRemaining>0){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy();g.spawnRemaining--;g.spawnTimer=g.plan.interval;}}
   for(const e of g.enemies){
@@ -185,7 +207,9 @@ function update(dt){
     const ox=b.x,oy=b.y;
     if(b.kind==='rocket'){
       if(b.target?.health<=0)b.target=g.enemies.find(e=>e.health>0)||null;
-      if(b.target){const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*5);b.vx=Math.cos(a)*510;b.vy=Math.sin(a)*510;}
+      const speed=Math.min(650,Math.hypot(b.vx,b.vy)+1200*dt);
+      const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*5):Math.atan2(b.vy,b.vx);
+      b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
@@ -231,6 +255,11 @@ function updateHud(){
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
   $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/(7*Math.pow(.8,upgrades.rockets||0))*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
+  $('heat-status').textContent=p.overheated?'SOĞUYOR':`%${Math.round(p.heat*100)}`;
+  $('heat-fill').style.width=`${p.heat*100}%`;
+  $('heat-ability').classList.toggle('overheated',p.overheated);
+  $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
+  $('heat-meter').setAttribute('aria-valuetext',p.overheated?'Aşırı ısındı, soğuyor':`%${Math.round(p.heat*100)}`);
   $('touch-dash').disabled=p.dashCooldown>0;$('touch-rocket').disabled=p.rockets===0;
   $('combo').hidden=multiplier<2;$('combo-value').textContent=`×${multiplier}`;
   const boss=g.enemies.find(e=>e.type==='boss');$('boss-hud').hidden=!boss||g.state==='over';
@@ -304,7 +333,7 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));
 window.addEventListener('blur',()=>{clearInput();if(g.state==='playing')pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();if(g.state==='playing')pause();}});
-function pointerPosition(event){const rect=canvas.getBoundingClientRect();pointer.x=(event.clientX-rect.left)/rect.width*g.world.width;pointer.y=(event.clientY-rect.top)/rect.height*g.world.height;}
+function pointerPosition(event){const rect=canvas.getBoundingClientRect();pointer.screenX=(event.clientX-rect.left)/rect.width*g.world.width;pointer.screenY=(event.clientY-rect.top)/rect.height*g.world.height;pointer.x=g.camera.x+pointer.screenX/g.camera.zoom;pointer.y=g.camera.y+pointer.screenY/g.camera.zoom;}
 canvas.addEventListener('pointermove',event=>{if(event.pointerType==='touch')return;g.touch=false;pointerPosition(event);});
 canvas.addEventListener('pointerdown',event=>{
   if(g.state!=='playing')return;

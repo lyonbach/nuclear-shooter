@@ -27,6 +27,14 @@ export function enemyType(wave, index) {
 export function seededRandom(seed = 73) {
   return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
 }
+export const MAPS = [
+  { name:'ÇÖL HATTI', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
+  { name:'YEŞİL VADİ', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
+  { name:'KIZIL BÖLGE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
+];
+export function mapForWave(wave) {
+  return MAPS[(Math.max(1, wave)-1)%MAPS.length];
+}
 export const UPGRADES = [
   { id: 'damage', icon: '✳', title: 'Delici mühimmat', description: 'Top hasarı %25 artar.', detail: '+%25 HASAR', max: 4 },
   { id: 'fireRate', icon: '≋', title: 'Hızlı besleme', description: 'Top %18 daha hızlı ateş eder.', detail: '+%18 ATIŞ HIZI', max: 4 },
