@@ -190,8 +190,8 @@ function update(dt){
   const forward=p.vx*Math.cos(p.angle)+p.vy*Math.sin(p.angle);
   const lateral=-p.vx*Math.sin(p.angle)+p.vy*Math.cos(p.angle);
   const tiltResponse=1-Math.exp(-7*dt);
-  p.bank+=(clamp(lateral/360,-1,1)*.18-p.bank)*tiltResponse;
-  p.pitch+=(clamp(forward/360,-1,1)*.1-p.pitch)*tiltResponse;
+  p.bank+=(clamp(lateral/270,-1,1)*.3-p.bank)*tiltResponse;
+  p.pitch+=(clamp(forward/270,-1,1)*.2-p.pitch)*tiltResponse;
   const firing=pointer.down||keys.has('Space');
   if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/3);if(p.overheated&&p.heat===0)p.overheated=false;}
   if(firing&&!p.overheated&&p.cooldown<=0)gun();
@@ -206,6 +206,10 @@ function update(dt){
     // Gentle separation keeps armor from stacking into one unreadable target.
     for(const other of g.enemies){if(e===other||other.health<=0)continue;const dist=distance(e,other),min=e.radius+other.radius+9;if(dist>0&&dist<min){vx+=(e.x-other.x)/dist*(min-dist)*1.5;vy+=(e.y-other.y)/dist*(min-dist)*1.5;}}
     e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*3);
+    if(e.type!=='drone'){
+      const direction=vx*Math.cos(e.angle)+vy*Math.sin(e.angle)<0?-1:1;
+      e.trackPhase=((e.trackPhase||0)-direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
+    }
     e.turret=turn(e.turret,a,dt*(e.type==='boss'?1.2:2.5));e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
     if(e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
     if(d<e.radius+22)damagePlayer(e.type==='boss'?25:15);

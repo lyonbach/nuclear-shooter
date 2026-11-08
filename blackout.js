@@ -321,7 +321,12 @@ class Renderer {
   helicopter(c,p,t,ghost=false) {
     c.save();c.translate(p.x,p.y);
     if(!ghost){c.save();c.translate(13,19);c.rotate(p.angle);ellipse(c,-3,0,37,16,'#0b170c4d');c.fillStyle='#0b170c33';c.fillRect(-31,-43,3,86);c.restore();}
-    c.rotate(p.angle);c.transform(1,p.bank||0,-(p.pitch||0),1,0,0);if(ghost)c.globalAlpha=.3;
+    const bank=p.bank||0,pitch=p.pitch||0;
+    c.rotate(p.angle);
+    c.translate(pitch*30,bank*30);
+    c.rotate(bank*.45);
+    c.scale(1-Math.abs(pitch)*.3,1-Math.abs(bank)*.5);
+    if(ghost)c.globalAlpha=.3;
     // Tail boom, horizontal stabilizers, pods and skids.
     path(c,[[-14,-6],[-55,-3],[-62,0],[-54,4],[-14,6]],'#728471','#c2cba755');
     path(c,[[-46,-3],[-53,-18],[-57,-18],[-55,0],[-54,17],[-48,17]],'#81947b');
@@ -352,7 +357,12 @@ class Renderer {
     }else{
       c.fillStyle='#14231655';c.fillRect(-22+6,-21+7,47,46);
       c.fillStyle='#27352a';c.fillRect(-23,-22,43,11);c.fillRect(-23,11,43,11);
-      c.fillStyle='#606749';for(let x=-21;x<19;x+=6){c.fillRect(x,-21,3,9);c.fillRect(x,12,3,9);}
+      c.fillStyle='#a1a582';
+      const phase=((e.trackPhase||0)%6+6)%6;
+      for(let x=-27+phase;x<20;x+=6){
+        const left=Math.max(x,-23),right=Math.min(x+3,20);
+        if(right>left){c.fillRect(left,-21,right-left,9);c.fillRect(left,12,right-left,9);}
+      }
       path(c,[[-25,-11],[-15,-16],[17,-16],[25,-8],[25,8],[15,16],[-20,16]],boss?'#727356':'#8c8e69','#b4b38a55');
       c.fillStyle='#a3a078';c.fillRect(-16,-12,29,3);c.fillStyle='#535f45';c.fillRect(-20,-7,8,14);
       c.save();c.rotate((e.turret??e.angle)-e.angle);
@@ -597,8 +607,8 @@ function update(dt){
   const forward=p.vx*Math.cos(p.angle)+p.vy*Math.sin(p.angle);
   const lateral=-p.vx*Math.sin(p.angle)+p.vy*Math.cos(p.angle);
   const tiltResponse=1-Math.exp(-7*dt);
-  p.bank+=(clamp(lateral/360,-1,1)*.18-p.bank)*tiltResponse;
-  p.pitch+=(clamp(forward/360,-1,1)*.1-p.pitch)*tiltResponse;
+  p.bank+=(clamp(lateral/270,-1,1)*.3-p.bank)*tiltResponse;
+  p.pitch+=(clamp(forward/270,-1,1)*.2-p.pitch)*tiltResponse;
   const firing=pointer.down||keys.has('Space');
   if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/3);if(p.overheated&&p.heat===0)p.overheated=false;}
   if(firing&&!p.overheated&&p.cooldown<=0)gun();
@@ -613,6 +623,10 @@ function update(dt){
     // Gentle separation keeps armor from stacking into one unreadable target.
     for(const other of g.enemies){if(e===other||other.health<=0)continue;const dist=distance(e,other),min=e.radius+other.radius+9;if(dist>0&&dist<min){vx+=(e.x-other.x)/dist*(min-dist)*1.5;vy+=(e.y-other.y)/dist*(min-dist)*1.5;}}
     e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*3);
+    if(e.type!=='drone'){
+      const direction=vx*Math.cos(e.angle)+vy*Math.sin(e.angle)<0?-1:1;
+      e.trackPhase=((e.trackPhase||0)-direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
+    }
     e.turret=turn(e.turret,a,dt*(e.type==='boss'?1.2:2.5));e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
     if(e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
     if(d<e.radius+22)damagePlayer(e.type==='boss'?25:15);

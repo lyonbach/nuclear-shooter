@@ -54,8 +54,20 @@ test('swept bullets destroy targets crossed entirely in a single frame',async()=
 test('helicopter banks smoothly toward its movement direction',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;game.keys.add('KeyD');
   for(let i=0;i<30;i++)game.update(1/60);
-  assert.ok(Math.abs(game.g.player.bank)>0.05);
-  assert.ok(Math.abs(game.g.player.pitch)<0.11);
+  assert.ok(Math.hypot(game.g.player.bank,game.g.player.pitch)>0.15);
+  game.keys.delete('KeyD');
+  for(let i=0;i<240;i++)game.update(1/60);
+  assert.ok(Math.hypot(game.g.player.bank,game.g.player.pitch)<0.001);
+});
+test('tank tracks advance only while the tank moves and freeze when paused',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player,tank=enemy({x:p.x+400,y:p.y,speed:40,angle:Math.PI});
+  game.g.enemies=[tank];game.update(.05);
+  const movingPhase=tank.trackPhase;
+  assert.ok(Math.abs(movingPhase)>1);
+  game.pause();game.frame(1000);game.frame(2000);assert.equal(tank.trackPhase,movingPhase);
+  await game.resume();tank.x=p.x+150;tank.y=p.y;game.update(.05);
+  assert.equal(tank.trackPhase,movingPhase);
 });
 test('armored vehicle wrecks emit lingering black smoke',async()=>{
   const game=createGame();await game.start();game.g.enemies=[enemy()];
