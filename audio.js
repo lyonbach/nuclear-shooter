@@ -1,6 +1,9 @@
-// All sound is synthesized locally. No files, network requests, or autoplay.
+// Music uses local soundtrack files, with synthesized scores as an offline fallback.
 export class SoundEngine {
-  constructor(settings) { this.settings = settings; this.active = false; this.step = 0; this.nextBeat = 0; }
+  constructor(settings) {
+    this.settings = settings; this.active = false; this.step = 0; this.nextBeat = 0;
+    this.musicScene = 'menu'; this.musicTrack = null; this.trackStates = new Map();
+  }
   async init() {
     try {
       if (!this.ctx) {
@@ -24,7 +27,7 @@ export class SoundEngine {
         engine.connect(engineGain); engineGain.connect(this.rotor); engine.start();
         this.rotor.gain.value = 0;
       }
-      await this.ctx.resume(); this.configure();
+      await this.ctx.resume(); this.configure(); this.playMusicTrack(this.musicScene);
     } catch { /* The game remains playable when audio is unavailable. */ }
   }
   configure() {
@@ -35,6 +38,71 @@ export class SoundEngine {
   setActive(active) {
     this.active = active;
     if (this.ctx) this.rotor.gain.setTargetAtTime(active ? 0.26 : 0, this.ctx.currentTime, 0.2);
+  }
+  setMusicScene(scene) {
+    if (this.musicScene === scene) return;
+    this.musicScene = scene;
+    this.step = 0;
+    this.nextBeat = 0;
+    if (this.musicTrack) {
+      this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
+      const previous = this.musicTrack;
+      this.musicTrack = null;
+      setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
+    }
+    this.playMusicTrack(scene);
+  }
+  playMusicTrack(scene) {
+    if (!this.ctx || !scene) return;
+    if (this.musicTrack?.scene === scene && !this.musicTrack.audio.paused) return;
+    const paths = {
+      menu: 'sound/Blackout Protocol - Main Menu.mp3',
+      waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
+      boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
+    };
+    const path = paths[scene];
+    const existing = this.trackStates.get(scene);
+    if (existing) {
+      if (existing.status === 'ready') this.startMusicTrack(existing.track);
+      return;
+    }
+    if (!path || typeof Audio === 'undefined') return;
+    try {
+      const audio = new Audio(path);
+      audio.loop = true; audio.preload = 'auto';
+      const source = this.ctx.createMediaElementSource(audio), gain = this.ctx.createGain();
+      gain.gain.value = 0; source.connect(gain); gain.connect(this.music);
+      const track = { audio, gain, scene };
+      this.trackStates.set(scene, { status: 'loading', track });
+      this.startMusicTrack(track);
+    } catch (error) {
+      this.trackStates.set(scene, { status: 'failed' });
+      console.warn(`Could not load music track: ${path}; using synthesized music.`, error);
+    }
+  }
+  startMusicTrack(track) {
+    if (this.musicTrack && this.musicTrack !== track) {
+      this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
+      const previous = this.musicTrack;
+      setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
+    }
+    this.musicTrack = track;
+    try { track.audio.currentTime = 0; } catch { /* Metadata may not be ready yet. */ }
+    track.audio.play().then(() => {
+      if (this.musicTrack !== track) { track.audio.pause(); return; }
+      this.trackStates.set(track.scene, { status: 'ready', track });
+      track.gain.gain.setTargetAtTime(1, this.ctx.currentTime, 0.35);
+    }).catch(() => {
+      this.trackStates.set(track.scene, { status: 'failed' });
+      if (this.musicTrack === track) this.musicTrack = null;
+      track.audio.pause();
+      const path = {
+        menu: 'sound/Blackout Protocol - Main Menu.mp3',
+        waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
+        boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
+      }[track.scene];
+      console.warn(`Could not play music track: ${path}; using synthesized music.`);
+    });
   }
   tone(freq, end, duration, volume = 0.1, type = 'sine', bus = this.fx, time = this.ctx?.currentTime) {
     if (!this.ctx || this.ctx.state !== 'running') return;
@@ -68,15 +136,23 @@ export class SoundEngine {
     if (name === 'ui') this.tone(700, 1000, 0.08, 0.06);
   }
   update(speed = 0) {
-    if (!this.ctx || !this.active || this.ctx.state !== 'running') return;
+    if (!this.ctx || this.ctx.state !== 'running') return;
     const t = this.ctx.currentTime;
-    this.rotor.gain.setTargetAtTime((0.24 + Math.sin(t * 42) * 0.045) + speed * 0.045, t, 0.015);
-    if (this.settings.music && t >= this.nextBeat) {
-      const notes = [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49];
-      const f = notes[Math.floor(this.step / 4) % notes.length];
-      this.tone(f * (this.step % 4 === 2 ? 2 : 1), f, 0.45, 0.14, 'triangle', this.music);
-      if (this.step % 4 === 0) this.tone(90, 35, 0.18, 0.3, 'sine', this.music);
-      this.step++; this.nextBeat = t + 0.3;
+    if (this.active) this.rotor.gain.setTargetAtTime((0.24 + Math.sin(t * 42) * 0.045) + speed * 0.045, t, 0.015);
+    if (!this.settings.music || this.musicTrack || t < this.nextBeat) return;
+    const scores = {
+      menu: { tempo: 0.72, notes: [55, 65.41, 73.42, 49, 55, 82.41, 65.41, 49], type: 'sine' },
+      waves: { tempo: 0.32, notes: [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49], type: 'triangle' },
+      boss: { tempo: 0.24, notes: [49, 49, 73.42, 55, 46.25, 55, 65.41, 46.25], type: 'sawtooth' }
+    };
+    const score = scores[this.musicScene] || scores.menu;
+    const beat = this.step % 16, root = score.notes[Math.floor(this.step / 4) % score.notes.length];
+    if (beat % 4 === 0) this.tone(root, root * 0.98, score.tempo * 1.8, this.musicScene === 'boss' ? 0.22 : 0.16, score.type, this.music);
+    if (beat % 2 === 0) {
+      const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2)]);
+      this.tone(melody, melody, score.tempo * 0.8, this.musicScene === 'menu' ? 0.035 : 0.07, 'triangle', this.music);
     }
+    if (beat === 0 && this.musicScene !== 'menu') this.tone(this.musicScene === 'boss' ? 38 : 45, 28, 0.16, 0.22, 'sine', this.music);
+    this.step++; this.nextBeat = t + score.tempo;
   }
 }

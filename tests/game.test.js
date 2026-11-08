@@ -20,12 +20,12 @@ function createGame(reducedMotion=false) {
   const document={hidden:false,fullscreenEnabled:false,getElementById:id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},querySelectorAll:()=>[],createElement:()=>new Element(),addEventListener(){}};
   const window={addEventListener:(event,fn)=>windowEvents.set(event,fn)};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
-  class Audio{async init(){} configure(){} setActive(){} play(){} update(){}}
+  class Audio{constructor(){this.scene='menu';}async init(){} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
-  return{...game,elements,storage,windowEvents};
+  return{...game,elements,storage,windowEvents,sound:game.sound};
 }
 function enemy(overrides={}){return{x:600,y:300,type:'tank',health:4,maxHealth:4,speed:0,points:110,radius:25,angle:0,turret:0,cooldown:10,charge:0,hit:0,seed:0,...overrides};}
 
@@ -81,6 +81,16 @@ test('wave five spawns a boss and destruction saves the record before restart',a
   assert.ok(game.g.enemies.some(e=>e.type==='boss'));game.g.score=1234;game.g.player.invulnerable=0;game.damagePlayer(200);
   assert.equal(game.g.state,'over');assert.equal(JSON.parse(game.storage.get('blackout.best')),1234);
   await game.start();assert.equal(game.g.score,0);assert.equal(game.g.player.health,100);assert.equal(game.g.best,1234);assert.equal(game.g.enemies.length,0);
+});
+test('music follows menu, wave, and boss transitions',async()=>{
+  const game=createGame();assert.equal(game.sound.scene,'menu');
+  await game.start();assert.equal(game.sound.scene,'waves');
+  for(let i=0;i<4;i++)game.nextWave();
+  assert.equal(game.sound.scene,'boss');
+  game.hitEnemy(game.g.enemies.find(e=>e.type==='boss'),100000);
+  assert.equal(game.sound.scene,'waves');
+  game.g.player.invulnerable=0;game.damagePlayer(1000);
+  assert.equal(game.sound.scene,'menu');
 });
 test('helicopter coasts after release and eventually stops without crossing the boundary',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;

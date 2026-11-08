@@ -14,7 +14,7 @@ python3 -m http.server 8080 --bind 127.0.0.1
 
 Open http://localhost:8080.
 
-No dependency installation, asset downloads, or API keys are needed. All visuals are rendered in Canvas and all audio is synthesized with Web Audio. The Turkish interface scales to desktop, tablet, and phone screens.
+No dependency installation or API keys are needed. All visuals are rendered in Canvas. Music and effects use Web Audio; the game has synthesized music scores when custom tracks are not present. The Turkish interface scales to desktop, tablet, and phone screens.
 
 ## Controls
 
@@ -31,7 +31,11 @@ No dependency installation, asset downloads, or API keys are needed. All visuals
 
 Rockets accelerate after launch and recharge individually. The machine gun heats with each shot; release fire to cool it, or wait three seconds for a fully overheated gun to cool before it can fire again. Faster firing upgrades build heat faster. The helicopter coasts briefly when movement is released, while dash briefly prevents damage. Green field supplies repair 30 hull points. Consecutive kills raise the score multiplier up to ×5. Each cleared wave awards bonus points and a choice of upgrades. The battlefield rotates through desert, valley, and red-zone sectors each wave; every fifth wave includes a boss.
 
-Choose Çaylak, Pilot, or As before a new run. Sound volume, procedural music, screen shake, effects quality, difficulty, and your best score are saved locally when browser storage is available. Switching tabs automatically pauses the action. Reduced-motion preferences disable the tracking camera and screen shake by default.
+Choose Çaylak, Pilot, or As before a new run. Sound volume, music, screen shake, effects quality, difficulty, and your best score are saved locally when browser storage is available. Switching tabs automatically pauses the action. Reduced-motion preferences disable the tracking camera and screen shake by default.
+
+## Music tracks
+
+The soundtrack switches between menu, wave-combat, and boss music using the MP3 tracks in `sound/`. Missing or unsupported tracks fall back to the built-in synthesized scores. Music starts after the first user interaction and follows the music setting and master volume.
 
 ## Checks
 

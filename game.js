@@ -55,6 +55,7 @@ function setState(state,panel){
   sound.setActive(state==='playing');
   $('feed-status').textContent={ready:'BEKLEMEDE',playing:'AKTİF',paused:'DURAKLATILDI',upgrade:'İKMAL',over:'SİNYAL KAYIP'}[state];
   $('mission-status').textContent={ready:'UÇUŞ İZNİ BEKLENİYOR',playing:'ANGAJMAN SERBEST · HATTI KORU',paused:'OTOPİLOT DEVREDE',upgrade:'SAHA İKMALİ · GELİŞTİRME SEÇ',over:'OPERASYON SONLANDI'}[state];
+  if(state==='ready'||state==='over')sound.setMusicScene('menu');
 }
 function focusPanel(id){requestAnimationFrame(()=>$(id).focus({preventScroll:true}));}
 function announce(tag,title,note='',duration=2.5){
@@ -80,6 +81,7 @@ function nextWave(){
   announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
+  sound.setMusicScene(g.plan.boss?'boss':'waves');
 }
 function spawnEnemy(forced){
   const {width:W,height:H}=g.world,p=g.player;let x,y;
@@ -148,6 +150,7 @@ function hitEnemy(e,damage){
     const multiplier=Math.min(5,1+Math.floor(g.combo/3)),points=e.points*multiplier;g.score+=points;
     float(`+${points}${multiplier>1?' ×'+multiplier:''}`,e.x,e.y-35,'#e0efa6',multiplier>1);
     explosion(e.x,e.y,e.type==='boss'?155:e.type==='drone'?40:72);
+    if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
     if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
   }else sound.play('hit',e.x/g.world.width*2-1);
@@ -234,7 +237,7 @@ function update(dt){
   }
   g.comboTimer-=dt;if(g.comboTimer<=0)g.combo=0;
   if(g.bannerTime>0){g.bannerTime-=dt;if(g.bannerTime<=0)$('announcement').classList.remove('visible');}
-  sound.update(Math.hypot(p.vx,p.vy)/300);g.hudTimer-=dt;if(g.hudTimer<=0){updateHud();g.hudTimer=.08;}
+  g.hudTimer-=dt;if(g.hudTimer<=0){updateHud();g.hudTimer=.08;}
 }
 function updateEffects(dt){
   for(const p of g.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*(p.smoke?1.5:3));p.vy*=Math.exp(-dt*(p.smoke?1.5:3));p.life-=dt;}
@@ -357,6 +360,7 @@ function frame(time){
   if(!document.hidden){
     if(g.state==='playing'){g.visualTime+=dt;update(dt);updateEffects(dt);}
     else if(g.state==='ready'||g.state==='over'){if(!matchMedia('(prefers-reduced-motion:reduce)').matches)g.visualTime+=dt;updateEffects(dt);}
+    sound.update(g.state==='playing'?Math.hypot(g.player.vx,g.player.vy)/300:0);
     renderer.draw(g,dt);
   }
   requestAnimationFrame(frame);
