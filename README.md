@@ -33,6 +33,27 @@ Rockets accelerate after launch and recharge individually. The machine gun heats
 
 Choose Çaylak, Pilot, or As before a new run. Sound volume, music, screen shake, effects quality, difficulty, and your best score are saved locally when browser storage is available. Switching tabs automatically pauses the action. Reduced-motion preferences disable the tracking camera and screen shake by default.
 
+## Enemy tuning
+
+Edit `enemies.csv` in a spreadsheet or text editor, save it as comma-separated UTF-8, and run `npm run build`. The build validates the sheet and generates `enemy-data.js` and `blackout.js`; commit both generated files with the sheet. The game reads the built-in sheet data, so it also works when opening `index.html` directly offline. Editing the CSV alone does not change the game until it is rebuilt. Keep the header, row names, and column order unchanged; use non-negative numbers and `.` for decimals.
+
+Each row configures one enemy. Distances and speeds use game world units and world units per second; times are seconds, and angles are radians.
+
+| Columns | Meaning |
+| --- | --- |
+| `health`, `healthPerWave` | Base health and extra health per wave, before the shared wave health multiplier. |
+| `speed`, `speedPerWave`, `speedWaveCap`, `speedMultiplier` | Movement speed: `(speed + min(wave * speedPerWave, speedWaveCap)) * speedMultiplier`. |
+| `points`, `radius`, `scale`, `deathExplosion` | Score, collision radius, visual scale, and death explosion size. Set radius and scale separately. |
+| `stopDistance`, `strafeSpeed`, `turnRate`, `turretRate`, `contactDamage` | Movement, aiming and collision damage. |
+| `spawnWave`, `spawnModulo`, `spawnRemainder` | Earliest wave and zero-based spawn-index pattern; a zero modulo disables ordinary spawning. When patterns overlap, priority is rocket semi, AA, kamikaze, artillery, then drone; otherwise a tank spawns. Bosses are spawned separately on boss waves. |
+| `projectileDamage`, `projectileSpeed`, `projectileSpeedPerWave`, `projectileSpeedCap`, `projectileLife` | Weapon damage, initial speed, wave speed bonus and cap, and lifetime. For kamikazes, damage is applied once to a player in the blast radius. For AA, damage is per explosion. All damage is also multiplied by the selected difficulty. |
+| `fireInterval`, `fireWaveReduction`, `fireWaveReductionCap`, `fireRandom`, `initialCooldown`, `initialRandom` | Time between attacks, wave reduction and cap, random extra delay, and initial delay plus random extra delay. AA uses the base interval and random delay between bursts. |
+| `spread`, `shotCount` | Angular separation and number of projectiles or AA explosions per burst. |
+| `explosionRadius`, `warningDelay`, `warningSpread`, `burstInterval` | Kamikaze blast radius or AA explosion radius; AA warning duration, placement spread around the player, and delay between the nine shots. Warnings persist if the gun is destroyed. |
+| `rocketTurn`, `rocketAcceleration`, `rocketMaxSpeed`, `easyInterval`, `normalInterval`, `hardInterval` | Rocket semi homing and speed parameters, and difficulty multipliers for its firing interval. Lower multipliers fire faster. |
+
+Kamikazes pursue the player and explode on contact or destruction. AA guns mark each delayed impact with a flashing crosshair and circle. Rocket semis fire homing rockets.
+
 ## Music tracks
 
 The soundtrack switches between menu, wave-combat, and boss music using the MP3 tracks in `sound/`. Missing or unsupported tracks fall back to the built-in synthesized scores. Music starts after the first user interaction and follows the music setting and master volume.
@@ -47,7 +68,7 @@ npm run check
 npm run build
 ```
 
-Rebuild `blackout.js` after editing `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines those source modules into a browser script.
+Rebuild `blackout.js` after editing `enemies.csv`, `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines the sheet and source modules into a browser script.
 
 The tests cover continuous projectile collision, wave scaling, sector rotation, aiming, camera tracking, terrain generation, movement and drift, gun overheating, rocket acceleration and damage, pause, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
 

@@ -1,3 +1,5 @@
+import { ENEMY_DATA } from './enemy-data.js';
+export const ENEMIES = ENEMY_DATA;
 export const TAU = Math.PI * 2;
 export const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -20,8 +22,10 @@ export function wavePlan(wave, difficulty = 'normal') {
     damage: { easy: 0.7, normal: 1, hard: 1.3 }[difficulty] || 1 };
 }
 export function enemyType(wave, index) {
-  if (wave >= 3 && index % 5 === 4) return 'artillery';
-  if (wave >= 2 && index % 3 === 2) return 'drone';
+  for (const type of ['rocketSemi','aa','kamikaze','artillery','drone']) {
+    const stats=ENEMIES[type];
+    if (stats.spawnModulo && wave >= stats.spawnWave && index % stats.spawnModulo === stats.spawnRemainder) return type;
+  }
   return 'tank';
 }
 export function seededRandom(seed = 73) {

@@ -24,6 +24,12 @@ test('enemy variety unlocks gradually and predictably',()=>{
   assert.equal(enemyType(2,2),'drone');
   assert.equal(enemyType(3,4),'artillery');
 });
+test('new enemies unlock according to the tuning sheet',()=>{
+  assert.equal(enemyType(1,6),'tank');
+  assert.equal(enemyType(2,6),'kamikaze');
+  assert.equal(enemyType(3,5),'aa');
+  assert.equal(enemyType(4,7),'rocketSemi');
+});
 test('aim rotation takes the short route across the angle boundary',()=>{
   const value=turn(Math.PI-.1,-Math.PI+.1,.5);
   assert.ok(Math.abs(value-Math.PI)<.00001);
