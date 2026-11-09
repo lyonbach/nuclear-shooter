@@ -1,4 +1,4 @@
-import { TAU, seededRandom, clamp } from './core.js';
+import { TAU, seededRandom, clamp, ENEMIES } from './core.js';
 
 const path = (c, points, fill, stroke) => {
   c.beginPath(); points.forEach(([x,y], i) => i ? c.lineTo(x,y) : c.moveTo(x,y)); c.closePath();
@@ -137,12 +137,18 @@ export class Renderer {
   }
   enemy(c,e,t) {
     c.save();c.translate(e.x,e.y);c.rotate(e.angle);
-    const boss=e.type==='boss';if(boss)c.scale(1.8,1.8);
-    if(e.type==='drone'){
+    const boss=e.type==='boss';c.scale(ENEMIES[e.type].scale,ENEMIES[e.type].scale);
+    if(e.type==='drone'||e.type==='kamikaze'){
       ellipse(c,7,12,23,13,'#10231633');
       c.strokeStyle='#545d4a';c.lineWidth=5;c.beginPath();c.moveTo(-13,-13);c.lineTo(13,13);c.moveTo(-13,13);c.lineTo(13,-13);c.stroke();
       for(const x of [-14,14])for(const y of [-14,14]){ellipse(c,x,y,9,9,'#283b2e88');c.save();c.translate(x,y);c.rotate(t*52);c.fillStyle='#c3c8a366';c.fillRect(-10,-1,20,2);c.restore();}
-      path(c,[[-10,-7],[7,-8],[15,0],[7,8],[-10,7]],'#a19c76','#d1ba9366');ellipse(c,8,0,3,3,'#e9a173');
+      path(c,[[-10,-7],[7,-8],[15,0],[7,8],[-10,7]],e.type==='kamikaze'?'#d96f50':'#a19c76','#d1ba9366');ellipse(c,8,0,3,3,'#e9a173');
+    }else if(e.type==='rocketSemi'){
+      c.fillStyle='#182a1e77';c.fillRect(-34,-15,70,37);
+      c.fillStyle='#29392d';for(const x of [-25,-7,21]){ellipse(c,x,-16,6,5,'#29392d');ellipse(c,x,16,6,5,'#29392d');}
+      c.fillStyle='#6c7857';c.fillRect(-34,-13,46,26);c.fillStyle='#a1a582';c.fillRect(12,-14,22,28);
+      c.fillStyle='#485849';c.fillRect(23,-10,7,20);
+      c.save();c.rotate((e.turret??e.angle)-e.angle);c.fillStyle='#4b5c45';c.fillRect(-21,-10,38,20);c.fillStyle='#c0b98b';for(const y of [-6,0,6])c.fillRect(-14,y-2,30,4);c.restore();
     }else{
       c.fillStyle='#14231655';c.fillRect(-22+6,-21+7,47,46);
       c.fillStyle='#27352a';c.fillRect(-23,-22,43,11);c.fillRect(-23,11,43,11);
@@ -157,6 +163,7 @@ export class Renderer {
       c.save();c.rotate((e.turret??e.angle)-e.angle);
       path(c,[[-9,-10],[9,-10],[16,-5],[16,5],[8,10],[-9,10],[-13,4],[-13,-4]],'#a49f75','#c5b68966');
       c.fillStyle='#b5ac7b';c.fillRect(5,-3,e.type==='artillery'?37:27,6);c.fillStyle='#4c5940';c.fillRect(e.type==='artillery'?35:27,-4,5,8);
+      if(e.type==='aa'){c.fillStyle='#b5ac7b';c.fillRect(5,-10,27,4);c.fillRect(5,6,27,4);}
       ellipse(c,-1,-1,5,5,'#5b674a');c.fillStyle='#dc9a6c';c.fillRect(-4,-2,6,2);c.restore();
       c.strokeStyle='#c5b78866';c.lineWidth=1;c.beginPath();c.moveTo(-14,-12);c.lineTo(-18,-32);c.stroke();
     }
@@ -182,8 +189,12 @@ export class Renderer {
     for(const e of g.enemies)this.enemy(c,e,t);
     if(g.state==='ready'){this.enemy(c,{x:W*.7,y:H*.73,angle:-2.2,type:'tank',health:3,maxHealth:3},t);this.enemy(c,{x:W*.87,y:H*.57,angle:-2.5,type:'tank',health:3,maxHealth:3},t);}
     for(const b of g.bullets){
-      if(b.kind==='rocket'){c.save();c.translate(b.x,b.y);c.rotate(Math.atan2(b.vy,b.vx));c.fillStyle='#e4dfb2';c.fillRect(-9,-2,15,4);c.fillStyle='#ffcc79';c.fillRect(-19,-2,10,4);c.restore();}
+      if(b.kind==='rocket'||b.kind==='enemyRocket'){c.save();c.translate(b.x,b.y);c.rotate(Math.atan2(b.vy,b.vx));c.fillStyle=b.friendly?'#e4dfb2':'#ee9875';c.fillRect(-9,-2,15,4);c.fillStyle='#ffcc79';c.fillRect(-19,-2,10,4);c.restore();}
       else {c.strokeStyle=b.friendly?'#f4f1ab':'#ffac77';c.lineWidth=b.friendly?2:3;c.lineCap='round';c.beginPath();const len=b.friendly?20:13,sp=Math.hypot(b.vx,b.vy)||1;c.moveTo(b.x-b.vx/sp*len,b.y-b.vy/sp*len);c.lineTo(b.x,b.y);c.stroke();if(!b.friendly)ellipse(c,b.x,b.y,3,3,'#ffd2a5');}
+    }
+    for(const warning of g.warnings||[]){
+      c.save();c.globalAlpha=.5+.5*Math.abs(Math.sin(t*9));c.strokeStyle='#ffb46f';c.lineWidth=2;c.beginPath();c.arc(warning.x,warning.y,warning.radius,0,TAU);c.stroke();
+      c.beginPath();c.moveTo(warning.x-8,warning.y);c.lineTo(warning.x+8,warning.y);c.moveTo(warning.x,warning.y-8);c.lineTo(warning.x,warning.y+8);c.stroke();c.restore();
     }
     if(g.player.health>0){
       if(g.player.dashTime>0){for(let i=1;i<4;i++)this.helicopter(c,{...g.player,x:g.player.x-g.player.vx*.026*i,y:g.player.y-g.player.vy*.026*i},t,true);}

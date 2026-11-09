@@ -36,3 +36,10 @@ test('tank tread marks visibly shift with track phase',()=>{
   assert.notDeepEqual(treads(stationary),treads(moving));
   for(const [x,,width] of treads(moving))assert.ok(x>=-23&&x+width<=20);
 });
+
+test('kamikaze drone is rendered at quarter scale',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const c=context();
+  renderer.enemy(c,{x:0,y:0,angle:0,type:'kamikaze',health:1,maxHealth:1},0);
+  assert.ok(c.calls.some(call=>call.name==='scale'&&call.args[0]===.25&&call.args[1]===.25));
+});

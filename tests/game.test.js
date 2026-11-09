@@ -23,11 +23,70 @@ function createGame(reducedMotion=false) {
   class Audio{constructor(){this.scene='menu';}async init(){} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,start,pause,resume,frame,update,updateEffects,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
   return{...game,elements,storage,windowEvents,sound:game.sound};
 }
 function enemy(overrides={}){return{x:600,y:300,type:'tank',health:4,maxHealth:4,speed:0,points:110,radius:25,angle:0,turret:0,cooldown:10,charge:0,hit:0,seed:0,...overrides};}
+
+test('kamikazes use quarter scale and double drone speed and explode for four shots',async()=>{
+  const game=createGame();await game.start();
+  game.spawnEnemy('drone');game.spawnEnemy('kamikaze');
+  const drone=game.g.enemies[0],kamikaze=game.g.enemies[1],p=game.g.player;
+  assert.equal(core.ENEMIES.kamikaze.scale,core.ENEMIES.drone.scale/4);
+  assert.equal(kamikaze.radius,drone.radius/4);
+  assert.equal(kamikaze.speed,drone.speed*2);
+  kamikaze.x=p.x+20;kamikaze.y=p.y;
+  game.hitEnemy(kamikaze,kamikaze.health);
+  assert.equal(p.health,100-4*core.ENEMIES.tank.projectileDamage);
+  game.hitEnemy(kamikaze,1);assert.equal(p.health,56);
+});
+test('kamikazes detonate on contact but do not damage from outside the blast',async()=>{
+  const game=createGame();await game.start();const p=game.g.player;
+  game.spawnEnemy('kamikaze');
+  const kamikaze=game.g.enemies[0];kamikaze.x=p.x+20;kamikaze.y=p.y;kamikaze.speed=0;
+  game.update(.01);assert.equal(p.health,56);assert.equal(game.g.enemies.length,0);
+  p.invulnerable=0;game.spawnEnemy('kamikaze');
+  const distant=game.g.enemies[0];distant.x=p.x+core.ENEMIES.kamikaze.explosionRadius+30;distant.y=p.y;
+  game.hitEnemy(distant,distant.health);assert.equal(p.health,56);
+});
+test('AA fires nine marked delayed explosions that persist after its destruction',async()=>{
+  const game=createGame();await game.start();const p=game.g.player;
+  game.spawnEnemy('aa');const aa=game.g.enemies[0];
+  for(let i=0;i<9;i++)game.fireEnemy(aa);
+  assert.equal(game.g.warnings.length,9);assert.equal(aa.burstRemaining,0);
+  assert.equal(game.g.warnings[0].x,p.x);assert.equal(game.g.warnings[0].y,p.y);
+  game.hitEnemy(aa,aa.health);game.g.spawnRemaining=0;
+  game.update(core.ENEMIES.aa.warningDelay-.01);
+  assert.equal(p.health,100);assert.equal(game.g.warnings.length,9);assert.equal(game.g.waveWait,-1);
+  game.update(.02);assert.equal(p.health,100-core.ENEMIES.aa.projectileDamage);
+  assert.equal(game.g.warnings.length,0);
+});
+test('AA automatically spaces one nine-shot burst and pause freezes warnings',async()=>{
+  const game=createGame();await game.start();game.spawnEnemy('aa');
+  const aa=game.g.enemies[0],p=game.g.player;
+  aa.x=p.x+300;aa.y=p.y;aa.speed=0;aa.cooldown=0;game.g.spawnRemaining=0;
+  for(let i=0;i<90;i++)game.update(.02);
+  assert.equal(game.g.warnings.length,9);assert.equal(aa.burstRemaining,0);
+  assert.ok(aa.cooldown>core.ENEMIES.aa.burstInterval);
+  const life=game.g.warnings[0].life;
+  game.pause();game.frame(1000);game.frame(5000);
+  assert.equal(game.g.warnings[0].life,life);
+  game.resume();await game.start();
+  assert.equal(game.g.warnings.length,0);
+});
+test('rocket semi homing rockets fire faster on harder difficulty',async()=>{
+  const game=createGame();await game.start();game.spawnEnemy('rocketSemi');
+  const semi=game.g.enemies[0],delays=[];
+  const random=Math.random;Math.random=()=>0;
+  try{for(const difficulty of ['easy','normal','hard']){game.settings.difficulty=difficulty;game.fireEnemy(semi);delays.push(semi.cooldown);}}
+  finally{Math.random=random;}
+  assert.ok(delays[0]>delays[1]&&delays[1]>delays[2]);
+  const rocket=game.g.bullets[0];assert.equal(rocket.kind,'enemyRocket');assert.equal(rocket.damage,core.ENEMIES.rocketSemi.projectileDamage);
+  rocket.x=game.g.player.x-300;rocket.y=game.g.player.y-100;rocket.vx=100;rocket.vy=0;
+  game.g.bullets=[rocket];game.update(.1);
+  assert.ok(rocket.vy>0);assert.ok(Math.hypot(rocket.vx,rocket.vy)>100);
+});
 
 test('new sortie resets combat, unlocks controls, and schedules wave one',async()=>{
   const game=createGame();await game.start();

@@ -1,4 +1,4 @@
-import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES } from './core.js';
+import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES } from './core.js';
 import { SoundEngine } from './audio.js';
 import { Renderer } from './renderer.js';
 
@@ -19,7 +19,7 @@ const keys=new Set();
 const pointer={x:600,y:230,screenX:null,screenY:null,down:false};
 const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
-  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],floaters:[],decals:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
+  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],warnings:[],floaters:[],decals:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
   combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
   camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
@@ -35,7 +35,7 @@ function resize(){
   g.touch=matchMedia('(pointer:coarse), (max-width:600px)').matches;
   g.world.width=clamp(rect.width*1.3,680,1700);g.world.height=g.world.width*rect.height/rect.width;
   if(old.width&&old.height){
-  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
+  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
     if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
@@ -66,7 +66,7 @@ async function start(){
   if(dialog.open||starting)return;
   starting=true;
   await sound.init();
-  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.floaters=[];g.decals=[];g.wreckSmoke=[];
+  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.warnings=[];g.floaters=[];g.decals=[];g.wreckSmoke=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
   pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
   updateCamera(0,true);
@@ -90,9 +90,8 @@ function spawnEnemy(forced){
     if(Math.hypot(x-p.x,y-p.y)>300)break;
   }
   const type=forced||enemyType(g.wave,g.spawnIndex++);
-  const stats={tank:[4,42,110,25],drone:[2.5,100,140,21],artillery:[6,28,200,26],boss:[70+g.wave*5,22,2500,49]}[type];
-  const health=stats[0]*g.plan.health;
-  g.enemies.push({x,y,type,health,maxHealth:health,speed:stats[1]+Math.min(g.wave*1.5,22),points:stats[2],radius:stats[3],angle:Math.atan2(p.y-y,p.x-x),turret:0,cooldown:2+Math.random()*1.5,charge:0,hit:0,seed:Math.random()*TAU});
+  const stats=ENEMIES[type],health=(stats.health+stats.healthPerWave*g.wave)*g.plan.health;
+  g.enemies.push({x,y,type,health,maxHealth:health,speed:(stats.speed+Math.min(g.wave*stats.speedPerWave,stats.speedWaveCap))*stats.speedMultiplier,points:stats.points,radius:stats.radius,angle:Math.atan2(p.y-y,p.x-x),turret:0,cooldown:stats.initialCooldown+Math.random()*stats.initialRandom,charge:0,hit:0,seed:Math.random()*TAU});
 }
 function burst(x,y,color,count=10,force=1,smoke=false){
   const limit=settings.effects?650:180,amount=settings.effects?count:Math.ceil(count*.45);
@@ -149,10 +148,12 @@ function hitEnemy(e,damage){
     g.kills++;g.combo=g.comboTimer>0?g.combo+1:1;g.comboTimer=4;
     const multiplier=Math.min(5,1+Math.floor(g.combo/3)),points=e.points*multiplier;g.score+=points;
     float(`+${points}${multiplier>1?' ×'+multiplier:''}`,e.x,e.y-35,'#e0efa6',multiplier>1);
-    explosion(e.x,e.y,e.type==='boss'?155:e.type==='drone'?40:72);
-    if(e.type==='tank'||e.type==='artillery')g.wreckSmoke.push({x:e.x,y:e.y,life:8,timer:0});
+    const stats=ENEMIES[e.type];
+    explosion(e.x,e.y,stats.deathExplosion);
+    if(e.type==='kamikaze'&&distance(e,g.player)<stats.explosionRadius+17)damagePlayer(stats.projectileDamage);
+    if(!['drone','kamikaze','boss'].includes(e.type))g.wreckSmoke.push({x:e.x,y:e.y,life:8,timer:0});
     if(e.type==='boss')sound.setMusicScene('waves');
-    if(e.type!=='drone'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
+    if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
     if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
   }else sound.play('hit',e.x/g.world.width*2-1);
 }
@@ -170,10 +171,21 @@ function detonate(b){
   g.bullets.forEach(other=>{if(!other.friendly&&distance(other,b)<135)other.life=0;});
 }
 function fireEnemy(e){
-  const a=e.turret,p=g.player,kind=e.type;
-  const offsets=kind==='boss'?[-.3,-.15,0,.15,.3]:kind==='artillery'?[-.12,0,.12]:[0];
-  for(const offset of offsets){const angle=a+offset,speed=(kind==='drone'?255:205)+Math.min(g.wave*3,50);g.bullets.push({x:e.x+Math.cos(a)*30,y:e.y+Math.sin(a)*30,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:6,friendly:false,kind:'shell',damage:kind==='boss'?18:kind==='artillery'?16:11});}
-  e.cooldown=(kind==='boss'?1.6:kind==='drone'?2.2:3.1)-Math.min(g.wave*.065,.8)+Math.random()*.7;
+  const a=e.turret,p=g.player,kind=e.type,stats=ENEMIES[kind];
+  if(kind==='aa'){
+    if(!e.burstRemaining)e.burstRemaining=stats.shotCount;
+    const angle=Math.random()*TAU,range=e.burstRemaining===stats.shotCount?0:Math.sqrt(Math.random())*stats.warningSpread;
+    g.warnings.push({x:clamp(p.x+Math.cos(angle)*range,0,g.world.width),y:clamp(p.y+Math.sin(angle)*range,0,g.world.height),life:stats.warningDelay,radius:stats.explosionRadius,damage:stats.projectileDamage});
+    e.burstRemaining--;
+    e.cooldown=e.burstRemaining?stats.burstInterval:stats.fireInterval+Math.random()*stats.fireRandom;
+  }else{
+    for(let i=0;i<stats.shotCount;i++){
+      const angle=a+(i-(stats.shotCount-1)/2)*stats.spread,speed=stats.projectileSpeed+Math.min(g.wave*stats.projectileSpeedPerWave,stats.projectileSpeedCap);
+      g.bullets.push({x:e.x+Math.cos(a)*30,y:e.y+Math.sin(a)*30,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:stats.projectileLife,friendly:false,kind:kind==='rocketSemi'?'enemyRocket':'shell',damage:stats.projectileDamage,turn:stats.rocketTurn,acceleration:stats.rocketAcceleration,maxSpeed:stats.rocketMaxSpeed,trail:0});
+    }
+    const multiplier=kind==='rocketSemi'?stats[`${settings.difficulty}Interval`]:1;
+    e.cooldown=(stats.fireInterval-Math.min(g.wave*stats.fireWaveReduction,stats.fireWaveReductionCap)+Math.random()*stats.fireRandom)*multiplier;
+  }
   burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play('enemy');
 }
 function update(dt){
@@ -199,20 +211,20 @@ function update(dt){
   if(g.spawnRemaining>0){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy();g.spawnRemaining--;g.spawnTimer=g.plan.interval;}}
   for(const e of g.enemies){
     if(e.health<=0)continue;e.hit=Math.max(0,e.hit-dt);
-    const a=Math.atan2(p.y-e.y,p.x-e.x),d=distance(e,p),stop=e.type==='artillery'?380:e.type==='boss'?280:e.type==='drone'?175:235;
+    const stats=ENEMIES[e.type],a=Math.atan2(p.y-e.y,p.x-e.x),d=distance(e,p),stop=stats.stopDistance;
     let vx=0,vy=0;
     if(d>stop){vx=Math.cos(a)*e.speed;vy=Math.sin(a)*e.speed;}
-    if(e.type==='drone'){vx+=Math.cos(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*75;vy+=Math.sin(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*75;}
+    if(stats.strafeSpeed){vx+=Math.cos(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*stats.strafeSpeed;vy+=Math.sin(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*stats.strafeSpeed;}
     // Gentle separation keeps armor from stacking into one unreadable target.
     for(const other of g.enemies){if(e===other||other.health<=0)continue;const dist=distance(e,other),min=e.radius+other.radius+9;if(dist>0&&dist<min){vx+=(e.x-other.x)/dist*(min-dist)*1.5;vy+=(e.y-other.y)/dist*(min-dist)*1.5;}}
-    e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*3);
-    if(e.type!=='drone'){
+    e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*stats.turnRate);
+    if(e.type!=='drone'&&e.type!=='kamikaze'){
       const direction=vx*Math.cos(e.angle)+vy*Math.sin(e.angle)<0?-1:1;
       e.trackPhase=((e.trackPhase||0)-direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
     }
-    e.turret=turn(e.turret,a,dt*(e.type==='boss'?1.2:2.5));e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
-    if(e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
-    if(d<e.radius+22)damagePlayer(e.type==='boss'?25:15);
+    e.turret=turn(e.turret,a,dt*stats.turretRate);e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
+    if(e.type!=='kamikaze'&&e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
+    if(distance(e,p)<e.radius+22){if(e.type==='kamikaze')hitEnemy(e,e.health);else damagePlayer(stats.contactDamage);}
     if(g.state!=='playing')return;
   }
   for(const b of g.bullets){
@@ -222,6 +234,11 @@ function update(dt){
       if(b.target?.health<=0)b.target=g.enemies.find(e=>e.health>0)||null;
       const speed=Math.min(820,Math.hypot(b.vx,b.vy)+2400*dt);
       const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*5):Math.atan2(b.vy,b.vx);
+      b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
+      b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
+    }else if(b.kind==='enemyRocket'){
+      const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*dt);
+      const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(p.y-b.y,p.x-b.x),dt*b.turn);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }
@@ -235,13 +252,18 @@ function update(dt){
     if(b.x < -90 || b.x > W+90 || b.y < -90 || b.y > H+90)b.life=0;
   }
   g.bullets=g.bullets.filter(b=>b.life>0);g.enemies=g.enemies.filter(e=>e.health>0);
+  for(const warning of g.warnings){
+    warning.life-=dt;
+    if(warning.life<=0){explosion(warning.x,warning.y,warning.radius);if(distance(warning,p)<warning.radius+17)damagePlayer(warning.damage);if(g.state!=='playing')return;}
+  }
+  g.warnings=g.warnings.filter(warning=>warning.life>0);
   g.pickups=g.pickups.filter(item=>{
     item.life-=dt;const d=distance(item,p);
     if(d<90&&p.health<p.maxHealth){item.x+=(p.x-item.x)*dt*4;item.y+=(p.y-item.y)*dt*4;}
     if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float('+30 ONARIM',p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
     return item.life>0;
   });
-  if(!g.spawnRemaining&&!g.enemies.length){
+  if(!g.spawnRemaining&&!g.enemies.length&&!g.warnings.length){
     if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(`DALGA TAMAMLANDI +${g.wave*100}`,p.x,p.y-65,'#e5f1ac',true);}
     else{g.waveWait-=dt;if(g.waveWait<=0){showUpgrades();return;}}
   }
