@@ -150,7 +150,7 @@ export class SoundEngine {
     const beat = this.step % 16, root = score.notes[Math.floor(this.step / 4) % score.notes.length];
     if (beat % 4 === 0) this.tone(root, root * 0.98, score.tempo * 1.8, this.musicScene === 'boss' ? 0.22 : 0.16, score.type, this.music);
     if (beat % 2 === 0) {
-      const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2) % 4]);
+      const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2)]);
       this.tone(melody, melody, score.tempo * 0.8, this.musicScene === 'menu' ? 0.035 : 0.07, 'triangle', this.music);
     }
     if (beat === 0 && this.musicScene !== 'menu') this.tone(this.musicScene === 'boss' ? 38 : 45, 28, 0.16, 0.22, 'sine', this.music);

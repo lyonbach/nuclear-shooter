@@ -16,8 +16,6 @@ Open http://localhost:8080.
 
 No dependency installation or API keys are needed. All visuals are rendered in Canvas. Music and effects use Web Audio; the game has synthesized music scores when custom tracks are not present. The Turkish interface scales to desktop, tablet, and phone screens.
 
-The battlefield uses a pixel-art rendering style: the world is drawn to a lower-resolution canvas and enlarged without smoothing, while controls and text remain at display resolution.
-
 ## Controls
 
 | Action | Desktop | Touch |
