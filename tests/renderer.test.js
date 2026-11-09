@@ -36,3 +36,26 @@ test('tank tread marks visibly shift with track phase',()=>{
   assert.notDeepEqual(treads(stationary),treads(moving));
   for(const [x,,width] of treads(moving))assert.ok(x>=-23&&x+width<=20);
 });
+
+test('scene is rendered at low resolution and scaled without smoothing at desktop and mobile sizes',()=>{
+  const previousDocument=globalThis.document,previousWindow=globalThis.window;
+  const display=context(),canvas={getContext:()=>display};
+  globalThis.document={createElement:()=>({getContext:()=>context()})};
+  globalThis.window={devicePixelRatio:2};
+  try{
+    for(const [rect,effects] of [[{width:1200,height:675},true],[{width:360,height:480},false]]){
+      const renderer=new Renderer(canvas,{effects,shake:false});
+      renderer.setMap=()=>{};
+      const world={width:1200,height:1200*rect.height/rect.width};
+      renderer.resize(world,rect,{});
+      assert.equal(renderer.scene.width,Math.max(256,Math.round(rect.width/3)));
+      const g={world,camera:{x:0,y:0,zoom:1},visualTime:0,shake:0,state:'paused',decals:[],pickups:[],enemies:[],bullets:[],particles:[],explosions:[],floaters:[],player:{health:0}};
+      renderer.draw(g,0);
+      assert.equal(display.imageSmoothingEnabled,false);
+      assert.deepEqual(display.calls.at(-1),{name:'drawImage',args:[renderer.scene,0,0,canvas.width,canvas.height],fillStyle:''});
+    }
+  }finally{
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
+    if(previousWindow===undefined)delete globalThis.window;else globalThis.window=previousWindow;
+  }
+});
