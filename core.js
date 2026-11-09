@@ -1,5 +1,7 @@
 import { ENEMY_DATA } from './enemy-data.js';
+import { WEAPON_DATA } from './weapon-data.js';
 export const ENEMIES = ENEMY_DATA;
+export const WEAPONS = WEAPON_DATA;
 export const TAU = Math.PI * 2;
 export const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);

@@ -31,9 +31,32 @@ if(!enemies.aa.warningDelay||!enemies.aa.explosionRadius||!enemies.aa.burstInter
   !enemies.kamikaze.explosionRadius||!enemies.rocketSemi.projectileLife||!enemies.rocketSemi.rocketMaxSpeed||
   !enemies.rocketSemi.easyInterval||!enemies.rocketSemi.normalInterval||!enemies.rocketSemi.hardInterval)
   throw new Error('Invalid special enemy configuration');
+const wcsv=(await readFile(new URL('weapons.csv',root),'utf8')).trim().split(/\r?\n/);
+const wcolumns=wcsv.shift().split(',');
+const wexpected='weapon,damage,damagePerUpgrade,speed,life,cooldown,cooldownUpgradeFactor,spread,muzzleTime,heatPerShot,coolTime,launchSpeed,maxSpeed,acceleration,turnRate,launchCooldown,rechargeTime,rechargeUpgradeFactor';
+if(wcolumns.join(',')!==wexpected)throw new Error('Invalid weapons.csv header');
+const weapons={};
+for(const line of wcsv){
+  const cells=line.split(',');
+  if(cells.length!==wcolumns.length)throw new Error(`Invalid weapon row: ${line}`);
+  const [name,...values]=cells;
+  if(!['gun','rocket'].includes(name)||weapons[name])throw new Error(`Invalid or duplicate weapon: ${name}`);
+  const stats={};
+  for(let i=1;i<wcolumns.length;i++){
+    const value=Number(values[i-1]);
+    if(values[i-1].trim()===''||!Number.isFinite(value)||value<0)throw new Error(`Invalid ${wcolumns[i]} for ${name}`);
+    stats[wcolumns[i]]=value;
+  }
+  weapons[name]=stats;
+}
+if(!weapons.gun||!weapons.rocket)throw new Error('Missing weapon in weapons.csv');
+if(!weapons.gun.speed||!weapons.gun.life||!weapons.gun.cooldown||!weapons.gun.heatPerShot||!weapons.gun.coolTime||
+  !weapons.rocket.life||!weapons.rocket.maxSpeed||!weapons.rocket.rechargeTime||!weapons.rocket.rechargeUpgradeFactor||!weapons.gun.cooldownUpgradeFactor)
+  throw new Error('Invalid weapon configuration');
+await writeFile(new URL('weapon-data.js',root),`// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons,null,2)};\n`);
 const data=`// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies,null,2)};\n`;
 await writeFile(new URL('enemy-data.js',root),data);
-const files=['enemy-data.js','core.js','audio.js','renderer.js','game.js'];
+const files=['enemy-data.js','weapon-data.js','core.js','audio.js','renderer.js','game.js'];
 const modules=[];
 for(const file of files){
   const source=(await readFile(new URL(file,root),'utf8'))
