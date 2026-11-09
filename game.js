@@ -1,4 +1,4 @@
-import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES } from './core.js';
+import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES, WEAPONS } from './core.js';
 import { SoundEngine } from './audio.js';
 import { Renderer } from './renderer.js';
 
@@ -106,20 +106,21 @@ function explosion(x,y,size=75){
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
 function gun(){
-  const p=g.player,a=p.angle+(Math.random()-.5)*.024,speed=980;
-  g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:1.6,friendly:true,damage:1+(upgrades.damage||0)*.25,kind:'gun'});
-  p.cooldown=.13*Math.pow(.82,upgrades.fireRate||0);p.muzzle=.045;
-  p.heat=Math.min(1,p.heat+.09);
+  const p=g.player,w=WEAPONS.gun,a=p.angle+(Math.random()-.5)*w.spread,speed=w.speed;
+  g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'gun'});
+  p.cooldown=w.cooldown*Math.pow(w.cooldownUpgradeFactor,upgrades.fireRate||0);p.muzzle=w.muzzleTime;
+  p.heat=Math.min(1,p.heat+w.heatPerShot);
   if(p.heat>=1){p.overheated=true;float('TOP AŞIRI ISINDI',p.x,p.y-55,'#ffb586',true);}
   sound.play('shot',p.x/g.world.width*1.4-.7);
 }
+const rocketRecharge=()=>WEAPONS.rocket.rechargeTime*Math.pow(WEAPONS.rocket.rechargeUpgradeFactor,upgrades.rockets||0);
 function launchRocket(){
-  const p=g.player;if(g.state!=='playing'||!p.rockets||p.rocketCooldown>0)return;
+  const p=g.player,w=WEAPONS.rocket;if(g.state!=='playing'||!p.rockets||p.rocketCooldown>0)return;
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
   const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.angle;
-  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*100,vy:Math.sin(a)*100,life:3,friendly:true,damage:18+(upgrades.damage||0)*3,kind:'rocket',target,trail:0});
-  p.rockets--;p.rocketCooldown=.45;sound.play('rocket');updateHud();
+  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0});
+  p.rockets--;p.rocketCooldown=w.launchCooldown;sound.play('rocket');updateHud();
 }
 function dash(){
   const p=g.player;if(g.state!=='playing'||p.dashCooldown>0)return;
@@ -205,9 +206,9 @@ function update(dt){
   p.bank+=(clamp(lateral/270,-1,1)*.3-p.bank)*tiltResponse;
   p.pitch+=(clamp(forward/270,-1,1)*.2-p.pitch)*tiltResponse;
   const firing=pointer.down||keys.has('Space');
-  if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/3);if(p.overheated&&p.heat===0)p.overheated=false;}
+  if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/WEAPONS.gun.coolTime);if(p.overheated&&p.heat===0)p.overheated=false;}
   if(firing&&!p.overheated&&p.cooldown<=0)gun();
-  if(p.rockets<p.maxRockets){p.rocketTimer+=dt;const delay=7*Math.pow(.8,upgrades.rockets||0);if(p.rocketTimer>=delay){p.rockets++;p.rocketTimer=0;}}else p.rocketTimer=0;
+  if(p.rockets<p.maxRockets){p.rocketTimer+=dt;const delay=rocketRecharge();if(p.rocketTimer>=delay){p.rockets++;p.rocketTimer=0;}}else p.rocketTimer=0;
   if(g.spawnRemaining>0){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy();g.spawnRemaining--;g.spawnTimer=g.plan.interval;}}
   for(const e of g.enemies){
     if(e.health<=0)continue;e.hit=Math.max(0,e.hit-dt);
@@ -232,8 +233,8 @@ function update(dt){
     const ox=b.x,oy=b.y;
     if(b.kind==='rocket'){
       if(b.target?.health<=0)b.target=g.enemies.find(e=>e.health>0)||null;
-      const speed=Math.min(820,Math.hypot(b.vx,b.vy)+2400*dt);
-      const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*5):Math.atan2(b.vy,b.vx);
+      const speed=Math.min(WEAPONS.rocket.maxSpeed,Math.hypot(b.vx,b.vy)+WEAPONS.rocket.acceleration*dt);
+      const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*WEAPONS.rocket.turnRate):Math.atan2(b.vy,b.vx);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }else if(b.kind==='enemyRocket'){
@@ -300,7 +301,7 @@ function updateHud(){
   $('dash-fill').style.width=`${(1-p.dashCooldown/(3.5*Math.pow(.87,upgrades.engine||0)))*100}%`;
   $('dash-ability').classList.toggle('cooldown',p.dashCooldown>0);
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
-  $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/(7*Math.pow(.8,upgrades.rockets||0))*100}%`;
+  $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/rocketRecharge()*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
   $('heat-status').textContent=p.overheated?'SOĞUYOR':`%${Math.round(p.heat*100)}`;
   $('heat-fill').style.width=`${p.heat*100}%`;

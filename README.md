@@ -54,6 +54,10 @@ Each row configures one enemy. Distances and speeds use game world units and wor
 
 Kamikazes pursue the player and explode on contact or destruction. AA guns mark each delayed impact with a flashing crosshair and circle. Rocket semis fire homing rockets.
 
+## Weapon tuning
+
+Edit `weapons.csv` the same way as `enemies.csv` and run `npm run build`; the build generates `weapon-data.js` and `blackout.js`. Keep the header and the `gun` and `rocket` rows unchanged. The machine gun heats by `heatPerShot` per shot (0.03, so about three times slower than before) and cools over `coolTime` seconds. Rockets use `launchSpeed`, `maxSpeed`, `acceleration`, `turnRate`, `launchCooldown`, and `rechargeTime`; `*PerUpgrade` and `*UpgradeFactor` columns scale with upgrades.
+
 ## Music tracks
 
 The soundtrack switches between menu, wave-combat, and boss music using the MP3 tracks in `sound/`. Missing or unsupported tracks fall back to the built-in synthesized scores. Music starts after the first user interaction and follows the music setting and master volume.
@@ -68,7 +72,7 @@ npm run check
 npm run build
 ```
 
-Rebuild `blackout.js` after editing `enemies.csv`, `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines the sheet and source modules into a browser script.
+Rebuild `blackout.js` after editing `enemies.csv`, `weapons.csv`, `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines the sheet and source modules into a browser script.
 
 The tests cover continuous projectile collision, wave scaling, sector rotation, aiming, camera tracking, terrain generation, movement and drift, gun overheating, rocket acceleration and damage, pause, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
 
