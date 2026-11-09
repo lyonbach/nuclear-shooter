@@ -350,6 +350,70 @@ const WEAPON_DATA = {
   }
 };
 
+// i18n.js
+const languages = {
+  tr: 'Türkçe',
+  en: 'English',
+  de: 'Deutsch',
+  es: 'Español',
+  fr: 'Français'
+};
+
+const translations = {
+  tr: {
+    online: 'SİSTEM ÇEVRİMİÇİ', mission: 'HAVA ÜSTÜNLÜĞÜ SENDE.', missionNote: 'Geri çekilmek bir seçenek değil.', connected: 'PİLOT BAĞLANTISI KURULDU',
+    introTitle: 'GECE SENİN. GÖKYÜZÜ SENİN.', introText: 'Düşman hattının gerisindesin. Helikopterini uçur, dalgaları durdur. Her sortide daha da güçlen.',
+    start: 'OPERASYONU BAŞLAT', objective: 'HEDEF: HAYATTA KAL / HER 5. DALGADA KOMUTAN', difficulty: 'Zorluk', easy: 'ÇAYLAK', normal: 'PİLOT', hard: 'AS',
+    language: 'Dil', settings: 'Ayarlar', sound: 'Ses', fullscreen: 'Tam ekran', ready: 'BEKLEMEDE', playing: 'AKTİF', paused: 'DURAKLATILDI',
+    menuMission: 'UÇUŞ İZNİ BEKLENİYOR', playingMission: 'ANGAJMAN SERBEST · HATTI KORU', pausedMission: 'OTOPİLOT DEVREDE',
+    over: 'SİNYAL KAYIP', overMission: 'OPERASYON SONLANDI', wave: 'DALGA', hostiles: 'DÜŞMAN KALDI', scanning: 'BÖLGE TARANIYOR',
+    flight: 'UÇUŞ', readyLabel: 'HAZIR', cooling: 'SOĞUYOR', languageChanged: 'Dil değiştirildi'
+  },
+  en: {
+    online: 'SYSTEM ONLINE', mission: 'AIR SUPERIORITY IS YOURS.', missionNote: 'Retreat is not an option.', connected: 'PILOT LINK ESTABLISHED',
+    introTitle: 'THE NIGHT IS YOURS. THE SKY IS YOURS.', introText: 'You are behind enemy lines. Fly your helicopter, stop the waves, and grow stronger every sortie.',
+    start: 'START OPERATION', objective: 'OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES', difficulty: 'Difficulty', easy: 'ROOKIE', normal: 'PILOT', hard: 'ACE',
+    language: 'Language', settings: 'Settings', sound: 'Sound', fullscreen: 'Fullscreen', ready: 'STANDBY', playing: 'ACTIVE', paused: 'PAUSED',
+    menuMission: 'AWAITING FLIGHT CLEARANCE', playingMission: 'ENGAGEMENT CLEARED · HOLD THE LINE', pausedMission: 'AUTOPILOT ENGAGED',
+    over: 'SIGNAL LOST', overMission: 'OPERATION ENDED', wave: 'WAVE', hostiles: 'HOSTILES REMAIN', scanning: 'SCANNING AREA',
+    flight: 'FLIGHT', readyLabel: 'READY', cooling: 'COOLING', languageChanged: 'Language changed'
+  },
+  de: {
+    online: 'SYSTEM ONLINE', mission: 'DIE LUFTHOHEIT GEHÖRT DIR.', missionNote: 'Rückzug ist keine Option.', connected: 'PILOTENVERBINDUNG HERGESTELLT',
+    introTitle: 'DIE NACHT GEHÖRT DIR. DER HIMMEL GEHÖRT DIR.', introText: 'Du bist hinter den feindlichen Linien. Fliege deinen Hubschrauber und halte die Wellen auf.',
+    start: 'OPERATION STARTEN', objective: 'ZIEL: ÜBERLEBEN / KOMMANDANT ALLE 5 WELLEN', difficulty: 'Schwierigkeit', easy: 'NEULING', normal: 'PILOT', hard: 'ASS',
+    language: 'Sprache', settings: 'Einstellungen', sound: 'Ton', fullscreen: 'Vollbild', ready: 'BEREIT', playing: 'AKTIV', paused: 'PAUSIERT',
+    menuMission: 'FLUGFREIGABE AUSSTEHEND', playingMission: 'EINSATZ FREIGEGEBEN · LINIE HALTEN', pausedMission: 'AUTOPILOT AKTIV',
+    over: 'SIGNAL VERLOREN', overMission: 'OPERATION BEENDET', wave: 'WELLE', hostiles: 'FEINDE VERBLEIBEN', scanning: 'GEBIET WIRD GESCANNT',
+    flight: 'FLUG', readyLabel: 'BEREIT', cooling: 'KÜHLT', languageChanged: 'Sprache geändert'
+  },
+  es: {
+    online: 'SISTEMA EN LÍNEA', mission: 'LA SUPERIORIDAD AÉREA ES TUYA.', missionNote: 'Retirarse no es una opción.', connected: 'ENLACE DE PILOTO ESTABLECIDO',
+    introTitle: 'LA NOCHE ES TUYA. EL CIELO ES TUYO.', introText: 'Estás tras las líneas enemigas. Pilota tu helicóptero y detén las oleadas.',
+    start: 'INICIAR OPERACIÓN', objective: 'OBJETIVO: SOBREVIVE / COMANDANTE CADA 5 OLEADAS', difficulty: 'Dificultad', easy: 'NOVATO', normal: 'PILOTO', hard: 'AS',
+    language: 'Idioma', settings: 'Ajustes', sound: 'Sonido', fullscreen: 'Pantalla completa', ready: 'EN ESPERA', playing: 'ACTIVO', paused: 'PAUSADO',
+    menuMission: 'ESPERANDO AUTORIZACIÓN DE VUELO', playingMission: 'COMBATE AUTORIZADO · MANTÉN LA LÍNEA', pausedMission: 'PILOTO AUTOMÁTICO ACTIVO',
+    over: 'SEÑAL PERDIDA', overMission: 'OPERACIÓN FINALIZADA', wave: 'OLEADA', hostiles: 'HOSTILES RESTANTES', scanning: 'ESCANEANDO ZONA',
+    flight: 'VUELO', readyLabel: 'LISTO', cooling: 'ENFRIANDO', languageChanged: 'Idioma cambiado'
+  },
+  fr: {
+    online: 'SYSTÈME EN LIGNE', mission: 'LA SUPÉRIORITÉ AÉRIENNE EST À VOUS.', missionNote: 'Se replier n’est pas une option.', connected: 'LIAISON PILOTE ÉTABLIE',
+    introTitle: 'LA NUIT EST À VOUS. LE CIEL EST À VOUS.', introText: 'Vous êtes derrière les lignes ennemies. Pilotez votre hélicoptère et arrêtez les vagues.',
+    start: 'LANCER L’OPÉRATION', objective: 'OBJECTIF : SURVIVRE / COMMANDANT TOUS LES 5 ASSAUTS', difficulty: 'Difficulté', easy: 'DÉBUTANT', normal: 'PILOTE', hard: 'AS',
+    language: 'Langue', settings: 'Paramètres', sound: 'Son', fullscreen: 'Plein écran', ready: 'EN ATTENTE', playing: 'ACTIF', paused: 'EN PAUSE',
+    menuMission: 'AUTORISATION DE VOL EN ATTENTE', playingMission: 'ENGAGEMENT AUTORISÉ · TENEZ LA LIGNE', pausedMission: 'PILOTE AUTOMATIQUE ACTIF',
+    over: 'SIGNAL PERDU', overMission: 'OPÉRATION TERMINÉE', wave: 'VAGUE', hostiles: 'HOSTILES RESTANTS', scanning: 'BALAYAGE DE ZONE',
+    flight: 'VOL', readyLabel: 'PRÊT', cooling: 'REFROIDISSEMENT', languageChanged: 'Langue modifiée'
+  }
+};
+
+let locale = 'tr';
+function setLocale(next) { locale = translations[next] ? next : 'tr'; }
+function t(key, values = {}) {
+  const text = translations[locale][key] ?? translations.tr[key] ?? key;
+  return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
+}
+
 // core.js
 const ENEMIES = ENEMY_DATA;
 const WEAPONS = WEAPON_DATA;
@@ -788,13 +852,15 @@ class Renderer {
 const $ = id => document.getElementById(id);
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
-const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal'};
+const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'tr'};
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
 const stored=read('blackout.settings',{});
 const settings={...defaults};
 for(const key of ['muted','music','shake','effects'])if(typeof stored?.[key]==='boolean')settings[key]=stored[key];
 if(typeof stored?.volume==='number')settings.volume=clamp(stored.volume,0,1);
 if(['easy','normal','hard'].includes(stored?.difficulty))settings.difficulty=stored.difficulty;
+if(languages[stored?.language])settings.language=stored.language;
+setLocale(settings.language);
 const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{/* Private mode can disable storage. */}};
 const saveSettings=()=>write('blackout.settings',settings);
 const sound=new SoundEngine(settings),renderer=new Renderer(canvas,settings);
@@ -810,6 +876,17 @@ let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,sett
 let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+function setText(selector,text){const element=document.querySelector?.(selector);if(!element)return;const node=[...element.childNodes].find(child=>child.nodeType===Node.TEXT_NODE&&child.nodeValue.trim());if(node)node.nodeValue=` ${text} `;else element.textContent=text;}
+function setPlainText(selector,text){const element=document.querySelector?.(selector);if(element)element.textContent=text;}
+function applyLanguage(){
+  setLocale(settings.language);document.documentElement.lang=settings.language;
+  const text={'.online':'online','.mission-meta span':'mission','.mission-meta p':'missionNote','.intro-kicker':'connected','#start':'start','.intro-note':'objective'};
+  Object.entries(text).forEach(([selector,key])=>setText(selector,t(key)));
+  setPlainText('#intro-panel h2',t('introTitle'));setPlainText('#intro-panel p',t('introText'));
+  document.querySelectorAll?.('[data-difficulty]').forEach(button=>setText(`[data-difficulty="${button.dataset.difficulty}"]`,t(button.dataset.difficulty)));
+  $('language').value=settings.language;$('language').setAttribute('aria-label',t('language'));
+  updateStateText();updateSettingsUI();updateHud();
+}
 
 function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
@@ -829,6 +906,10 @@ new ResizeObserver(resize).observe(arena);resize();
 function clearInput(){
   keys.clear();pointer.down=false;gamePointer=null;firePointer=null;joystick={x:0,y:0,id:null};$('joystick-knob').style.transform='';
 }
+function updateStateText(){
+  $('feed-status').textContent=t({ready:'ready',playing:'playing',paused:'paused',upgrade:'ready',over:'over'}[g.state]);
+  $('mission-status').textContent=t({ready:'menuMission',playing:'playingMission',paused:'pausedMission',upgrade:'playingMission',over:'overMission'}[g.state]);
+}
 function setState(state,panel){
   g.state=state;clearInput();overlay.hidden=!panel;
   panels.forEach(id=>$(id).hidden=id!==panel);
@@ -836,8 +917,7 @@ function setState(state,panel){
   $('bottom-hud').hidden=!['playing','ready'].includes(state);
   arena.classList.toggle('playing',state==='playing');
   sound.setActive(state==='playing');
-  $('feed-status').textContent={ready:'BEKLEMEDE',playing:'AKTİF',paused:'DURAKLATILDI',upgrade:'İKMAL',over:'SİNYAL KAYIP'}[state];
-  $('mission-status').textContent={ready:'UÇUŞ İZNİ BEKLENİYOR',playing:'ANGAJMAN SERBEST · HATTI KORU',paused:'OTOPİLOT DEVREDE',upgrade:'SAHA İKMALİ · GELİŞTİRME SEÇ',over:'OPERASYON SONLANDI'}[state];
+  updateStateText();
   if(state==='ready'||state==='over')sound.setMusicScene('menu');
 }
 function focusPanel(id){requestAnimationFrame(()=>$(id).focus({preventScroll:true}));}
@@ -861,7 +941,7 @@ function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
   g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
   $('sector-name').textContent=g.map.name;
-  $('wave').innerHTML=`DALGA <b>${pad(g.wave,2)}</b>`;
+  $('wave').innerHTML=`${t('wave')} <b>${pad(g.wave,2)}</b>`;
   announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
@@ -1079,15 +1159,15 @@ function updateHud(){
   $('health').textContent=percent;$('health-fill').style.width=`${percent}%`;$('health-fill').style.background=percent<=25?'#ee9b6b':'#dbea9b';
   $('hull-status').textContent=percent<=25?'KRİTİK':percent<=60?'HASARLI':'SAĞLAM';$('hull-status').style.color=percent<=25?'#ee9b6b':'';
   $('score').textContent=pad(g.score);$('best').textContent=pad(Math.max(g.best,g.score));
-  $('hostiles').textContent=g.state==='ready'?'BÖLGE TARANIYOR':`${g.enemies.length+g.spawnRemaining} DÜŞMAN KALDI`;
-  $('flight-time').textContent=`UÇUŞ ${clock(g.time)}`;
-  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} sn`:'HAZIR';
+  $('hostiles').textContent=g.state==='ready'?t('scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hostiles')}`;
+  $('flight-time').textContent=`${t('flight')} ${clock(g.time)}`;
+  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s` :t('readyLabel');
   $('dash-fill').style.width=`${(1-p.dashCooldown/(3.5*Math.pow(.87,upgrades.engine||0)))*100}%`;
   $('dash-ability').classList.toggle('cooldown',p.dashCooldown>0);
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
   $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/rocketRecharge()*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
-  $('heat-status').textContent=p.overheated?'SOĞUYOR':`%${Math.round(p.heat*100)}`;
+  $('heat-status').textContent=p.overheated?t('cooling'):`%${Math.round(p.heat*100)}`;
   $('heat-fill').style.width=`${p.heat*100}%`;
   $('heat-ability').classList.toggle('overheated',p.overheated);
   $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
@@ -1147,6 +1227,7 @@ $('fullscreen').addEventListener('click',async()=>{
 });
 $('fullscreen-exit').addEventListener('click',()=>document.exitFullscreen());
 if(!document.fullscreenEnabled)$('fullscreen').hidden=true;
+$('language').addEventListener('change',event=>{settings.language=event.target.value;saveSettings();applyLanguage();});
 document.addEventListener('pointerdown',activateMenuMusic,{once:true});
 document.addEventListener('keydown',activateMenuMusic,{once:true});
 document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>{settings.difficulty=button.dataset.difficulty;saveSettings();updateSettingsUI();sound.init();sound.play('ui');}));
@@ -1196,6 +1277,6 @@ function frame(time){
   }
   requestAnimationFrame(frame);
 }
-updateSettingsUI();updateHud();requestAnimationFrame(frame);
+applyLanguage();requestAnimationFrame(frame);
 
 })();
