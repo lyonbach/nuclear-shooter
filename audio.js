@@ -90,10 +90,12 @@ export class SoundEngine {
     this.musicTrack = track;
     try { track.audio.currentTime = 0; } catch { /* Metadata may not be ready yet. */ }
     track.audio.play().then(() => {
-      if (this.musicTrack !== track) { track.audio.pause(); return; }
       this.trackStates.set(track.scene, { status: 'ready', track });
+      if (this.musicTrack !== track) { track.audio.pause(); return; }
       track.gain.gain.setTargetAtTime(1, this.ctx.currentTime, 0.35);
-    }).catch(() => {
+    }).catch(error => {
+      // Switching scenes pauses a pending play(); that is not a load failure.
+      if (error?.name === 'AbortError') { this.trackStates.set(track.scene, { status: 'ready', track }); return; }
       this.trackStates.set(track.scene, { status: 'failed' });
       if (this.musicTrack === track) this.musicTrack = null;
       track.audio.pause();

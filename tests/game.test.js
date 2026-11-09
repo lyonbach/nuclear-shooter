@@ -6,7 +6,7 @@ import * as core from '../core.js';
 // Run the actual game module against a small browser adapter. Rendering and
 // sound are replaced; combat, input, progression, and persistence are unchanged.
 function createGame(reducedMotion=false) {
-  const elements=new Map(),storage=new Map(),windowEvents=new Map();
+  const elements=new Map(),storage=new Map(),windowEvents=new Map(),documentEvents=new Map();
   class Element {
     constructor(){this.hidden=false;this.style={};this.dataset={};this.children=[];this.value=60;this.checked=true;this.listeners={};this.classList={add(){},remove(){},toggle(){}};}
     addEventListener(name,fn){(this.listeners[name]??=[]).push(fn);}
@@ -17,15 +17,15 @@ function createGame(reducedMotion=false) {
     get firstElementChild(){return this.children[0];}
     showModal(){this.open=true;} close(){this.open=false;}
   }
-  const document={hidden:false,fullscreenEnabled:false,getElementById:id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},querySelectorAll:()=>[],createElement:()=>new Element(),addEventListener(){}};
+  const document={hidden:false,fullscreenEnabled:false,getElementById:id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},querySelectorAll:()=>[],createElement:()=>new Element(),addEventListener:(event,fn)=>documentEvents.set(event,fn)};
   const window={addEventListener:(event,fn)=>windowEvents.set(event,fn)};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
-  class Audio{constructor(){this.scene='menu';}async init(){} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
+  class Audio{constructor(){this.scene='menu';this.initializations=0;}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
   const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core));
-  return{...game,elements,storage,windowEvents,sound:game.sound};
+  return{...game,elements,storage,windowEvents,documentEvents,sound:game.sound};
 }
 function enemy(overrides={}){return{x:600,y:300,type:'tank',health:4,maxHealth:4,speed:0,points:110,radius:25,angle:0,turret:0,cooldown:10,charge:0,hit:0,seed:0,...overrides};}
 
@@ -177,6 +177,12 @@ test('music follows menu, wave, and boss transitions',async()=>{
   assert.equal(game.sound.scene,'waves');
   game.g.player.invulnerable=0;game.damagePlayer(1000);
   assert.equal(game.sound.scene,'menu');
+});
+test('first main-menu interaction initializes its soundtrack',async()=>{
+  const game=createGame();
+  game.documentEvents.get('pointerdown')();
+  await Promise.resolve();
+  assert.equal(game.sound.initializations,1);
 });
 test('helicopter coasts after release and eventually stops without crossing the boundary',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
