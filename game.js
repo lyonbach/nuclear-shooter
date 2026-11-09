@@ -1,17 +1,20 @@
 import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES, WEAPONS } from './core.js';
 import { SoundEngine } from './audio.js';
 import { Renderer } from './renderer.js';
+import { languages, setLocale, t } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
-const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal'};
+const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'tr'};
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
 const stored=read('blackout.settings',{});
 const settings={...defaults};
 for(const key of ['muted','music','shake','effects'])if(typeof stored?.[key]==='boolean')settings[key]=stored[key];
 if(typeof stored?.volume==='number')settings.volume=clamp(stored.volume,0,1);
 if(['easy','normal','hard'].includes(stored?.difficulty))settings.difficulty=stored.difficulty;
+if(languages[stored?.language])settings.language=stored.language;
+setLocale(settings.language);
 const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{/* Private mode can disable storage. */}};
 const saveSettings=()=>write('blackout.settings',settings);
 const sound=new SoundEngine(settings),renderer=new Renderer(canvas,settings);
@@ -27,6 +30,17 @@ let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,sett
 let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+function setText(selector,text){const element=document.querySelector?.(selector);if(!element)return;const node=[...element.childNodes].find(child=>child.nodeType===Node.TEXT_NODE&&child.nodeValue.trim());if(node)node.nodeValue=` ${text} `;else element.textContent=text;}
+function setPlainText(selector,text){const element=document.querySelector?.(selector);if(element)element.textContent=text;}
+function applyLanguage(){
+  setLocale(settings.language);document.documentElement.lang=settings.language;
+  const text={'.online':'online','.mission-meta span':'mission','.mission-meta p':'missionNote','.intro-kicker':'connected','#start':'start','.intro-note':'objective'};
+  Object.entries(text).forEach(([selector,key])=>setText(selector,t(key)));
+  setPlainText('#intro-panel h2',t('introTitle'));setPlainText('#intro-panel p',t('introText'));
+  document.querySelectorAll?.('[data-difficulty]').forEach(button=>setText(`[data-difficulty="${button.dataset.difficulty}"]`,t(button.dataset.difficulty)));
+  $('language').value=settings.language;$('language').setAttribute('aria-label',t('language'));
+  updateStateText();updateSettingsUI();updateHud();
+}
 
 function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
@@ -46,6 +60,10 @@ new ResizeObserver(resize).observe(arena);resize();
 function clearInput(){
   keys.clear();pointer.down=false;gamePointer=null;firePointer=null;joystick={x:0,y:0,id:null};$('joystick-knob').style.transform='';
 }
+function updateStateText(){
+  $('feed-status').textContent=t({ready:'ready',playing:'playing',paused:'paused',upgrade:'ready',over:'over'}[g.state]);
+  $('mission-status').textContent=t({ready:'menuMission',playing:'playingMission',paused:'pausedMission',upgrade:'playingMission',over:'overMission'}[g.state]);
+}
 function setState(state,panel){
   g.state=state;clearInput();overlay.hidden=!panel;
   panels.forEach(id=>$(id).hidden=id!==panel);
@@ -53,8 +71,7 @@ function setState(state,panel){
   $('bottom-hud').hidden=!['playing','ready'].includes(state);
   arena.classList.toggle('playing',state==='playing');
   sound.setActive(state==='playing');
-  $('feed-status').textContent={ready:'BEKLEMEDE',playing:'AKTİF',paused:'DURAKLATILDI',upgrade:'İKMAL',over:'SİNYAL KAYIP'}[state];
-  $('mission-status').textContent={ready:'UÇUŞ İZNİ BEKLENİYOR',playing:'ANGAJMAN SERBEST · HATTI KORU',paused:'OTOPİLOT DEVREDE',upgrade:'SAHA İKMALİ · GELİŞTİRME SEÇ',over:'OPERASYON SONLANDI'}[state];
+  updateStateText();
   if(state==='ready'||state==='over')sound.setMusicScene('menu');
 }
 function focusPanel(id){requestAnimationFrame(()=>$(id).focus({preventScroll:true}));}
@@ -78,7 +95,7 @@ function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
   g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
   $('sector-name').textContent=g.map.name;
-  $('wave').innerHTML=`DALGA <b>${pad(g.wave,2)}</b>`;
+  $('wave').innerHTML=`${t('wave')} <b>${pad(g.wave,2)}</b>`;
   announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
@@ -296,15 +313,15 @@ function updateHud(){
   $('health').textContent=percent;$('health-fill').style.width=`${percent}%`;$('health-fill').style.background=percent<=25?'#ee9b6b':'#dbea9b';
   $('hull-status').textContent=percent<=25?'KRİTİK':percent<=60?'HASARLI':'SAĞLAM';$('hull-status').style.color=percent<=25?'#ee9b6b':'';
   $('score').textContent=pad(g.score);$('best').textContent=pad(Math.max(g.best,g.score));
-  $('hostiles').textContent=g.state==='ready'?'BÖLGE TARANIYOR':`${g.enemies.length+g.spawnRemaining} DÜŞMAN KALDI`;
-  $('flight-time').textContent=`UÇUŞ ${clock(g.time)}`;
-  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} sn`:'HAZIR';
+  $('hostiles').textContent=g.state==='ready'?t('scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hostiles')}`;
+  $('flight-time').textContent=`${t('flight')} ${clock(g.time)}`;
+  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s` :t('readyLabel');
   $('dash-fill').style.width=`${(1-p.dashCooldown/(3.5*Math.pow(.87,upgrades.engine||0)))*100}%`;
   $('dash-ability').classList.toggle('cooldown',p.dashCooldown>0);
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
   $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/rocketRecharge()*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
-  $('heat-status').textContent=p.overheated?'SOĞUYOR':`%${Math.round(p.heat*100)}`;
+  $('heat-status').textContent=p.overheated?t('cooling'):`%${Math.round(p.heat*100)}`;
   $('heat-fill').style.width=`${p.heat*100}%`;
   $('heat-ability').classList.toggle('overheated',p.overheated);
   $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
@@ -364,6 +381,7 @@ $('fullscreen').addEventListener('click',async()=>{
 });
 $('fullscreen-exit').addEventListener('click',()=>document.exitFullscreen());
 if(!document.fullscreenEnabled)$('fullscreen').hidden=true;
+$('language').addEventListener('change',event=>{settings.language=event.target.value;saveSettings();applyLanguage();});
 document.addEventListener('pointerdown',activateMenuMusic,{once:true});
 document.addEventListener('keydown',activateMenuMusic,{once:true});
 document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>{settings.difficulty=button.dataset.difficulty;saveSettings();updateSettingsUI();sound.init();sound.play('ui');}));
@@ -413,4 +431,4 @@ function frame(time){
   }
   requestAnimationFrame(frame);
 }
-updateSettingsUI();updateHud();requestAnimationFrame(frame);
+applyLanguage();requestAnimationFrame(frame);
