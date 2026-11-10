@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111511">
-  <meta name="description" content="Nuclear Shooter: Blackout. Helikopterini uçur, düşman dalgalarını durdur, her sortide güçlen. Ücretsiz taktik hava savaşı.">
+  <meta name="description" content="Nuclear Shooter: Blackout. Fly your helicopter, stop enemy waves, and grow stronger every sortie. Free tactical air combat.">
   <title>Nuclear Shooter — Blackout</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111511'/%3E%3Cpath d='M32 7 55 47H9Z' fill='none' stroke='%23d9eb90' stroke-width='5'/%3E%3Ccircle cx='32' cy='35' r='6' fill='%23d9eb90'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
@@ -20,63 +20,63 @@
   </defs></svg>
   <main class="shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Nuclear Shooter ana sayfa"><svg><use href="#i-mark"/></svg><span>NUCLEAR<span class="brand-light">SHOOTER</span><small>TACTICAL AIR COMBAT</small></span></a>
-      <nav aria-label="Oyun araçları">
-        <span class="online"><i></i> SİSTEM ÇEVRİMİÇİ</span><select id="language" class="language-select" aria-label="Dil"><option value="tr">TR</option><option value="en">EN</option><option value="de">DE</option><option value="es">ES</option><option value="fr">FR</option></select>
-        <button class="icon-button" id="sound-toggle" aria-label="Sesi kapat" aria-pressed="false" title="Ses (M)"><svg><use href="#i-volume"/></svg></button>
-        <button class="icon-button" id="settings-open" aria-label="Ayarlar" title="Ayarlar"><svg><use href="#i-settings"/></svg></button>
-        <button class="icon-button" id="fullscreen" aria-label="Tam ekran" title="Tam ekran"><svg><use href="#i-expand"/></svg></button>
+      <a class="brand" href="./" aria-label="Nuclear Shooter home"><svg><use href="#i-mark"/></svg><span>NUCLEAR<span class="brand-light">SHOOTER</span><small>TACTICAL AIR COMBAT</small></span></a>
+      <nav aria-label="Game controls">
+        <span class="online"><i></i> <span data-i18n="nav.online">SYSTEM ONLINE</span></span><select id="language" class="language-select" aria-label="Language"><option value="en">EN</option><option value="tr">TR</option><option value="de">DE</option><option value="es">ES</option><option value="fr">FR</option></select>
+        <button class="icon-button" id="sound-toggle" aria-label="Turn sound off" data-i18n-aria="nav.soundOff" aria-pressed="false" title="Turn sound off (M)"><svg><use href="#i-volume"/></svg></button>
+        <button class="icon-button" id="settings-open" aria-label="Settings" title="Settings"><svg><use href="#i-settings"/></svg></button>
+        <button class="icon-button" id="fullscreen" aria-label="Fullscreen" title="Fullscreen"><svg><use href="#i-expand"/></svg></button>
       </nav>
     </header>
     <section class="mission-heading" aria-labelledby="mission-title">
-      <div><div class="eyebrow"><span>OPERASYON 001</span><b>/</b> SEKTÖR 07</div><h1 id="mission-title">BLACKOUT<span>PROTOCOL</span><span class="title-dot">.</span></h1></div>
-      <div class="mission-meta"><span>HAVA ÜSTÜNLÜĞÜ SENDE.</span><p>Geri çekilmek bir seçenek değil.</p></div>
+      <div><div class="eyebrow"><span data-i18n="mission.tag">OPERATION 001</span><b>/</b> <span data-i18n="mission.sector">SECTOR 07</span></div><h1 id="mission-title">BLACKOUT<span>PROTOCOL</span><span class="title-dot">.</span></h1></div>
+      <div class="mission-meta"><span data-i18n="mission.heading">AIR SUPERIORITY IS YOURS.</span><p data-i18n="mission.note">Retreat is not an option.</p></div>
     </section>
-    <section class="game-frame" aria-label="Blackout savaş alanı">
-      <div class="frame-bar"><span><i class="live-dot"></i> CANLI BAĞLANTI <b>/</b> AH-07 NIGHTHAWK</span><span class="feed-right">36°12′ N &nbsp; 42°08′ E <b>•</b> <span id="feed-status">BEKLEMEDE</span></span><button class="fullscreen-close" id="fullscreen-exit">TAM EKRANDAN ÇIK ↙</button></div>
+    <section class="game-frame" aria-label="Blackout battlefield" data-i18n-aria="frame.label">
+      <div class="frame-bar"><span><i class="live-dot"></i> <span data-i18n="frame.live">LIVE FEED</span> <b>/</b> AH-07 NIGHTHAWK</span><span class="feed-right">36°12′ N &nbsp; 42°08′ E <b>•</b> <span id="feed-status">STANDBY</span></span><button class="fullscreen-close" id="fullscreen-exit" data-i18n="frame.exit">EXIT FULLSCREEN ↙</button></div>
       <div class="arena" id="arena">
-        <canvas id="game" tabindex="0" aria-label="Helikopter savaş alanı. WASD ile hareket et, fareyle nişan al. Kontroller aşağıda.">Bu oyun için Canvas destekleyen bir tarayıcı gerekiyor.</canvas>
+        <canvas id="game" tabindex="0" aria-label="Helicopter battlefield. Move with WASD, aim with the mouse. See controls below.">A browser with Canvas support is required to play.</canvas>
         <div class="arena-vignette"></div>
         <div class="hud" id="hud">
-          <div class="hull"><span class="hud-label">GÖVDE DURUMU</span><div class="hull-reading"><strong id="health">100</strong><small>%</small><span id="hull-status">SAĞLAM</span></div><div class="health-track"><div id="health-fill"></div></div></div>
-          <div class="wave-hud"><span class="hud-label">TEHDİT SEVİYESİ</span><strong id="wave">DALGA <b>01</b></strong><span id="hostiles">BÖLGE TARANIYOR</span></div>
-          <div class="score-hud"><span class="hud-label">OPERASYON PUANI</span><strong id="score">000000</strong><span>REKOR <b id="best">000000</b></span></div>
+          <div class="hull"><span class="hud-label" data-i18n="hud.hull">HULL STATUS</span><div class="hull-reading"><strong id="health">100</strong><small>%</small><span id="hull-status">HEALTHY</span></div><div class="health-track"><div id="health-fill"></div></div></div>
+          <div class="wave-hud"><span class="hud-label" data-i18n="hud.threat">THREAT LEVEL</span><strong id="wave">WAVE <b>01</b></strong><span id="hostiles">SCANNING AREA</span></div>
+          <div class="score-hud"><span class="hud-label" data-i18n="hud.score">OPERATION SCORE</span><strong id="score">000000</strong><span><span data-i18n="hud.best">BEST</span> <b id="best">000000</b></span></div>
         </div>
-        <button id="pause" class="icon-button pause-button" aria-label="Oyunu duraklat" title="Duraklat (Esc)" hidden><svg><use href="#i-pause"/></svg></button>
-        <div class="combo" id="combo" hidden><strong id="combo-value">×2</strong><span>İMHA SERİSİ</span></div>
+        <button id="pause" class="icon-button pause-button" aria-label="Pause game" title="Pause (Esc)" hidden><svg><use href="#i-pause"/></svg></button>
+        <div class="combo" id="combo" hidden><strong id="combo-value">×2</strong><span data-i18n="hud.combo">KILL STREAK</span></div>
         <div class="announcement" id="announcement" role="status" aria-live="polite"><span id="announcement-tag"></span><strong id="announcement-title"></strong><small id="announcement-note"></small></div>
-        <div class="boss-hud" id="boss-hud" hidden><span>⚠ &nbsp; GOLIATH / AĞIR ZIRHLI KOMUTA ARACI</span><div><i id="boss-fill"></i></div></div>
-        <div class="bottom-hud" id="bottom-hud"><div class="location"><span class="crosshair-symbol">⌖</span><div>İLERİ HAREKÂT ÜSSÜ <small>SEKTÖR 07 · <span id="sector-name">ÇÖL HATTI</span></small></div></div><div class="abilities"><div class="ability" id="heat-ability"><span>TOP ISISI <b id="heat-status">%0</b></span><div id="heat-meter" role="progressbar" aria-label="Top ısısı" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="heat-fill"></i></div></div><div class="ability" id="dash-ability"><kbd>SHIFT</kbd><span>KAÇIŞ <b id="dash-status">HAZIR</b></span><i id="dash-fill"></i></div><div class="ability" id="rocket-ability"><kbd>E</kbd><span>ROKET <b id="rocket-status">3 / 3</b></span><i id="rocket-fill"></i></div></div></div>
+        <div class="boss-hud" id="boss-hud" hidden><span data-i18n="hud.boss">⚠ &nbsp; GOLIATH / ARMORED COMMAND VEHICLE</span><div><i id="boss-fill"></i></div></div>
+        <div class="bottom-hud" id="bottom-hud"><div class="location"><span class="crosshair-symbol">⌖</span><div><span data-i18n="hud.base">FORWARD OPERATING BASE</span> <small><span data-i18n="mission.sector">SECTOR 07</span> · <span id="sector-name">DESERT FRONT</span></small></div></div><div class="abilities"><div class="ability" id="heat-ability"><span data-i18n="hud.cannonHeat">CANNON HEAT</span> <b id="heat-status">0%</b><div id="heat-meter" role="progressbar" aria-label="Cannon heat" data-i18n-aria="hud.cannonHeat" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="heat-fill"></i></div></div><div class="ability" id="dash-ability"><kbd>SHIFT</kbd><span data-i18n="hud.dash">DASH</span> <b id="dash-status">READY</b><i id="dash-fill"></i></div><div class="ability" id="rocket-ability"><kbd>E</kbd><span data-i18n="hud.rocket">ROCKET</span> <b id="rocket-status">3 / 3</b><i id="rocket-fill"></i></div></div></div>
         <div class="overlay" id="overlay">
           <div class="intro" id="intro-panel">
-            <div class="intro-kicker"><span></span> PİLOT BAĞLANTISI KURULDU <span></span></div>
+            <div class="intro-kicker"><span></span> <span data-i18n="intro.connected">PILOT LINK ESTABLISHED</span> <span></span></div>
             <div class="insignia"><svg><use href="#i-mark"/></svg><span>07</span></div>
-            <h2>GECE SENİN.<br><em>GÖKYÜZÜ SENİN.</em></h2>
-            <p>Düşman hattının gerisindesin. Helikopterini uçur,<br class="desktop-break"> dalgaları durdur. Her sortide daha da güçlen.</p>
-            <div class="difficulty" role="group" aria-label="Zorluk"><button data-difficulty="easy" aria-pressed="false">ÇAYLAK</button><button data-difficulty="normal" class="selected" aria-pressed="true">PİLOT</button><button data-difficulty="hard" aria-pressed="false">AS</button></div>
-            <button class="primary-button" id="start">OPERASYONU BAŞLAT <span>↗</span></button>
-            <span class="intro-note">HEDEF: HAYATTA KAL &nbsp; / &nbsp; HER 5. DALGADA KOMUTAN</span>
+            <h2 data-i18n="intro.title">THE NIGHT IS YOURS.<br><em>THE SKY IS YOURS.</em></h2>
+            <p data-i18n="intro.text">You are behind enemy lines. Fly your helicopter and stop the waves. Get stronger with every sortie.</p>
+            <div class="difficulty" role="group" aria-label="Difficulty" data-i18n-aria="difficulty.label"><button data-difficulty="easy" aria-pressed="false">ROOKIE</button><button data-difficulty="normal" class="selected" aria-pressed="true">PILOT</button><button data-difficulty="hard" aria-pressed="false">ACE</button></div>
+            <button class="primary-button" id="start" data-i18n="intro.start">START OPERATION <span>↗</span></button>
+            <span class="intro-note" data-i18n="intro.objective">OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES</span>
           </div>
-          <div class="panel" id="pause-panel" hidden><span class="panel-kicker">BAĞLANTI KORUNUYOR</span><h2>BİR NEFES <em>AL.</em></h2><p>Operasyon seni bekliyor, pilot.</p><button class="primary-button" id="resume">UÇUŞA DEVAM ET <span>→</span></button><button class="text-button" id="restart">YENİ SORTİ BAŞLAT</button></div>
-          <div class="panel debrief" id="over-panel" hidden><span class="panel-kicker">OPERASYON RAPORU</span><h2>SONRAKİ SORTİDE<br><em>GÖRÜŞÜRÜZ.</em></h2><p id="record-label">Her uçuş bir tecrübe.</p><div class="results"><div><strong id="result-score">0</strong><span>PUAN</span></div><div><strong id="result-wave">1</strong><span>DALGA</span></div><div><strong id="result-kills">0</strong><span>İMHA</span></div><div><strong id="result-time">00:00</strong><span>UÇUŞ SÜRESİ</span></div></div><button class="primary-button" id="retry">TEKRAR HAVALAN <span>↗</span></button></div>
-          <div class="panel upgrade-panel" id="upgrade-panel" hidden><span class="panel-kicker">BÖLGE TEMİZLENDİ</span><h2>DAHA <em>GÜÇLÜ DÖN.</em></h2><p id="upgrade-note">Bir geliştirme seç. Sonraki dalgaya hazırlan.</p><div class="upgrade-cards" id="upgrade-cards"></div></div>
+          <div class="panel" id="pause-panel" hidden><span class="panel-kicker" data-i18n="panel.pause.kicker">LINK SECURE</span><h2 data-i18n="panel.pause.title">TAKE A <em>BREATHER.</em></h2><p data-i18n="panel.pause.text">The operation will be waiting, pilot.</p><button class="primary-button" id="resume" data-i18n="panel.resume">RESUME FLIGHT <span>→</span></button><button class="text-button" id="restart" data-i18n="panel.restart">START NEW SORTIE</button></div>
+          <div class="panel debrief" id="over-panel" hidden><span class="panel-kicker" data-i18n="panel.over.kicker">AFTER-ACTION REPORT</span><h2 data-i18n="panel.over.title">SEE YOU ON THE<br><em>NEXT SORTIE.</em></h2><p id="record-label">Every flight makes you stronger. Take off again.</p><div class="results"><div><strong id="result-score">0</strong><span data-i18n="panel.score">SCORE</span></div><div><strong id="result-wave">1</strong><span data-i18n="panel.wave">WAVE</span></div><div><strong id="result-kills">0</strong><span data-i18n="panel.kills">KILLS</span></div><div><strong id="result-time">00:00</strong><span data-i18n="panel.flightTime">FLIGHT TIME</span></div></div><button class="primary-button" id="retry" data-i18n="panel.retry">TAKE OFF AGAIN <span>↗</span></button></div>
+          <div class="panel upgrade-panel" id="upgrade-panel" hidden><span class="panel-kicker" data-i18n="panel.upgrade.kicker">AREA SECURED</span><h2 data-i18n="panel.upgrade.title">COME BACK <em>STRONGER.</em></h2><p id="upgrade-note">Choose an upgrade for the next wave.</p><div class="upgrade-cards" id="upgrade-cards"></div></div>
         </div>
-        <div class="touch-controls" id="touch-controls" hidden><div class="joystick" id="joystick" aria-label="Hareket çubuğu"><div id="joystick-knob"></div><span>HAREKET</span></div><div class="touch-actions"><div><button id="touch-dash" aria-label="Kaçış manevrası">↗</button><button id="touch-rocket" aria-label="Roket ateşle">⌁</button></div><button id="touch-fire" aria-label="Ateş et">ATEŞ</button></div></div>
+        <div class="touch-controls" id="touch-controls" hidden><div class="joystick" id="joystick" aria-label="Movement control"><div id="joystick-knob"></div><span data-i18n="touch.move">MOVE</span></div><div class="touch-actions"><div><button id="touch-dash" aria-label="Dash" data-i18n-aria="touch.dash">↗</button><button id="touch-rocket" aria-label="Fire rocket" data-i18n-aria="touch.rocket">⌁</button></div><button id="touch-fire" aria-label="Fire" data-i18n-aria="touch.fire">FIRE</button></div></div>
         <div class="damage-flash" id="damage-flash"></div>
       </div>
-      <div class="frame-footer"><span><i></i> <span id="mission-status">UÇUŞ İZNİ BEKLENİYOR</span></span><span id="flight-time">UÇUŞ 00:00</span><span class="footer-right">BLACKOUT ENGINE <b>V2.0</b></span></div>
+      <div class="frame-footer"><span><i></i> <span id="mission-status">AWAITING FLIGHT CLEARANCE</span></span><span id="flight-time">FLIGHT 00:00</span><span class="footer-right">BLACKOUT ENGINE <b>V2.0</b></span></div>
     </section>
     <section class="flight-manual" aria-label="Oyun kontrolleri">
-      <div class="manual-title"><span>UÇUŞ KILAVUZU</span><h2>Reflekslerine güven.</h2></div>
-      <div class="control"><div class="key-cluster"><kbd>W</kbd><div><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div></div><span>MANEVRA<small>veya yön tuşları</small></span></div>
-      <div class="control"><div class="mouse-icon">⌖</div><span>NİŞAN & ATEŞ<small>Fare · sol tık / boşluk</small></span></div>
-      <div class="control"><kbd class="wide">SHIFT</kbd><span>KAÇIŞ<small>Kısa süreli dokunulmazlık</small></span></div>
-      <div class="control"><kbd class="single">E</kbd><span>GÜDÜMLÜ ROKET<small>Alan hasarı · otomatik dolum</small></span></div>
-      <div class="control manual-pause"><kbd class="wide">ESC</kbd><span>DURAKLAT<small>Bir nefes al</small></span></div>
+      <div class="manual-title"><span data-i18n="manual.title">FLIGHT MANUAL</span><h2 data-i18n="manual.heading">Trust your instincts.</h2></div>
+      <div class="control"><div class="key-cluster"><kbd>W</kbd><div><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div></div><span><span data-i18n="manual.move">MOVE</span><small data-i18n="manual.arrows">or arrow keys</small></span></div>
+      <div class="control"><div class="mouse-icon">⌖</div><span><span data-i18n="manual.aim">AIM & FIRE</span><small data-i18n="manual.mouse">Mouse · left click / space</small></span></div>
+      <div class="control"><kbd class="wide">SHIFT</kbd><span><span data-i18n="manual.dash">DASH</span><small data-i18n="manual.invulnerable">Brief invulnerability</small></span></div>
+      <div class="control"><kbd class="single">E</kbd><span><span data-i18n="manual.guidedRocket">GUIDED ROCKET</span><small data-i18n="manual.areaDamage">Area damage · auto-reload</small></span></div>
+      <div class="control manual-pause"><kbd class="wide">ESC</kbd><span><span data-i18n="manual.pause">PAUSE</span><small data-i18n="manual.breathe">Take a breather</small></span></div>
     </section>
-    <footer class="site-footer"><span>NUCLEAR SHOOTER <b>/</b> BLACKOUT PROTOCOL</span><span class="footer-tip">Hareket et. Ateş et. Hayatta kal.</span><span>İYİ UÇUŞLAR, PİLOT. <span class="tiny-mark">✳</span></span></footer>
+    <footer class="site-footer"><span>NUCLEAR SHOOTER <b>/</b> BLACKOUT PROTOCOL</span><span class="footer-tip" data-i18n="footer.tip">Move. Fire. Survive.</span><span><span data-i18n="footer.signoff">GOOD HUNTING, PILOT.</span> <span class="tiny-mark">✳</span></span></footer>
   </main>
-  <dialog id="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><span class="panel-kicker">UÇUŞ BİLGİSAYARI</span><button class="icon-button" id="settings-close" aria-label="Ayarları kapat"><svg><use href="#i-cross"/></svg></button></div><h2 id="settings-title">UÇUŞ <em>AYARLARI</em></h2><label class="setting" for="volume">Ana ses <output id="volume-value">60%</output><input id="volume" type="range" min="0" max="100" value="60"></label><label class="setting toggle">Taktik müzik<input id="music" type="checkbox" checked><span></span></label><label class="setting toggle">Ekran sarsıntısı<input id="shake" type="checkbox" checked><span></span></label><label class="setting toggle">Yoğun efektler<input id="effects" type="checkbox" checked><span></span></label><p class="settings-note">Ayarların ve rekorun bu tarayıcıda saklanır.<br>Ses, ilk etkileşimden sonra başlar.</p><button class="primary-button" id="settings-done">TAMAM <span>✓</span></button></dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><span class="panel-kicker" data-i18n="settings.kicker">FLIGHT COMPUTER</span><button class="icon-button" id="settings-close" aria-label="Close settings" data-i18n-aria="settings.close"><svg><use href="#i-cross"/></svg></button></div><h2 id="settings-title" data-i18n="settings.title">FLIGHT <em>SETTINGS</em></h2><label class="setting" for="volume"><span data-i18n="settings.volume">Master volume</span><output id="volume-value">60%</output><input id="volume" type="range" min="0" max="100" value="60"></label><label class="setting toggle"><span data-i18n="settings.music">Tactical music</span><input id="music" type="checkbox" checked><span></span></label><label class="setting toggle"><span data-i18n="settings.shake">Screen shake</span><input id="shake" type="checkbox" checked><span></span></label><label class="setting toggle"><span data-i18n="settings.effects">Visual effects</span><input id="effects" type="checkbox" checked><span></span></label><p class="settings-note" data-i18n="settings.note">Settings and your high score are saved in this browser.<br>Audio starts after your first interaction.</p><button class="primary-button" id="settings-done" data-i18n="settings.done">DONE <span>✓</span></button></dialog>
   <script src="blackout.js" defer></script>
 </body>
 </html>

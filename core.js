@@ -34,18 +34,18 @@ export function seededRandom(seed = 73) {
   return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
 }
 export const MAPS = [
-  { name:'ÇÖL HATTI', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
-  { name:'YEŞİL VADİ', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
-  { name:'KIZIL BÖLGE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
+  { name:'DESERT FRONT', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
+  { name:'GREEN VALLEY', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
+  { name:'RED ZONE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
 ];
 export function mapForWave(wave) {
   return MAPS[(Math.max(1, wave)-1)%MAPS.length];
 }
 export const UPGRADES = [
-  { id: 'damage', icon: '✳', title: 'Delici mühimmat', description: 'Top hasarı %25 artar.', detail: '+%25 HASAR', max: 4 },
-  { id: 'fireRate', icon: '≋', title: 'Hızlı besleme', description: 'Top %18 daha hızlı ateş eder.', detail: '+%18 ATIŞ HIZI', max: 4 },
-  { id: 'armor', icon: '⬡', title: 'Kompozit zırh', description: 'Azami gövde +25. Anında 35 onarım.', detail: '+25 GÖVDE', max: 4 },
-  { id: 'engine', icon: '↗', title: 'Türbin yükseltmesi', description: 'Hareket hızı %12 artar. Kaçış daha çabuk dolar.', detail: '+%12 HIZ', max: 3 },
-  { id: 'rockets', icon: '⌁', title: 'Füze sistemi', description: 'Bir ek roket. Roketler %20 daha çabuk dolar.', detail: '+1 ROKET KAPASİTESİ', max: 3 },
-  { id: 'repair', icon: '+', title: 'Saha bakımı', description: 'Gövdeyi tamamen onarır.', detail: 'TAM ONARIM', max: Infinity },
+  { id: 'damage', icon: '✳', title: 'Armor-Piercing Rounds', description: 'Cannon damage increased by 25%.', detail: '+25% DAMAGE', max: 4 },
+  { id: 'fireRate', icon: '≋', title: 'Rapid Feed', description: 'Cannon fires 18% faster.', detail: '+18% FIRE RATE', max: 4 },
+  { id: 'armor', icon: '⬡', title: 'Composite Armor', description: 'Maximum hull +25. Repairs 35 immediately.', detail: '+25 HULL', max: 4 },
+  { id: 'engine', icon: '↗', title: 'Turbine Upgrade', description: 'Movement speed +12%. Dash recharges faster.', detail: '+12% SPEED', max: 3 },
+  { id: 'rockets', icon: '⌁', title: 'Missile System', description: 'One extra rocket. Rockets recharge 20% faster.', detail: '+1 ROCKET CAPACITY', max: 3 },
+  { id: 'repair', icon: '+', title: 'Field Repairs', description: 'Fully repairs the hull.', detail: 'FULL REPAIR', max: Infinity },
 ];

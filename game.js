@@ -6,7 +6,7 @@ import { languages, setLocale, t } from './i18n.js';
 const $ = id => document.getElementById(id);
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
-const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'tr'};
+const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
 const stored=read('blackout.settings',{});
 const settings={...defaults};
@@ -30,15 +30,17 @@ let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,sett
 let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
-function setText(selector,text){const element=document.querySelector?.(selector);if(!element)return;const node=[...element.childNodes].find(child=>child.nodeType===Node.TEXT_NODE&&child.nodeValue.trim());if(node)node.nodeValue=` ${text} `;else element.textContent=text;}
-function setPlainText(selector,text){const element=document.querySelector?.(selector);if(element)element.textContent=text;}
 function applyLanguage(){
   setLocale(settings.language);document.documentElement.lang=settings.language;
-  const text={'.online':'online','.mission-meta span':'mission','.mission-meta p':'missionNote','.intro-kicker':'connected','#start':'start','.intro-note':'objective'};
-  Object.entries(text).forEach(([selector,key])=>setText(selector,t(key)));
-  setPlainText('#intro-panel h2',t('introTitle'));setPlainText('#intro-panel p',t('introText'));
-  document.querySelectorAll?.('[data-difficulty]').forEach(button=>setText(`[data-difficulty="${button.dataset.difficulty}"]`,t(button.dataset.difficulty)));
-  $('language').value=settings.language;$('language').setAttribute('aria-label',t('language'));
+  document.querySelectorAll('[data-i18n]').forEach(element=>{element.innerHTML=t(element.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(element=>element.setAttribute('aria-label',t(element.dataset.i18nAria)));
+  document.querySelectorAll('[data-difficulty]').forEach(button=>{button.textContent=t(`difficulty.${button.dataset.difficulty}`);});
+  $('language').value=settings.language;$('language').setAttribute('aria-label',t('nav.language'));
+  $('settings-open').setAttribute('aria-label',t('settings.label'));$('settings-open').title=t('settings.label');
+  $('fullscreen').setAttribute('aria-label',t('settings.fullscreen'));$('fullscreen').title=t('settings.fullscreen');
+  $('fullscreen-exit').textContent=t('frame.exit');
+  $('sound-toggle').title=`${t(settings.muted?'nav.soundOn':'nav.soundOff')} (M)`;
+  renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;
   updateStateText();updateSettingsUI();updateHud();
 }
 
@@ -61,8 +63,8 @@ function clearInput(){
   keys.clear();pointer.down=false;gamePointer=null;firePointer=null;joystick={x:0,y:0,id:null};$('joystick-knob').style.transform='';
 }
 function updateStateText(){
-  $('feed-status').textContent=t({ready:'ready',playing:'playing',paused:'paused',upgrade:'ready',over:'over'}[g.state]);
-  $('mission-status').textContent=t({ready:'menuMission',playing:'playingMission',paused:'pausedMission',upgrade:'playingMission',over:'overMission'}[g.state]);
+  $('feed-status').textContent=t(`status.${g.state}`);
+  $('mission-status').textContent=t(`mission.${g.state}`);
 }
 function setState(state,panel){
   g.state=state;clearInput();overlay.hidden=!panel;
@@ -94,9 +96,9 @@ async function start(){
 function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
   g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
-  $('sector-name').textContent=g.map.name;
-  $('wave').innerHTML=`${t('wave')} <b>${pad(g.wave,2)}</b>`;
-  announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
+  renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;
+  $('wave').innerHTML=`${t('hud.wave')} <b>${pad(g.wave,2)}</b>`;
+  announce(t(g.plan.boss?'wave.bossTag':'wave.enemyTag'),t(g.plan.boss?'wave.bossTitle':'wave.title',{wave:pad(g.wave,2)}),`${renderer.mapLabel} · ${t(g.plan.boss?'wave.bossNote':g.wave===1?'wave.firstNote':'wave.note')}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
   sound.setMusicScene(g.plan.boss?'boss':'waves');
@@ -128,7 +130,7 @@ function gun(){
   g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'gun'});
   p.cooldown=w.cooldown*Math.pow(w.cooldownUpgradeFactor,upgrades.fireRate||0);p.muzzle=w.muzzleTime;
   p.heat=Math.min(1,p.heat+w.heatPerShot);
-  if(p.heat>=1){p.overheated=true;float('TOP AŞIRI ISINDI',p.x,p.y-55,'#ffb586',true);}
+  if(p.heat>=1){p.overheated=true;float(t('heat.cooling'),p.x,p.y-55,'#ffb586',true);}
   sound.play('shot',p.x/g.world.width*1.4-.7);
 }
 const rocketRecharge=()=>WEAPONS.rocket.rechargeTime*Math.pow(WEAPONS.rocket.rechargeUpgradeFactor,upgrades.rockets||0);
@@ -181,7 +183,7 @@ function damagePlayer(amount){
   p.health=Math.max(0,p.health-amount*g.plan.damage);p.invulnerable=.65;g.shake=10;g.combo=0;g.comboTimer=0;
   burst(p.x,p.y,'#f5c78d',14);sound.play('damage');
   $('damage-flash').classList.remove('hit');void $('damage-flash').offsetWidth;$('damage-flash').classList.add('hit');
-  if(p.health<=25&&p.health>0)announce('KRİTİK GÖVDE HASARI','İKMAL TOPLA','Yeşil ikmal paketleri gövdeyi onarır.',1.8);
+  if(p.health<=25&&p.health>0)announce(t('hull.repairing'),t('supply.collect'),t('supply.note'),1.8);
   if(p.health<=0)endGame();updateHud();
 }
 function detonate(b){
@@ -279,11 +281,11 @@ function update(dt){
   g.pickups=g.pickups.filter(item=>{
     item.life-=dt;const d=distance(item,p);
     if(d<90&&p.health<p.maxHealth){item.x+=(p.x-item.x)*dt*4;item.y+=(p.y-item.y)*dt*4;}
-    if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float('+30 ONARIM',p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
+    if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float(`+30 ${t('upgrade.repair.detail')}`,p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
     return item.life>0;
   });
   if(!g.spawnRemaining&&!g.enemies.length&&!g.warnings.length){
-    if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(`DALGA TAMAMLANDI +${g.wave*100}`,p.x,p.y-65,'#e5f1ac',true);}
+    if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(t('wave.cleared',{score:g.wave*100}),p.x,p.y-65,'#e5f1ac',true);}
     else{g.waveWait-=dt;if(g.waveWait<=0){showUpgrades();return;}}
   }
   g.comboTimer-=dt;if(g.comboTimer<=0)g.combo=0;
@@ -310,22 +312,23 @@ function updateEffects(dt){
 }
 function updateHud(){
   const p=g.player,percent=Math.ceil(p.health/p.maxHealth*100),multiplier=Math.min(5,1+Math.floor(g.combo/3));
+  $('wave').innerHTML=`${t('hud.wave')} <b>${pad(g.wave,2)}</b>`;
   $('health').textContent=percent;$('health-fill').style.width=`${percent}%`;$('health-fill').style.background=percent<=25?'#ee9b6b':'#dbea9b';
-  $('hull-status').textContent=percent<=25?'KRİTİK':percent<=60?'HASARLI':'SAĞLAM';$('hull-status').style.color=percent<=25?'#ee9b6b':'';
+  $('hull-status').textContent=t(percent<=25?'hud.critical':percent<=60?'hud.damaged':'hud.healthy');$('hull-status').style.color=percent<=25?'#ee9b6b':'';
   $('score').textContent=pad(g.score);$('best').textContent=pad(Math.max(g.best,g.score));
-  $('hostiles').textContent=g.state==='ready'?t('scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hostiles')}`;
-  $('flight-time').textContent=`${t('flight')} ${clock(g.time)}`;
-  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s` :t('readyLabel');
+  $('hostiles').textContent=g.state==='ready'?t('hud.scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hud.hostiles')}`;
+  $('flight-time').textContent=`${t('flight.label')} ${clock(g.time)}`;
+  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s`:t('dash.ready');
   $('dash-fill').style.width=`${(1-p.dashCooldown/(3.5*Math.pow(.87,upgrades.engine||0)))*100}%`;
   $('dash-ability').classList.toggle('cooldown',p.dashCooldown>0);
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
   $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/rocketRecharge()*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
-  $('heat-status').textContent=p.overheated?t('cooling'):`%${Math.round(p.heat*100)}`;
+  $('heat-status').textContent=p.overheated?t('heat.cooling'):`${Math.round(p.heat*100)}%`;
   $('heat-fill').style.width=`${p.heat*100}%`;
   $('heat-ability').classList.toggle('overheated',p.overheated);
   $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
-  $('heat-meter').setAttribute('aria-valuetext',p.overheated?'Aşırı ısındı, soğuyor':`%${Math.round(p.heat*100)}`);
+  $('heat-meter').setAttribute('aria-valuetext',p.overheated?t('heat.cooling'):`${Math.round(p.heat*100)}%`);
   $('touch-dash').disabled=p.dashCooldown>0;$('touch-rocket').disabled=p.rockets===0;
   $('combo').hidden=multiplier<2;$('combo-value').textContent=`×${multiplier}`;
   const boss=g.enemies.find(e=>e.type==='boss');$('boss-hud').hidden=!boss||g.state==='over';
@@ -336,11 +339,11 @@ function showUpgrades(){
   const available=UPGRADES.filter(u=>(upgrades[u.id]||0)<u.max&&(u.id!=='repair'||g.player.health<g.player.maxHealth*.8));
   choices=available.map(value=>({value,sort:Math.random()})).sort((a,b)=>a.sort-b.sort).slice(0,3).map(item=>item.value);
   if(!choices.length)choices=[UPGRADES.find(u=>u.id==='repair')];
-  $('upgrade-note').textContent=`Dalga ${g.wave} tamamlandı. Bir geliştirme seç, uçuşa devam et.`;
+  $('upgrade-note').textContent=t('upgrade.note',{wave:g.wave});
   $('upgrade-cards').replaceChildren();
   choices.forEach((u,i)=>{
     const button=document.createElement('button');button.className='upgrade-card';button.type='button';
-    button.innerHTML=`<span>${u.icon}</span><kbd>${i+1}</kbd><strong>${u.title}</strong><p>${u.description}</p><small>${u.detail} &nbsp; ↗</small>`;
+    button.innerHTML=`<span>${u.icon}</span><kbd>${i+1}</kbd><strong>${t(`upgrade.${u.id}.title`)}</strong><p>${t(`upgrade.${u.id}.description`)}</p><small>${t(`upgrade.${u.id}.detail`)} &nbsp; ↗</small>`;
     button.addEventListener('click',()=>selectUpgrade(u.id));$('upgrade-cards').append(button);
   });
   setState('upgrade','upgrade-panel');sound.play('upgrade');requestAnimationFrame(()=>$('upgrade-cards').firstElementChild?.focus({preventScroll:true}));updateHud();
@@ -358,14 +361,14 @@ async function resume(){if(g.state!=='paused'||dialog.open)return;await sound.in
 function endGame(){
   const previous=g.best;g.best=Math.max(g.best,g.score);write('blackout.best',g.best);
   explosion(g.player.x,g.player.y,140);g.bannerTime=0;$('announcement').classList.remove('visible');$('boss-hud').hidden=true;
-  $('record-label').textContent=g.score>previous?'YENİ REKOR. Bu gökyüzü seni hatırlayacak.':'Her uçuş bir tecrübe. Tekrar havalan.';
-  $('result-score').textContent=g.score.toLocaleString('tr-TR');$('result-wave').textContent=pad(g.wave,2);$('result-kills').textContent=g.kills;$('result-time').textContent=clock(g.time);
+  $('record-label').textContent=t(g.score>previous?'record.new':'record.again');
+  $('result-score').textContent=g.score.toLocaleString(settings.language);$('result-wave').textContent=pad(g.wave,2);$('result-kills').textContent=g.kills;$('result-time').textContent=clock(g.time);
   setState('over','over-panel');focusPanel('retry');
 }
 function updateSettingsUI(){
   $('volume').value=settings.volume*100;$('volume-value').textContent=`${Math.round(settings.volume*100)}%`;
   ['music','shake','effects'].forEach(id=>$(id).checked=settings[id]);
-  $('sound-toggle').setAttribute('aria-pressed',String(settings.muted));$('sound-toggle').setAttribute('aria-label',settings.muted?'Sesi aç':'Sesi kapat');
+  $('sound-toggle').setAttribute('aria-pressed',String(settings.muted));$('sound-toggle').setAttribute('aria-label',t(settings.muted?'nav.soundOn':'nav.soundOff'));$('sound-toggle').title=`${t(settings.muted?'nav.soundOn':'nav.soundOff')} (M)`;
   document.querySelectorAll('[data-difficulty]').forEach(button=>{const selected=button.dataset.difficulty===settings.difficulty;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
 }
 function toggleMute(){settings.muted=!settings.muted;sound.init();sound.configure();saveSettings();updateSettingsUI();}
@@ -377,7 +380,7 @@ $('volume').addEventListener('input',event=>{settings.volume=event.target.value/
 for(const id of ['music','shake','effects'])$(id).addEventListener('change',()=>{settings[id]=$(id).checked;sound.configure();saveSettings();if(id==='effects')resize();});
 $('sound-toggle').addEventListener('click',toggleMute);
 $('fullscreen').addEventListener('click',async()=>{
-  try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.game-frame').requestFullscreen();}catch{announce('TARAYICI BİLGİSİ','TAM EKRAN KULLANILAMIYOR','Tarayıcının tam ekran komutunu kullanabilirsin.',3);}
+  try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.game-frame').requestFullscreen();}catch{announce(t('settings.fullscreen'),t('fullscreen.errorTitle'),t('fullscreen.errorNote'),3);}
 });
 $('fullscreen-exit').addEventListener('click',()=>document.exitFullscreen());
 if(!document.fullscreenEnabled)$('fullscreen').hidden=true;
