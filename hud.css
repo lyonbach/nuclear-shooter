@@ -1,0 +1,34 @@
+.hud-label { font-size: 13px; }
+.hull-reading strong, .score-hud > strong { font-size: 47px; }
+.hull-reading small { font-size: 16px; }
+.hull-reading > span, .wave-hud > span:last-child, .score-hud > span:last-child { font-size: 12px; }
+.wave-hud > strong { font-size: 36px; }
+.location { font-size: 13px; }
+.ability { min-width: 180px; padding: 14px 18px 18px; }
+.ability > span { font-size: 12px; }
+.ability b { font-size: 14px; }
+.ability kbd { font-size: 13px; }
+
+@media (max-width: 800px) {
+  .hud-label { font-size: 10px; }
+  .hull-reading strong, .score-hud > strong { font-size: 36px; }
+  .hull-reading small { font-size: 13px; }
+  .hull-reading > span, .wave-hud > span:last-child, .score-hud > span:last-child { font-size: 9px; }
+  .wave-hud > strong { font-size: 29px; }
+  .ability { min-width: 145px; }
+  .ability > span { font-size: 10px; }
+  .ability b { font-size: 13px; }
+  .ability kbd { font-size: 12px; }
+}
+
+@media (max-width: 520px) {
+  .hud-label { font-size: 9px; }
+  .hull-reading strong, .score-hud > strong { font-size: 34px; }
+  .hull-reading small { font-size: 12px; }
+  .hull-reading > span, .wave-hud > span:last-child, .score-hud > span:last-child { font-size: 9px; }
+  .wave-hud > strong { font-size: 26px; }
+  .ability { min-width: 90px; }
+  .ability > span { font-size: 9px; }
+  .ability b { font-size: 12px; }
+  .ability kbd { font-size: 10px; }
+}
