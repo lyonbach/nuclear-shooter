@@ -117,8 +117,8 @@ export class Renderer {
     c.scale(1-Math.abs(pitch)*.3,1-Math.abs(bank)*.5);
     if(ghost)c.globalAlpha=.3;
     // Tail boom, horizontal stabilizers, pods and skids.
-    path(c,[[-14,-6],[-55,-3],[-62,0],[-54,4],[-14,6]],'#728471','#c2cba755');
-    path(c,[[-46,-3],[-53,-18],[-57,-18],[-55,0],[-54,17],[-48,17]],'#81947b');
+    path(c,[[-14,-6],[-63,-3],[-72,0],[-62,4],[-14,6]],'#728471','#c2cba755');
+    path(c,[[-52,-3],[-61,-18],[-66,-18],[-63,0],[-62,17],[-55,17]],'#81947b');
     c.fillStyle='#283d33';c.fillRect(-16,-19,36,4);c.fillRect(-16,15,36,4);c.fillStyle='#475f4c';c.fillRect(-10,-23,22,7);c.fillRect(-10,16,22,7);
     c.fillStyle='#9aa484';c.fillRect(4,-22,19,3);c.fillRect(4,19,19,3);
     path(c,[[-25,-9],[-17,-15],[12,-14],[30,-7],[35,0],[28,9],[11,14],[-18,13],[-26,6]],'#8b9a78','#c1cba460');
@@ -127,14 +127,14 @@ export class Renderer {
     path(c,[[11,2],[29,2],[25,7],[9,11]],'#2e4c3d','#bbd9b144');
     c.fillStyle='#b5c096';c.fillRect(-8,-10,3,20);c.fillStyle='#3c503f';c.fillRect(-14,-7,5,14);
     c.fillStyle='#a7b590';c.fillRect(26,-2,14,4);c.fillStyle='#e0e5b9';c.fillRect(37,-1,3,2);
-    c.save();c.translate(-54,0);c.rotate(t*42);c.fillStyle='#d8dfb6aa';c.fillRect(-1,-12,2,24);c.fillRect(-12,-1,24,2);c.restore();
+    c.save();c.translate(-62,0);const rotorPhase=Math.abs(Math.sin(t*42));ellipse(c,0,0,15+4*rotorPhase,2+rotorPhase,'#d8dfb699');c.save();c.rotate(Math.sin(t*42)*.12);ellipse(c,0,0,13+3*rotorPhase,1,'#aebd9a88');c.restore();c.fillStyle='#455240';c.fillRect(-3,-2,6,4);c.restore();
     c.save();c.translate(-5,0);c.rotate(t*49);
     c.strokeStyle='#e7eed92c';c.lineWidth=2;c.beginPath();c.arc(0,0,45,0,TAU);c.stroke();
     for(let i=0;i<4;i++){c.rotate(Math.PI/2);path(c,[[0,-2],[46,-3],[44,0],[0,2]],'#e2e7cc99');}
     ellipse(c,0,0,5,5,'#374e3e');ellipse(c,-1,-1,2,2,'#c3caa9');c.restore();
     if(Math.sin(t*5)>0)ellipse(c,-51,0,2,2,'#f7a26d');ellipse(c,1,-19,1.5,1.5,'#c1ed95');
     if(!ghost&&t%2<.12){ellipse(c,18,-18,3,3,'#ffffff');ellipse(c,18,18,3,3,'#ff5d52');}
-    if(!ghost&&t%1.5<.12)ellipse(c,-62,0,2.5,2.5,'#ffb35c');
+    if(!ghost&&t%1.5<.12)ellipse(c,-72,0,2.5,2.5,'#ffb35c');
     c.restore();
   }
   enemy(c,e,t) {

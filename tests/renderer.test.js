@@ -45,6 +45,23 @@ test('helicopter tail strobe flashes once every 1.5 seconds',()=>{
   assert.equal(hasTailStrobe(dark),false);
 });
 
+test('tail rotor is rendered edge-on',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const c=context();
+  renderer.helicopter(c,{x:100,y:100,angle:0,bank:0,pitch:0},0);
+  assert.ok(c.calls.some(call=>call.name==='ellipse'&&call.args[0]===0&&call.args[1]===0&&call.args[2]===15&&call.args[3]===2&&call.fillStyle==='#d8dfb699'));
+  assert.equal(c.calls.some(call=>call.name==='fillRect'&&call.args[0]===-12&&call.args[1]===-1&&call.args[2]===24&&call.args[3]===2),false);
+});
+
+test('tail rotor blur cycles as it spins',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const still=context(),spinning=context(),player={x:100,y:100,angle:0,bank:0,pitch:0};
+  renderer.helicopter(still,player,0);
+  renderer.helicopter(spinning,player,.04);
+  const blur=c=>c.calls.find(call=>call.name==='ellipse'&&call.fillStyle==='#d8dfb699').args;
+  assert.notDeepEqual(blur(still),blur(spinning));
+});
+
 test('tank tread marks visibly shift with track phase',()=>{
   const renderer=new Renderer({getContext:()=>context()},{});
   const stationary=context(),moving=context();
