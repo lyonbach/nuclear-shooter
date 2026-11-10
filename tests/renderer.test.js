@@ -1,45 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Renderer } from '../renderer.js';
+import { sceneToWorld, worldToScene } from '../renderer.js';
 
-function context() {
-  const calls=[];
-  const c=new Proxy({calls,fillStyle:''},{
-    get(target,key) {
-      if(key in target)return target[key];
-      return (...args)=>calls.push({name:key,args,fillStyle:target.fillStyle});
-    }
-  });
-  return c;
-}
+const world = { width: 1600, height: 900 };
 
-test('helicopter movement changes the rendered pose',()=>{
-  const renderer=new Renderer({getContext:()=>context()},{});
-  const stationary=context(),moving=context();
-  const player={x:100,y:100,angle:0,bank:0,pitch:0};
-  renderer.helicopter(stationary,player,0);
-  renderer.helicopter(moving,{...player,bank:.3,pitch:.2},0);
-  const pose=c=>c.calls.filter(call=>['translate','scale'].includes(call.name));
-  assert.notDeepEqual(pose(stationary),pose(moving));
-  assert.ok(moving.calls.some(call=>call.name==='translate'&&call.args[0]===6&&call.args[1]===9));
-  assert.ok(moving.calls.some(call=>call.name==='scale'&&call.args[1]<.9));
+test('world coordinates map to a centered WebGL ground plane', () => {
+  assert.deepEqual(worldToScene(800, 450, world), { x: 0, z: 0 });
+  assert.deepEqual(worldToScene(0, 0, world), { x: -800, z: -450 });
 });
 
-test('tank tread marks visibly shift with track phase',()=>{
-  const renderer=new Renderer({getContext:()=>context()},{});
-  const stationary=context(),moving=context();
-  const enemy={x:0,y:0,angle:0,type:'tank',health:4,maxHealth:4};
-  renderer.enemy(stationary,enemy,0);
-  renderer.enemy(moving,{...enemy,trackPhase:2},0);
-  const treads=c=>c.calls.filter(call=>call.name==='fillRect'&&call.fillStyle==='#a1a582').map(call=>call.args);
-  assert.ok(treads(stationary).length>4);
-  assert.notDeepEqual(treads(stationary),treads(moving));
-  for(const [x,,width] of treads(moving))assert.ok(x>=-23&&x+width<=20);
-});
-
-test('kamikaze drone is rendered at quarter scale',()=>{
-  const renderer=new Renderer({getContext:()=>context()},{});
-  const c=context();
-  renderer.enemy(c,{x:0,y:0,angle:0,type:'kamikaze',health:1,maxHealth:1},0);
-  assert.ok(c.calls.some(call=>call.name==='scale'&&call.args[0]===.25&&call.args[1]===.25));
+test('scene ground coordinates map back to gameplay coordinates', () => {
+  for (const point of [[0, 0], [240, 680], [1600, 900]]) {
+    const scene = worldToScene(point[0], point[1], world);
+    assert.deepEqual(sceneToWorld(scene.x, scene.z, world), { x: point[0], y: point[1] });
+  }
 });

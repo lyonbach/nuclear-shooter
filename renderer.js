@@ -1,218 +1,407 @@
-import { TAU, seededRandom, clamp, ENEMIES } from './core.js';
+import * as THREE from 'three';
+import { seededRandom, ENEMIES } from './core.js';
 
-const path = (c, points, fill, stroke) => {
-  c.beginPath(); points.forEach(([x,y], i) => i ? c.lineTo(x,y) : c.moveTo(x,y)); c.closePath();
-  if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.stroke(); }
-};
-function ellipse(c,x,y,rx,ry,color) { c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);c.fill(); }
+export function worldToScene(x, y, world) {
+  return { x: x - world.width / 2, z: y - world.height / 2 };
+}
+
+export function sceneToWorld(x, z, world) {
+  return { x: x + world.width / 2, y: z + world.height / 2 };
+}
 
 export class Renderer {
-  constructor(canvas, settings) { this.canvas=canvas; this.ctx=canvas.getContext('2d',{alpha:false}); this.settings=settings; }
-  resize(world, rect, map) {
-    this.world=world;
-    const dpr=Math.min(window.devicePixelRatio||1,this.settings.effects?2:1.3);
-    this.canvas.width=Math.round(rect.width*dpr);this.canvas.height=Math.round(rect.height*dpr);
-    this.scale=this.canvas.width/world.width;
-    this.terrain=document.createElement('canvas');this.terrain.width=Math.ceil(world.width);this.terrain.height=Math.ceil(world.height);
-    this.setMap(map);
-  }
-  setMap(map) { this.map=map;this.makeTerrain(); }
-  makeTerrain() {
-    const c=this.terrain.getContext('2d'),W=this.world.width,H=this.world.height,r=seededRandom(this.map.seed);
-    const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,this.map.colors[0]);g.addColorStop(.5,this.map.colors[1]);g.addColorStop(1,this.map.colors[2]);c.fillStyle=g;c.fillRect(0,0,W,H);
-    // Grain is baked into the terrain once rather than regenerated each frame.
-    for(let i=0;i<W*H/80;i++){c.fillStyle=r()>.5?'#c6bd8a0b':'#17291c0b';c.fillRect(r()*W,r()*H,r()*4+1,r()*2+1);}
-    for(let i=0;i<38;i++){
-      let x=r()*W,y=r()*H;c.strokeStyle=i%2?'#a4a57b0e':'#263b2915';c.lineWidth=10+r()*45;
-      c.beginPath();c.moveTo(x-130,y+80);c.bezierCurveTo(x-90,y-40,x+50,y+80,x+190,y-70);c.stroke();
-    }
-    // Broad colored landforms distinguish each sector without obscuring combat.
-    for(let i=0;i<16;i++){
-      const x=r()*W,y=r()*H,rx=35+r()*140,ry=15+r()*65;
-      c.globalAlpha=.12;ellipse(c,x,y,rx,ry,this.map.accent);c.globalAlpha=1;
-    }
-    // Fine, broken contour rings add a surveyed topographic-map texture.
-    for(let i=0;i<25;i++){
-      const x=r()*W,y=r()*H,rx=18+r()*55,ry=12+r()*32,rotation=r()*Math.PI;
-      c.save();c.translate(x,y);c.rotate(rotation);
-      for(let ring=0;ring<4;ring++){
-        c.beginPath();c.ellipse(0,0,rx+ring*12,ry+ring*8,0,0,TAU);
-        c.strokeStyle=ring===0?'#d9d4ad20':'#d9d4ad12';c.lineWidth=ring===0?1.4:1;c.stroke();
-      }
-      c.restore();
-    }
-    if(this.map.layout==='valley'){
-      c.beginPath();c.moveTo(W*.1,-60);c.bezierCurveTo(W*.3,H*.2,W*.06,H*.54,W*.32,H+60);
-      c.strokeStyle='#356b7b';c.lineWidth=105;c.stroke();c.strokeStyle='#75b5b566';c.lineWidth=70;c.stroke();
-      c.strokeStyle='#c2dfc655';c.lineWidth=2;c.setLineDash([25,35]);c.stroke();c.setLineDash([]);
-    }else if(this.map.layout==='canyon'){
-      for(let i=0;i<7;i++){
-        const x=W*(.06+i*.15);c.beginPath();c.moveTo(x,-30);c.bezierCurveTo(x+100,H*.25,x-100,H*.6,x+50,H+30);
-        c.strokeStyle=i%2?'#563d4b44':'#e5a07844';c.lineWidth=25+i*5;c.stroke();
-      }
-    }
-    // Old supply road, tyre tracks, and dusty shoulders.
-    c.beginPath();
-    if(this.map.layout==='valley'){c.moveTo(-80,H*.25);c.bezierCurveTo(W*.3,H*.15,W*.45,H*.65,W*.72,H*.5);c.bezierCurveTo(W*.9,H*.4,W*.85,H*.75,W+100,H*.8);}
-    else if(this.map.layout==='canyon'){c.moveTo(W*.2,-80);c.bezierCurveTo(W*.6,H*.15,W*.28,H*.42,W*.52,H*.65);c.bezierCurveTo(W*.7,H*.85,W*.83,H*.65,W*.91,H+100);}
-    else{c.moveTo(-80,H*.68);c.bezierCurveTo(W*.24,H*.43,W*.43,H*.9,W*.65,H*.61);c.bezierCurveTo(W*.84,H*.36,W*.91,H*.56,W+100,H*.24);}
-    c.strokeStyle='#9a96754a';c.lineWidth=105;c.stroke();c.strokeStyle='#343f3288';c.lineWidth=76;c.stroke();
-    c.strokeStyle='#b4ac7733';c.lineWidth=2;c.setLineDash([18,24]);c.stroke();c.setLineDash([]);
-    // Secondary access road.
-    c.beginPath();c.moveTo(W*.72,-30);c.lineTo(W*.72,H*.4);c.lineTo(W*.84,H*.48);c.lineWidth=39;c.strokeStyle='#424c3855';c.stroke();
-    // Sparse scrub and rocks, kept low contrast so projectiles read clearly.
-    for(let i=0;i<210;i++){
-      const x=r()*W,y=r()*H,size=2+r()*11;
-      if(r()>.44){ellipse(c,x+3,y+4,size*1.2,size*.65,'#24322630');ellipse(c,x,y,size,size*.63,'#46523a');ellipse(c,x-2,y-2,size*.62,size*.4,'#7e8461');}
-      else {for(let j=0;j<3;j++)ellipse(c,x+r()*9,y+r()*9,size*.5,size*.35,'#35463250');}
-    }
-    // Concrete landing area.
-    const landing=this.map.layout==='valley'?[.68,.22]:this.map.layout==='canyon'?[.24,.68]:[.35,.37];
-    c.save();c.translate(W*landing[0],H*landing[1]);c.rotate(-.13);c.fillStyle='#1b281c22';c.fillRect(-92,-83,200,186);c.fillStyle='#85867244';c.fillRect(-99,-94,188,176);
-    c.strokeStyle='#d2d1a44d';c.lineWidth=2;c.strokeRect(-87,-82,164,152);c.beginPath();c.arc(-5,-6,57,0,TAU);c.stroke();
-    c.fillStyle='#d1d0a45c';c.font='bold 63px Arial';c.textAlign='center';c.fillText('H',-5,16);
-    c.font='8px monospace';c.fillStyle='#c4c69a77';c.fillText('NIGHTHAWK / 07',-5,63);c.restore();
-    if(this.map.layout==='valley'){
-      this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);
-      this.compound(c,W*.17,H*.7,.5);this.compound(c,W*.57,H*.52,.48);
-    }else if(this.map.layout==='canyon'){
-      this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);
-      this.compound(c,W*.17,H*.32,.5);this.compound(c,W*.84,H*.65,.48);
-    }else{
-      this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);
-      this.compound(c,W*.52,H*.3,.5);this.compound(c,W*.68,H*.68,.48);
-    }
-    // Sector grid and survey marks.
-    c.strokeStyle='#e4edb009';c.lineWidth=1;
-    for(let x=0;x<W;x+=100){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
-    for(let y=0;y<H;y+=100){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
-    c.font='8px monospace';c.fillStyle='#d3d6b533';c.textAlign='left';
-    for(let x=90;x<W;x+=260)for(let y=150;y<H-100;y+=250){c.fillText('+',x,y);c.fillText(`${Math.round(x/10)}.${Math.round(y/10)}`,x+10,y+2);}
-    c.save();c.translate(W*.69,H*.85);c.rotate(-.2);c.font='bold 45px Arial';c.fillStyle='#d7d8b620';c.fillText(this.mapLabel||this.map.name,0,0);c.restore();
-  }
-  compound(c,x,y,s) {
-    c.save();c.translate(x,y);c.scale(s,s);c.rotate(.08);
-    c.fillStyle='#28352233';c.fillRect(-110,-95,240,200);
-    c.strokeStyle='#a6a78b55';c.lineWidth=1;c.strokeRect(-125,-112,263,232);
-    for(let i=-120;i<130;i+=17){c.fillStyle='#c3c1a45c';c.fillRect(i,-115,2,6);c.fillRect(i,117,2,6);}
-    const building=(bx,by,w,h)=>{
-      c.fillStyle='#18241e55';c.fillRect(bx+9,by+12,w,h);
-      c.fillStyle='#3d493c';c.fillRect(bx,by,w,h);c.fillStyle='#78816b';c.fillRect(bx+3,by+3,w-6,h-8);
-      c.fillStyle='#858e76';c.fillRect(bx+3,by+3,w-6,4);c.fillStyle='#434f42';c.fillRect(bx+8,by+h-8,w-16,5);
-      c.strokeStyle='#46533f';c.lineWidth=2;for(let xx=bx+12;xx<bx+w-8;xx+=12){c.beginPath();c.moveTo(xx,by+8);c.lineTo(xx,by+h-13);c.stroke();}
-      c.fillStyle='#4b5747';c.fillRect(bx+w*.4,by+8,15,13);c.fillStyle='#a1aa83';c.fillRect(bx+w*.4,by+8,15,3);
+  constructor(canvas, settings) {
+    this.canvas = canvas;
+    this.settings = settings;
+    this.gl = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    this.gl.outputColorSpace = THREE.SRGBColorSpace;
+    this.gl.shadowMap.enabled = true;
+    this.gl.shadowMap.type = THREE.PCFShadowMap;
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color('#161b15');
+    this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 20000);
+    this.camera.up.set(0, 1, 0);
+    this.ambient = new THREE.HemisphereLight('#d9e3ce', '#40372a', 2.2);
+    this.scene.add(this.ambient);
+    this.sun = new THREE.DirectionalLight('#fff0d3', 3.2);
+    this.sun.position.set(-900, 1500, 800);
+    this.sun.castShadow = true;
+    this.sun.shadow.mapSize.set(1024, 1024);
+    this.sun.shadow.camera.left = -1400;
+    this.sun.shadow.camera.right = 1400;
+    this.sun.shadow.camera.top = 1400;
+    this.sun.shadow.camera.bottom = -1400;
+    this.scene.add(this.sun);
+    this.staticRoot = new THREE.Group();
+    this.dynamicRoot = new THREE.Group();
+    this.scene.add(this.staticRoot, this.dynamicRoot);
+    this.dynamic = new Map();
+    this.visible = new Set();
+    this.cursorKey = {};
+    this.materials = new Map();
+    this.geometries = {
+      box: new THREE.BoxGeometry(1, 1, 1),
+      sphere: new THREE.SphereGeometry(1, 14, 10),
+      cylinder: new THREE.CylinderGeometry(1, 1, 1, 10),
+      cone: new THREE.ConeGeometry(1, 1, 8),
+      rock: new THREE.DodecahedronGeometry(1, 0),
+      ring: new THREE.TorusGeometry(1, 0.07, 6, 32),
     };
-    building(-98,-80,104,58);building(27,-78,80,112);building(-98,2,58,78);
-    for(let i=0;i<3;i++){c.fillStyle=i===1?'#7c7954':'#596b4e';c.fillRect(-19+i*34,62,28,48);c.strokeStyle='#25382266';for(let j=0;j<5;j++)c.strokeRect(-16+i*34,65+j*8,22,4);}
-    for(const [lx,ly] of [[-120,-107],[130,113]]){ellipse(c,lx,ly,7,7,'#d6d8951a');ellipse(c,lx,ly,2,2,'#e2da9b');}
-    c.restore();
+    this.raycaster = new THREE.Raycaster();
+    this.ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    this.hit = new THREE.Vector3();
+    this.ndc = new THREE.Vector2();
   }
-  helicopter(c,p,t,ghost=false) {
-    c.save();c.translate(p.x,p.y);
-    if(!ghost){c.save();c.translate(13,19);c.rotate(p.angle);ellipse(c,-3,0,37,16,'#0b170c4d');c.fillStyle='#0b170c33';c.fillRect(-31,-43,3,86);c.restore();}
-    const bank=p.bank||0,pitch=p.pitch||0;
-    c.rotate(p.angle);
-    c.translate(pitch*30,bank*30);
-    c.rotate(bank*.45);
-    c.scale(1-Math.abs(pitch)*.3,1-Math.abs(bank)*.5);
-    if(ghost)c.globalAlpha=.3;
-    // Tail boom, horizontal stabilizers, pods and skids.
-    path(c,[[-14,-6],[-55,-3],[-62,0],[-54,4],[-14,6]],'#728471','#c2cba755');
-    path(c,[[-46,-3],[-53,-18],[-57,-18],[-55,0],[-54,17],[-48,17]],'#81947b');
-    c.fillStyle='#283d33';c.fillRect(-16,-19,36,4);c.fillRect(-16,15,36,4);c.fillStyle='#475f4c';c.fillRect(-10,-23,22,7);c.fillRect(-10,16,22,7);
-    c.fillStyle='#9aa484';c.fillRect(4,-22,19,3);c.fillRect(4,19,19,3);
-    path(c,[[-25,-9],[-17,-15],[12,-14],[30,-7],[35,0],[28,9],[11,14],[-18,13],[-26,6]],'#8b9a78','#c1cba460');
-    path(c,[[-21,-8],[-11,-11],[4,-10],[4,10],[-13,11],[-21,5]],'#657b61');
-    path(c,[[9,-11],[26,-6],[30,-1],[11,-1]],'#263e35','#bbd9b144');
-    path(c,[[11,2],[29,2],[25,7],[9,11]],'#2e4c3d','#bbd9b144');
-    c.fillStyle='#b5c096';c.fillRect(-8,-10,3,20);c.fillStyle='#3c503f';c.fillRect(-14,-7,5,14);
-    c.fillStyle='#a7b590';c.fillRect(26,-2,14,4);c.fillStyle='#e0e5b9';c.fillRect(37,-1,3,2);
-    c.save();c.translate(-54,0);c.rotate(t*42);c.fillStyle='#d8dfb6aa';c.fillRect(-1,-12,2,24);c.fillRect(-12,-1,24,2);c.restore();
-    c.save();c.translate(-5,0);c.rotate(t*49);
-    c.strokeStyle='#e7eed92c';c.lineWidth=2;c.beginPath();c.arc(0,0,45,0,TAU);c.stroke();
-    for(let i=0;i<4;i++){c.rotate(Math.PI/2);path(c,[[0,-2],[46,-3],[44,0],[0,2]],'#e2e7cc99');}
-    ellipse(c,0,0,5,5,'#374e3e');ellipse(c,-1,-1,2,2,'#c3caa9');c.restore();
-    if(Math.sin(t*5)>0)ellipse(c,-51,0,2,2,'#f7a26d');ellipse(c,1,-19,1.5,1.5,'#c1ed95');
-    c.restore();
+
+  material(color, roughness = 0.88, emissive = '#000000') {
+    const key = `${color}/${roughness}/${emissive}`;
+    if (!this.materials.has(key)) this.materials.set(key, new THREE.MeshStandardMaterial({
+      color, roughness, emissive, emissiveIntensity: emissive === '#000000' ? 0 : 0.8,
+    }));
+    return this.materials.get(key);
   }
-  enemy(c,e,t) {
-    c.save();c.translate(e.x,e.y);c.rotate(e.angle);
-    const boss=e.type==='boss';c.scale(ENEMIES[e.type].scale,ENEMIES[e.type].scale);
-    if(e.type==='drone'||e.type==='kamikaze'){
-      ellipse(c,7,12,23,13,'#10231633');
-      c.strokeStyle='#545d4a';c.lineWidth=5;c.beginPath();c.moveTo(-13,-13);c.lineTo(13,13);c.moveTo(-13,13);c.lineTo(13,-13);c.stroke();
-      for(const x of [-14,14])for(const y of [-14,14]){ellipse(c,x,y,9,9,'#283b2e88');c.save();c.translate(x,y);c.rotate(t*52);c.fillStyle='#c3c8a366';c.fillRect(-10,-1,20,2);c.restore();}
-      path(c,[[-10,-7],[7,-8],[15,0],[7,8],[-10,7]],e.type==='kamikaze'?'#d96f50':'#a19c76','#d1ba9366');ellipse(c,8,0,3,3,'#e9a173');
-    }else if(e.type==='rocketSemi'){
-      c.fillStyle='#182a1e77';c.fillRect(-34,-15,70,37);
-      c.fillStyle='#29392d';for(const x of [-25,-7,21]){ellipse(c,x,-16,6,5,'#29392d');ellipse(c,x,16,6,5,'#29392d');}
-      c.fillStyle='#6c7857';c.fillRect(-34,-13,46,26);c.fillStyle='#a1a582';c.fillRect(12,-14,22,28);
-      c.fillStyle='#485849';c.fillRect(23,-10,7,20);
-      c.save();c.rotate((e.turret??e.angle)-e.angle);c.fillStyle='#4b5c45';c.fillRect(-21,-10,38,20);c.fillStyle='#c0b98b';for(const y of [-6,0,6])c.fillRect(-14,y-2,30,4);c.restore();
-    }else{
-      c.fillStyle='#14231655';c.fillRect(-22+6,-21+7,47,46);
-      c.fillStyle='#27352a';c.fillRect(-23,-22,43,11);c.fillRect(-23,11,43,11);
-      c.fillStyle='#a1a582';
-      const phase=((e.trackPhase||0)%6+6)%6;
-      for(let x=-27+phase;x<20;x+=6){
-        const left=Math.max(x,-23),right=Math.min(x+3,20);
-        if(right>left){c.fillRect(left,-21,right-left,9);c.fillRect(left,12,right-left,9);}
+
+  addMesh(parent, geometry, color, x, y, z, sx, sy, sz, options = {}) {
+    const mesh = new THREE.Mesh(geometry, this.material(color, options.roughness, options.emissive));
+    mesh.position.set(x, y, z);
+    mesh.scale.set(sx, sy, sz);
+    mesh.castShadow = options.shadow !== false;
+    mesh.receiveShadow = options.receiveShadow !== false;
+    parent.add(mesh);
+    return mesh;
+  }
+
+  box(parent, x, y, z, sx, sy, sz, color, options) {
+    return this.addMesh(parent, this.geometries.box, color, x, y, z, sx, sy, sz, options);
+  }
+
+  resize(world, rect, map) {
+    this.world = { ...world };
+    this.rect = { width: rect.width, height: rect.height };
+    const ratio = Math.min(window.devicePixelRatio || 1, this.settings.effects ? 1.6 : 1);
+    this.gl.setPixelRatio(ratio);
+    this.gl.setSize(rect.width, rect.height, false);
+    this.setMap(map);
+    this.setCamera({ x: 0, y: 0, zoom: 1 }, world);
+  }
+
+  setMap(map) {
+    this.map = map;
+    this.staticRoot.clear();
+    const { width: W, height: H } = this.world;
+    const color = map.colors[1];
+    this.scene.background.set(color);
+
+    const outer = new THREE.Mesh(new THREE.PlaneGeometry(W * 4, H * 4), this.material(map.colors[0]));
+    outer.rotation.x = -Math.PI / 2;
+    outer.position.y = -0.12;
+    outer.receiveShadow = true;
+    this.staticRoot.add(outer);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(W, H), this.material(color));
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    this.staticRoot.add(ground);
+
+    const roadColor = map.layout === 'valley' ? '#3d5143' : '#655e48';
+    const addRoad = (x1, y1, x2, y2, width) => {
+      const a = worldToScene(x1, y1, this.world), b = worldToScene(x2, y2, this.world);
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz);
+      const road = this.box(this.staticRoot, (a.x + b.x) / 2, 0.025, (a.z + b.z) / 2,
+        length, 0.035, width, roadColor, { shadow: false });
+      road.rotation.y = Math.atan2(-dz, dx);
+      const center = this.box(this.staticRoot, (a.x + b.x) / 2, 0.047, (a.z + b.z) / 2,
+        length, 0.012, 0.12, '#a99a6b', { shadow: false });
+      center.rotation.y = road.rotation.y;
+    };
+    if (map.layout === 'valley') {
+      addRoad(W * 0.05, H * 0.72, W * 0.95, H * 0.34, 72);
+      addRoad(W * 0.2, H * 0.12, W * 0.76, H * 0.88, 42);
+    } else if (map.layout === 'canyon') {
+      addRoad(W * 0.16, H * 0.82, W * 0.84, H * 0.2, 68);
+      addRoad(W * 0.12, H * 0.28, W * 0.86, H * 0.72, 34);
+    } else {
+      addRoad(W * 0.05, H * 0.7, W * 0.94, H * 0.3, 74);
+      addRoad(W * 0.75, H * 0.08, W * 0.32, H * 0.88, 38);
+    }
+
+    const random = seededRandom(map.seed);
+    for (let i = 0; i < 145; i++) {
+      const x = random() * W, y = random() * H;
+      const pos = worldToScene(x, y, this.world);
+      const size = 4 + random() * 10;
+      if (random() > 0.48) {
+        this.addMesh(this.staticRoot, this.geometries.rock, '#56604a', pos.x, size * 0.22, pos.z,
+          size, size * 0.48, size * 0.8);
+      } else {
+        this.addMesh(this.staticRoot, this.geometries.sphere, '#596748', pos.x, size * 0.3, pos.z,
+          size * 0.72, size * 0.35, size * 0.65, { shadow: false });
       }
-      path(c,[[-25,-11],[-15,-16],[17,-16],[25,-8],[25,8],[15,16],[-20,16]],boss?'#727356':'#8c8e69','#b4b38a55');
-      c.fillStyle='#a3a078';c.fillRect(-16,-12,29,3);c.fillStyle='#535f45';c.fillRect(-20,-7,8,14);
-      c.save();c.rotate((e.turret??e.angle)-e.angle);
-      path(c,[[-9,-10],[9,-10],[16,-5],[16,5],[8,10],[-9,10],[-13,4],[-13,-4]],'#a49f75','#c5b68966');
-      c.fillStyle='#b5ac7b';c.fillRect(5,-3,e.type==='artillery'?37:27,6);c.fillStyle='#4c5940';c.fillRect(e.type==='artillery'?35:27,-4,5,8);
-      if(e.type==='aa'){c.fillStyle='#b5ac7b';c.fillRect(5,-10,27,4);c.fillRect(5,6,27,4);}
-      ellipse(c,-1,-1,5,5,'#5b674a');c.fillStyle='#dc9a6c';c.fillRect(-4,-2,6,2);c.restore();
-      c.strokeStyle='#c5b78866';c.lineWidth=1;c.beginPath();c.moveTo(-14,-12);c.lineTo(-18,-32);c.stroke();
     }
-    if(e.hit>0){c.globalAlpha=clamp(e.hit*5,0,.65);ellipse(c,0,0,22,17,'#fff6c4');c.globalAlpha=1;}
-    if(e.charge>.4){c.strokeStyle=`rgba(243,151,94,${e.charge*.6})`;c.lineWidth=1;c.beginPath();c.arc(0,0,31,0,TAU*e.charge);c.stroke();}
-    c.restore();
-    if(e.health<e.maxHealth&&e.type!=='boss'){c.fillStyle='#0f1b0eaa';c.fillRect(e.x-17,e.y-35,34,3);c.fillStyle='#e7b181';c.fillRect(e.x-17,e.y-35,34*e.health/e.maxHealth,3);}
+
+    const sites = map.layout === 'valley'
+      ? [[.78, .76, .9], [.38, .24, .65], [.17, .7, .52]]
+      : map.layout === 'canyon'
+        ? [[.72, .25, .9], [.53, .82, .7], [.17, .32, .52]]
+        : [[.8, .2, .9], [.14, .8, .7], [.52, .3, .58]];
+    for (const [px, py, scale] of sites) this.compound(W * px, H * py, scale);
+
+    const helipad = worldToScene(W * 0.35, H * 0.37, this.world);
+    this.box(this.staticRoot, helipad.x, 0.014, helipad.z, 170, 0.015, 142, '#747764', { shadow: false });
+    this.addMesh(this.staticRoot, this.geometries.ring, '#c6c79c', helipad.x, 0.035, helipad.z,
+      47, 1, 47, { shadow: false });
   }
-  draw(g,dt) {
-    const c=this.ctx,W=g.world.width,H=g.world.height,t=g.visualTime,camera=g.camera,zoom=camera.zoom;
-    c.setTransform(this.scale,0,0,this.scale,0,0);c.clearRect(0,0,W,H);
-    c.setTransform(this.scale*zoom,0,0,this.scale*zoom,-camera.x*this.scale*zoom,-camera.y*this.scale*zoom);
-    c.save();if(this.settings.shake&&g.shake>0){c.translate((Math.random()-.5)*g.shake,(Math.random()-.5)*g.shake);}
-    c.drawImage(this.terrain,0,0,W,H);
-    for(const d of g.decals){c.save();c.translate(d.x,d.y);c.rotate(d.angle);ellipse(c,0,0,d.size,d.size*.66,'#1c211c88');ellipse(c,0,0,d.size*.65,d.size*.42,'#0c150d66');c.fillStyle='#4a4b37';c.fillRect(-11,-6,21,12);c.restore();}
-    // A very slow cloud shadow drifts over the map.
-    if(this.settings.effects){c.save();c.translate(camera.x*.3,camera.y*.3);const x=(t*12)%(W+600)-300,cloud=c.createRadialGradient(x,H*.35,30,x,H*.35,380);cloud.addColorStop(0,'#14231524');cloud.addColorStop(1,'#14231500');c.fillStyle=cloud;c.fillRect(-W,-H,W*3,H*3);c.restore();}
-    for(const p of g.pickups){
-      const bob=Math.sin(t*3+p.x)*2;c.strokeStyle='#d7ed9c44';c.lineWidth=1;c.beginPath();c.arc(p.x,p.y,23+Math.sin(t*3)*3,0,TAU);c.stroke();
-      c.save();c.translate(p.x,p.y+bob);c.rotate(Math.PI/4);c.fillStyle='#1c321d';c.fillRect(-12,-12,24,24);c.strokeStyle='#d4e89a';c.strokeRect(-12,-12,24,24);c.rotate(-Math.PI/4);
-      c.fillStyle='#dbea9b';c.fillRect(-3,-8,6,16);c.fillRect(-8,-3,16,6);c.restore();
+
+  compound(x, y, scale) {
+    const p = worldToScene(x, y, this.world);
+    this.box(this.staticRoot, p.x, 0.13, p.z, 175 * scale, 0.1, 150 * scale, '#343d32', { shadow: false });
+    for (const [dx, dz, w, h, color] of [
+      [-35, -22, 72, 42, '#78806b'], [35, -16, 50, 64, '#727c68'], [-47, 35, 44, 50, '#68735f'],
+    ]) {
+      this.box(this.staticRoot, p.x + dx * scale, h * scale / 2 + 0.17, p.z + dz * scale,
+        w * scale, h * scale, 48 * scale, color);
+      this.box(this.staticRoot, p.x + dx * scale, h * scale + 0.19, p.z + dz * scale,
+        w * scale * 1.04, 5 * scale, 51 * scale, '#a0a184');
     }
-    for(const e of g.enemies)this.enemy(c,e,t);
-    if(g.state==='ready'){this.enemy(c,{x:W*.7,y:H*.73,angle:-2.2,type:'tank',health:3,maxHealth:3},t);this.enemy(c,{x:W*.87,y:H*.57,angle:-2.5,type:'tank',health:3,maxHealth:3},t);}
-    for(const b of g.bullets){
-      if(b.kind==='rocket'||b.kind==='enemyRocket'){c.save();c.translate(b.x,b.y);c.rotate(Math.atan2(b.vy,b.vx));c.fillStyle=b.friendly?'#e4dfb2':'#ee9875';c.fillRect(-9,-2,15,4);c.fillStyle='#ffcc79';c.fillRect(-19,-2,10,4);c.restore();}
-      else {c.strokeStyle=b.friendly?'#f4f1ab':'#ffac77';c.lineWidth=b.friendly?2:3;c.lineCap='round';c.beginPath();const len=b.friendly?20:13,sp=Math.hypot(b.vx,b.vy)||1;c.moveTo(b.x-b.vx/sp*len,b.y-b.vy/sp*len);c.lineTo(b.x,b.y);c.stroke();if(!b.friendly)ellipse(c,b.x,b.y,3,3,'#ffd2a5');}
+  }
+
+  setCamera(cameraState, world = this.world) {
+    if (!world || !this.rect) return;
+    const { width: W, height: H } = world;
+    const aspect = this.rect.width / Math.max(1, this.rect.height);
+    const diagonal = (W + H) / Math.SQRT2;
+    const viewWidth = Math.max(diagonal * 1.1, diagonal * 0.64 * aspect);
+    const viewHeight = viewWidth / aspect;
+    this.camera.left = -viewWidth / 2;
+    this.camera.right = viewWidth / 2;
+    this.camera.top = viewHeight / 2;
+    this.camera.bottom = -viewHeight / 2;
+    this.camera.zoom = cameraState.zoom;
+    this.camera.updateProjectionMatrix();
+    const cx = cameraState.x + W / (2 * cameraState.zoom);
+    const cy = cameraState.y + H / (2 * cameraState.zoom);
+    const target = worldToScene(cx, cy, world);
+    const distance = Math.max(W, H) * 1.6;
+    this.camera.position.set(target.x + distance, distance, target.z + distance);
+    this.camera.lookAt(target.x, 0, target.z);
+    this.camera.updateMatrixWorld();
+  }
+
+  screenToWorld(screenX, screenY) {
+    this.ndc.set(screenX * 2 - 1, -screenY * 2 + 1);
+    this.raycaster.setFromCamera(this.ndc, this.camera);
+    if (!this.raycaster.ray.intersectPlane(this.ground, this.hit)) return { x: 0, y: 0 };
+    return sceneToWorld(this.hit.x, this.hit.z, this.world);
+  }
+
+  newDynamic(item, create) {
+    let group = this.dynamic.get(item);
+    if (!group) {
+      group = new THREE.Group();
+      this.dynamic.set(item, group);
+      this.dynamicRoot.add(group);
+      create(group);
     }
-    for(const warning of g.warnings||[]){
-      c.save();c.globalAlpha=.5+.5*Math.abs(Math.sin(t*9));c.strokeStyle='#ffb46f';c.lineWidth=2;c.beginPath();c.arc(warning.x,warning.y,warning.radius,0,TAU);c.stroke();
-      c.beginPath();c.moveTo(warning.x-8,warning.y);c.lineTo(warning.x+8,warning.y);c.moveTo(warning.x,warning.y-8);c.lineTo(warning.x,warning.y+8);c.stroke();c.restore();
+    this.visible.add(item);
+    return group;
+  }
+
+  makeHelicopter(group) {
+    this.box(group, 0, 0.7, 0, 35, 13, 51, '#687a62');
+    this.box(group, 0, 0.9, 8, 24, 11, 23, '#9ba689');
+    this.box(group, 0, 0.91, 16, 19, 7, 12, '#334e48', { roughness: 0.3 });
+    this.box(group, 0, 0.75, -48, 7, 7, 52, '#798a70');
+    this.box(group, 0, 0.7, -78, 4, 3, 16, '#8e9a7e');
+    this.box(group, -10, 0.36, 1, 3, 4, 55, '#343f35');
+    this.box(group, 10, 0.36, 1, 3, 4, 55, '#343f35');
+    this.box(group, 0, 1.42, 0, 4, 2, 77, '#343f35');
+    const muzzle = this.addMesh(group, this.geometries.sphere, '#fff0a4', 0, 0.95, 31, 5, 3, 5,
+      { emissive: '#ffb331', shadow: false });
+    muzzle.visible = false;
+    group.userData.muzzle = muzzle;
+    const rotor = new THREE.Group();
+    rotor.position.y = 1.62;
+    this.box(rotor, 0, 0, 0, 4, 1, 86, '#d4d7bf');
+    this.box(rotor, 0, 0, 0, 86, 1, 4, '#d4d7bf');
+    group.add(rotor);
+    group.userData.rotor = rotor;
+  }
+
+  makeEnemy(group, type) {
+    if (type === 'drone' || type === 'kamikaze') {
+      const color = type === 'kamikaze' ? '#cb6f4f' : '#9d9a72';
+      this.box(group, 0, 0.8, 0, 16, 7, 20, color);
+      for (const [x, z] of [[-16, -16], [16, -16], [-16, 16], [16, 16]]) {
+        this.box(group, x / 2, 0.56, z / 2, 3, 2, 3, '#4b5546');
+        this.addMesh(group, this.geometries.sphere, '#303c31', x, 0.58, z, 7, 2, 7);
+        this.box(group, x, 0.66, z, 17, 1, 2, '#c6c7ad', { shadow: false });
+      }
+      this.addMesh(group, this.geometries.sphere, '#ed9d68', 7, 0.9, 0, 3, 2, 3, { emissive: '#a34219' });
+      return;
     }
-    if(g.player.health>0){
-      if(g.player.dashTime>0){for(let i=1;i<4;i++)this.helicopter(c,{...g.player,x:g.player.x-g.player.vx*.026*i,y:g.player.y-g.player.vy*.026*i},t,true);}
-      c.globalAlpha=g.player.invulnerable>0&&Math.floor(t*18)%2===0?.55:1;this.helicopter(c,g.player,t);c.globalAlpha=1;
-      if(g.player.invulnerable>0){c.strokeStyle='#dbea9b40';c.lineWidth=1;c.beginPath();c.arc(g.player.x,g.player.y,43,0,TAU);c.stroke();}
-      if(g.player.muzzle>0){c.save();c.translate(g.player.x,g.player.y);c.rotate(g.player.angle);path(c,[[36,-5],[59,0],[36,5],[43,0]],'#fff2a8');c.restore();}
+    const boss = type === 'boss';
+    const bodyColor = boss ? '#77795d' : '#747c63';
+    this.box(group, 0, 0.55, 0, boss ? 76 : 48, 18, boss ? 88 : 58, bodyColor);
+    for (const side of [-1, 1]) {
+      this.box(group, side * 26, 0.31, 0, 9, 8, boss ? 100 : 68, '#343c32');
+      for (let z = -32; z < 34; z += 13) this.box(group, side * 26, 0.32, z, 5, 6, 4, '#a4a17a');
     }
-    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();}}c.globalAlpha=1;
-    for(const e of g.explosions){const progress=1-e.life/e.maxLife;c.globalAlpha=(1-progress)*.75;c.strokeStyle='#ffcf8b';c.lineWidth=3*(1-progress);c.beginPath();c.arc(e.x,e.y,e.size*progress,0,TAU);c.stroke();if(progress<.4){const flash=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.size*.6);flash.addColorStop(0,'#fff6c9aa');flash.addColorStop(1,'#ffc06b00');c.fillStyle=flash;c.fillRect(e.x-e.size,e.y-e.size,e.size*2,e.size*2);}}c.globalAlpha=1;
-    for(const f of g.floaters){c.globalAlpha=clamp(f.life,0,1);c.font=`bold ${f.big?19:12}px monospace`;c.fillStyle=f.color;c.textAlign='center';c.fillText(f.text,f.x,f.y);}c.globalAlpha=1;
-    // Enemy arrival indicators give the pilot time to react.
-    if(g.state==='playing')for(const e of g.enemies){const left=camera.x,right=left+W/zoom,top=camera.y,bottom=top+H/zoom;if(e.x<left+15||e.x>right-15||e.y<top+15||e.y>bottom-15){const x=clamp(e.x,left+18,right-18),y=clamp(e.y,top+100/zoom,bottom-70/zoom);c.save();c.translate(x,y);c.rotate(Math.atan2(e.y-(top+H/(2*zoom)),e.x-(left+W/(2*zoom))));path(c,[[6,0],[-5,-5],[-5,5]],'#efaa76');c.restore();}}
-    c.restore();
-    c.setTransform(this.scale,0,0,this.scale,0,0);
-    if(g.state==='playing'&&!g.touch){
-      const x=(g.pointer.x-camera.x)*zoom,y=(g.pointer.y-camera.y)*zoom;c.save();c.translate(x,y);c.strokeStyle='#f1f6c3bb';c.lineWidth=1;c.beginPath();c.arc(0,0,12,0,TAU);c.moveTo(-21,0);c.lineTo(-7,0);c.moveTo(7,0);c.lineTo(21,0);c.moveTo(0,-21);c.lineTo(0,-7);c.moveTo(0,7);c.lineTo(0,21);c.stroke();ellipse(c,0,0,1.5,1.5,'#f6f7c5');c.restore();
+    this.box(group, 0, 0.95, -2, boss ? 45 : 28, 12, boss ? 46 : 34, '#8d9270');
+    this.box(group, 0, 1.16, -8, 10, 2, 16, '#b7b68a');
+    const turret = new THREE.Group();
+    turret.position.set(0, 1.3, 0);
+    this.box(turret, 0, 0, 0, 17, 8, 20, '#a29e76');
+    this.box(turret, 0, 0, 20, 5, 4, type === 'artillery' || boss ? 48 : 34, '#b9b08a');
+    group.add(turret);
+    group.userData.turret = turret;
+  }
+
+  label(text, color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 128;
+    const context = canvas.getContext('2d');
+    context.font = 'bold 42px monospace';
+    context.textAlign = 'center';
+    context.lineWidth = 8;
+    context.strokeStyle = '#10150f';
+    context.fillStyle = color;
+    context.strokeText(text, 256, 78);
+    context.fillText(text, 256, 78);
+    const texture = new THREE.CanvasTexture(canvas);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false }));
+    sprite.scale.set(74, 19, 1);
+    return sprite;
+  }
+
+  draw(g, dt) {
+    this.setCamera(g.camera, g.world);
+    this.visible.clear();
+    for (const decal of g.decals) {
+      const group = this.newDynamic(decal, obj => {
+        this.box(obj, 0, 0.08, 0, 28, 0.03, 22, '#25271f', { shadow: false });
+        this.box(obj, 0, 0.1, 0, 18, 0.035, 13, '#493e31', { shadow: false });
+      });
+      const pos = worldToScene(decal.x, decal.y, g.world);
+      group.position.set(pos.x, 0, pos.z);
+      group.rotation.y = -decal.angle;
+      group.scale.setScalar(decal.size / 26);
     }
-    // Target tracking radar, with a faint scanning line.
-    if(g.state==='playing'&&W>1000){const x=95,y=H-100,r=44;c.save();c.translate(x,y);ellipse(c,0,0,r,r,'#111f12aa');c.strokeStyle='#c9df8a38';c.lineWidth=1;for(const rr of [r*.5,r]){c.beginPath();c.arc(0,0,rr,0,TAU);c.stroke();}c.beginPath();c.moveTo(-r,0);c.lineTo(r,0);c.moveTo(0,-r);c.lineTo(0,r);c.stroke();c.strokeStyle='#dbea9b77';c.beginPath();c.moveTo(0,0);c.lineTo(Math.cos(t*1.3)*r,Math.sin(t*1.3)*r);c.stroke();for(const e of g.enemies)ellipse(c,(e.x/W-.5)*r*1.7,(e.y/H-.5)*r*1.7,2,2,'#efae7c');ellipse(c,(g.player.x/W-.5)*r*1.7,(g.player.y/H-.5)*r*1.7,2.5,2.5,'#def2a1');c.restore();}
+    for (const wreck of g.wreckSmoke) {
+      const group = this.newDynamic(wreck, obj => {
+        for (let i = 0; i < 3; i++) this.addMesh(obj, this.geometries.sphere, '#343a31',
+          (i - 1) * 5, 4 + i * 7, (i % 2) * 4, 1, 1, 1, { shadow: false });
+      });
+      const pos = worldToScene(wreck.x, wreck.y, g.world);
+      group.position.set(pos.x, 0, pos.z);
+      const pulse = 0.85 + Math.sin(g.visualTime * 2 + wreck.timer) * 0.08;
+      group.scale.setScalar(pulse);
+      group.children.forEach((smoke, i) => smoke.scale.set(8 + i * 2, 7 + i * 3, 8 + i * 2));
+    }
+    for (const pickup of g.pickups) {
+      const group = this.newDynamic(pickup, obj => {
+        this.box(obj, 0, 0.5, 0, 20, 12, 20, '#26391e');
+        this.box(obj, 0, 0.53, 0, 5, 14, 2, '#d9e99b', { emissive: '#879b36' });
+        this.box(obj, 0, 0.53, 0, 14, 5, 2, '#d9e99b', { emissive: '#879b36' });
+      });
+      const pos = worldToScene(pickup.x, pickup.y, g.world);
+      group.position.set(pos.x, Math.sin(g.visualTime * 3 + pickup.x) * 2, pos.z);
+      group.rotation.y += dt * 0.5;
+    }
+    for (const enemy of g.enemies) {
+      const group = this.newDynamic(enemy, obj => this.makeEnemy(obj, enemy.type));
+      const pos = worldToScene(enemy.x, enemy.y, g.world);
+      group.position.set(pos.x, 0, pos.z);
+      group.rotation.y = Math.PI / 2 - enemy.angle;
+      group.scale.setScalar(ENEMIES[enemy.type].scale);
+      if (group.userData.turret) group.userData.turret.rotation.y = enemy.angle - enemy.turret;
+    }
+    for (const bullet of g.bullets) {
+      const group = this.newDynamic(bullet, obj => {
+        const color = bullet.friendly ? '#f0d98f' : '#ed9872';
+        const rocket = bullet.kind === 'rocket' || bullet.kind === 'enemyRocket';
+        const mesh = this.addMesh(obj, rocket ? this.geometries.cone : this.geometries.sphere,
+          color, 0, 0, 0, bullet.kind === 'rocket' || bullet.kind === 'enemyRocket' ? 2 : 1.8,
+          rocket ? 10 : 1.8,
+          rocket ? 2 : 1.8,
+          { emissive: color });
+        if (rocket) mesh.rotation.x = Math.PI / 2;
+      });
+      const pos = worldToScene(bullet.x, bullet.y, g.world);
+      group.position.set(pos.x, 0.75, pos.z);
+      group.rotation.y = Math.atan2(bullet.vx, bullet.vy);
+    }
+    for (const warning of g.warnings) {
+      const group = this.newDynamic(warning, obj => {
+        const ring = this.addMesh(obj, this.geometries.ring, '#f2ad71', 0, 0.12, 0, 1, 1, 1, { emissive: '#b55b22', shadow: false });
+        ring.rotation.x = Math.PI / 2;
+        this.box(obj, 0, 0.12, 0, 2, 0.04, 22, '#f2ad71', { emissive: '#b55b22', shadow: false });
+        this.box(obj, 0, 0.12, 0, 22, 0.04, 2, '#f2ad71', { emissive: '#b55b22', shadow: false });
+      });
+      const pos = worldToScene(warning.x, warning.y, g.world);
+      group.position.set(pos.x, 0, pos.z);
+      group.scale.setScalar(warning.radius / 22);
+      group.visible = Math.sin(g.visualTime * 9) > -0.1;
+    }
+    if (g.player.health > 0) {
+      const player = g.player;
+      const group = this.newDynamic(player, obj => this.makeHelicopter(obj));
+      const pos = worldToScene(player.x, player.y, g.world);
+      group.position.set(pos.x, 0, pos.z);
+      group.rotation.set(player.pitch * 0.35, Math.PI / 2 - player.angle, player.bank * 0.35);
+      group.userData.rotor.rotation.y = g.visualTime * 42;
+      group.userData.muzzle.visible = player.muzzle > 0;
+      group.visible = !(player.invulnerable > 0 && Math.floor(g.visualTime * 18) % 2 === 0);
+    }
+    if (g.state === 'playing' && !g.touch) {
+      const cursor = this.newDynamic(this.cursorKey, group => {
+        const ring = this.addMesh(group, this.geometries.ring, '#e8edbd', 0, 0.16, 0, 12, 1, 12,
+          { shadow: false, emissive: '#717d3a' });
+        ring.rotation.x = Math.PI / 2;
+        this.box(group, 0, 0.16, 0, 40, 0.025, 1, '#e8edbd', { shadow: false });
+        this.box(group, 0, 0.16, 0, 1, 0.025, 40, '#e8edbd', { shadow: false });
+      });
+      const pos = worldToScene(g.pointer.x, g.pointer.y, g.world);
+      cursor.position.set(pos.x, 0, pos.z);
+    }
+    for (const particle of g.particles) {
+      const group = this.newDynamic(particle, obj => this.addMesh(obj,
+        particle.smoke ? this.geometries.sphere : this.geometries.box, particle.color, 0, 0, 0, 1, 1, 1,
+        { shadow: false, emissive: particle.smoke ? '#000000' : particle.color }));
+      const pos = worldToScene(particle.x, particle.y, g.world);
+      const fade = Math.max(0, particle.life / particle.maxLife);
+      group.position.set(pos.x, 0.5 + (1 - fade) * 9, pos.z);
+      group.scale.setScalar(Math.max(0.02, particle.size * (particle.smoke ? 1.2 : 0.6) * fade));
+      group.rotation.y = Math.atan2(particle.vx, particle.vy);
+    }
+    for (const explosion of g.explosions) {
+      const group = this.newDynamic(explosion, obj => {
+        const ring = this.addMesh(obj, this.geometries.ring, '#f4c27a', 0, 1, 0, 1, 1, 1, { emissive: '#bd4d21' });
+        ring.rotation.x = Math.PI / 2;
+      });
+      const pos = worldToScene(explosion.x, explosion.y, g.world);
+      const progress = 1 - explosion.life / explosion.maxLife;
+      group.position.set(pos.x, 0, pos.z);
+      group.scale.setScalar(Math.max(0.01, explosion.size * progress));
+      group.children[0].material = this.material('#f4c27a', 0.5, '#bd4d21');
+    }
+    for (const floater of g.floaters) {
+      const group = this.newDynamic(floater, obj => {
+        const sprite = this.label(floater.text, floater.color);
+        obj.add(sprite);
+        obj.userData.sprite = sprite;
+      });
+      const pos = worldToScene(floater.x, floater.y, g.world);
+      group.position.set(pos.x, 28 + (1 - floater.life) * 28, pos.z);
+      group.scale.setScalar(floater.big ? 1.2 : 0.75);
+      group.userData.sprite.material.opacity = Math.max(0, floater.life);
+    }
+
+    for (const [item, group] of this.dynamic) {
+      if (!this.visible.has(item)) {
+        this.dynamicRoot.remove(group);
+        this.dynamic.delete(item);
+      }
+    }
+    this.gl.render(this.scene, this.camera);
   }
 }

@@ -22,7 +22,12 @@ function createGame(reducedMotion=false) {
   const window={addEventListener:(event,fn)=>windowEvents.set(event,fn)};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
   class Audio{constructor(){this.scene='menu';this.initializations=0;}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
-  class Renderer{resize(){} setMap(){} draw(){}}
+  class Renderer{
+    resize(world,rect){this.world=world;this.rect=rect;}
+    setCamera(camera){this.camera=camera;}
+    screenToWorld(x,y){return{x:this.camera.x+x*this.world.width/this.camera.zoom,y:this.camera.y+y*this.world.height/this.camera.zoom};}
+    setMap(){} draw(){}
+  }
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
   const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core),...Object.values(i18n));
@@ -93,9 +98,15 @@ test('new sortie resets combat, unlocks controls, and schedules wave one',async(
   const game=createGame();await game.start();
   assert.equal(game.g.state,'playing');assert.equal(game.g.wave,1);assert.equal(game.g.spawnRemaining,6);
   assert.equal(game.g.player.health,100);assert.equal(game.g.player.rockets,3);
-  game.keys.add('KeyD');const x=game.g.player.x;
+  game.keys.add('KeyD');const screenRight=game.g.player.x-game.g.player.y;
   for(let i=0;i<30;i++)game.update(1/60);
-  assert.ok(game.g.player.x>x+80);
+  assert.ok(game.g.player.x-game.g.player.y>screenRight+80);
+});
+test('movement controls follow screen directions on the isometric ground plane',()=>{
+  const game=createGame();game.keys.add('KeyD');
+  const movement=game.movement();
+  assert.ok(Math.abs(movement.x-Math.SQRT1_2)<1e-12);
+  assert.ok(Math.abs(movement.y+Math.SQRT1_2)<1e-12);
 });
 test('pause clears held inputs and the animation loop stops simulation',async()=>{
   const game=createGame();await game.start();game.keys.add('KeyW');game.g.pointer.down=true;game.pause();
@@ -152,7 +163,7 @@ test('rockets consume ammunition, deal area damage, and replenish over time',asy
 });
 test('dash grants brief protection and cannot be spammed',async()=>{
   const game=createGame();await game.start();game.keys.add('KeyD');game.dash();const p=game.g.player;
-  assert.equal(p.vx,850);assert.ok(p.invulnerable>0);assert.ok(p.dashCooldown>0);
+  assert.ok(Math.abs(Math.hypot(p.vx,p.vy)-850)<1e-8);assert.ok(p.vx>0&&p.vy<0);assert.ok(p.invulnerable>0);assert.ok(p.dashCooldown>0);
   game.damagePlayer(50);assert.equal(p.health,100);
   p.vx=123;game.dash();assert.equal(p.vx,123);
 });
@@ -230,13 +241,13 @@ test('rockets accelerate with and without a target and keep their heading',async
   for(let i=0;i<10;i++)game.update(.05);
   assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-820)<1e-8);
 });
-test('camera follows the player while pointer world coordinates remain aligned',async()=>{
+test('camera follows the player while pointer screen coordinates remain aligned',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   game.pointerPosition({clientX:900,clientY:300});const camera=game.g.camera,old=camera.x;
   game.keys.add('KeyD');for(let i=0;i<120;i++)game.update(1/60);
   assert.ok(camera.x>old);
-  assert.ok(Math.abs((game.g.pointer.x-camera.x)*camera.zoom-game.g.pointer.screenX)<1e-8);
-  assert.ok(Math.abs((game.g.pointer.y-camera.y)*camera.zoom-game.g.pointer.screenY)<1e-8);
+  assert.ok(Math.abs((game.g.pointer.x-camera.x)*camera.zoom-game.g.pointer.screenX*game.g.world.width)<1e-8);
+  assert.ok(Math.abs((game.g.pointer.y-camera.y)*camera.zoom-game.g.pointer.screenY*game.g.world.height)<1e-8);
 });
 test('reduced motion disables camera tracking and zoom',async()=>{
   const game=createGame(true);await game.start();game.g.spawnRemaining=100;

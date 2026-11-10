@@ -53,7 +53,6 @@ function resize(){
   if(old.width&&old.height){
   for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
-    if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
   renderer.resize(g.world,rect,g.map);
   updateCamera(0,true);
@@ -149,8 +148,9 @@ function dash(){
   burst(p.x,p.y,'#b2c382',12,.6);sound.play('dash');
 }
 function movement(){
-  let x=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft'))+joystick.x;
-  let y=Number(keys.has('KeyS')||keys.has('ArrowDown'))-Number(keys.has('KeyW')||keys.has('ArrowUp'))+joystick.y;
+  const horizontal=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft'))+joystick.x;
+  const vertical=Number(keys.has('KeyS')||keys.has('ArrowDown'))-Number(keys.has('KeyW')||keys.has('ArrowUp'))+joystick.y;
+  let x=(horizontal+vertical)*Math.SQRT1_2,y=(-horizontal+vertical)*Math.SQRT1_2;
   const length=Math.hypot(x,y);if(length>1){x/=length;y/=length;}return{x,y};
 }
 function updateCamera(dt,instant=false){
@@ -160,7 +160,8 @@ function updateCamera(dt,instant=false){
   const response=instant?1:1-Math.exp(-3*dt);
   camera.x=clamp(camera.x+(x-camera.x)*response,0,W-W/camera.zoom);
   camera.y=clamp(camera.y+(y-camera.y)*response,0,H-H/camera.zoom);
-  if(pointer.screenX!==null){pointer.x=camera.x+pointer.screenX/camera.zoom;pointer.y=camera.y+pointer.screenY/camera.zoom;}
+  renderer.setCamera(camera,g.world);
+  if(pointer.screenX!==null){const world=renderer.screenToWorld(pointer.screenX,pointer.screenY);pointer.x=world.x;pointer.y=world.y;}
 }
 function hitEnemy(e,damage){
   if(e.health<=0)return;
@@ -405,7 +406,7 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.code));
 window.addEventListener('blur',()=>{clearInput();if(g.state==='playing')pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();if(g.state==='playing')pause();}});
-function pointerPosition(event){const rect=canvas.getBoundingClientRect();pointer.screenX=(event.clientX-rect.left)/rect.width*g.world.width;pointer.screenY=(event.clientY-rect.top)/rect.height*g.world.height;pointer.x=g.camera.x+pointer.screenX/g.camera.zoom;pointer.y=g.camera.y+pointer.screenY/g.camera.zoom;}
+function pointerPosition(event){const rect=canvas.getBoundingClientRect();pointer.screenX=(event.clientX-rect.left)/rect.width;pointer.screenY=(event.clientY-rect.top)/rect.height;const world=renderer.screenToWorld(pointer.screenX,pointer.screenY);pointer.x=world.x;pointer.y=world.y;}
 canvas.addEventListener('pointermove',event=>{if(event.pointerType==='touch')return;g.touch=false;pointerPosition(event);});
 canvas.addEventListener('pointerdown',event=>{
   if(g.state!=='playing')return;

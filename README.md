@@ -1,20 +1,24 @@
 # Nuclear Shooter — Blackout Protocol
 
-A polished, top-down helicopter survival shooter. Fly the AH-07 Nighthawk through increasingly difficult enemy waves, choose upgrades between sorties, and face the Goliath command vehicle every fifth wave.
+A polished, isometric WebGL helicopter survival shooter. Fly the AH-07 Nighthawk through increasingly difficult enemy waves, choose upgrades between sorties, and face the Goliath command vehicle every fifth wave.
 
 ## Play locally
 
 Double-click `index.html` to play. The included `blackout.js` bundle works without a server or internet connection.
 
-For development, serve this folder with any static HTTP server. For example:
+The checked-in `blackout.js` bundle includes the WebGL renderer, so no network connection or install is needed to play. The terrain and low-poly models are generated in code; no separate model files are required.
+
+For development, install the build dependencies and serve this folder with any static HTTP server. For example:
 
 ```sh
+npm install
+npm run build
 python3 -m http.server 8080 --bind 127.0.0.1
 ```
 
 Open http://localhost:8080.
 
-No dependency installation or API keys are needed. All visuals are rendered in Canvas. Music and effects use Web Audio; the game has synthesized music scores when custom tracks are not present. The Turkish interface scales to desktop, tablet, and phone screens.
+The battlefield is rendered with WebGL using Three.js, bundled locally for offline play. The HUD and menus remain HTML/CSS. Music and effects use Web Audio; the game has synthesized music scores when custom tracks are not present. The interface scales to desktop, tablet, and phone screens.
 
 ## Controls
 
@@ -28,6 +32,8 @@ No dependency installation or API keys are needed. All visuals are rendered in C
 | Pause / resume | Escape / P | Pause button |
 | Mute | M | Speaker button |
 | Choose an upgrade | Click / 1, 2, 3 | Tap a card |
+
+Movement controls follow screen directions and are mapped onto the isometric ground plane.
 
 Rockets accelerate after launch and recharge individually. The machine gun heats with each shot; release fire to cool it, or wait three seconds for a fully overheated gun to cool before it can fire again. Faster firing upgrades build heat faster. The helicopter coasts briefly when movement is released, while dash briefly prevents damage. Green field supplies repair 30 hull points. Consecutive kills raise the score multiplier up to ×5. Each cleared wave awards bonus points and a choice of upgrades. The battlefield rotates through desert, valley, and red-zone sectors each wave; every fifth wave includes a boss.
 
@@ -64,7 +70,7 @@ The soundtrack switches between menu, wave-combat, and boss music using the MP3 
 
 ## Checks
 
-With Node.js 18 or later:
+With Node.js 18 or later, after `npm install`:
 
 ```sh
 npm test
@@ -72,12 +78,12 @@ npm run check
 npm run build
 ```
 
-Rebuild `blackout.js` after editing `enemies.csv`, `weapons.csv`, `core.js`, `audio.js`, `renderer.js`, or `game.js`. The dependency-free build script combines the sheet and source modules into a browser script.
+Rebuild `blackout.js` after editing `enemies.csv`, `weapons.csv`, `core.js`, `audio.js`, `renderer.js`, or `game.js`. The build validates the tuning sheets and bundles the source modules and Three.js into the browser script.
 
-The tests cover continuous projectile collision, wave scaling, sector rotation, aiming, camera tracking, terrain generation, movement and drift, gun overheating, rocket acceleration and damage, pause, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
+The tests cover continuous projectile collision, wave scaling, sector rotation, aiming, camera tracking, renderer coordinate mapping, movement and drift, gun overheating, rocket acceleration and damage, pause, dash protection, upgrade transitions, boss spawning, records, and restart behavior.
 
 ## GitHub Pages
 
 The existing workflow deploys on pushes to `main`. Set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. All game assets use relative paths, so repository subpath hosting works without configuration.
 
-Nothing is sent to a backend, and the game does not need an internet connection once its files have loaded. Audio begins only after a user gesture. Current Chrome, Edge, Firefox, and Safari support the required Canvas, Web Audio, and ES modules APIs. Fullscreen is offered when the browser supports it.
+Nothing is sent to a backend, and the game does not need an internet connection once its files have loaded. Audio begins only after a user gesture. A browser with WebGL and Web Audio support is required. Fullscreen is offered when the browser supports it.
