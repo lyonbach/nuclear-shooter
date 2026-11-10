@@ -124,10 +124,18 @@ test('tank tracks advance only while the tank moves and freeze when paused',asyn
   const p=game.g.player,tank=enemy({x:p.x+400,y:p.y,speed:40,angle:Math.PI});
   game.g.enemies=[tank];game.update(.05);
   const movingPhase=tank.trackPhase;
-  assert.ok(Math.abs(movingPhase)>1);
+  assert.ok(movingPhase>1);
   game.pause();game.frame(1000);game.frame(2000);assert.equal(tank.trackPhase,movingPhase);
   await game.resume();tank.x=p.x+150;tank.y=p.y;game.update(.05);
   assert.equal(tank.trackPhase,movingPhase);
+});
+test('moving tanks leave tread marks that fade after twenty seconds',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player,tank=enemy({x:p.x+400,y:p.y,speed:40,angle:Math.PI,cooldown:100});
+  game.g.enemies=[tank];game.update(.5);
+  assert.ok(game.g.treadMarks.length>0);
+  tank.speed=0;game.update(20.01);
+  assert.equal(game.g.treadMarks.length,0);
 });
 test('armored vehicle wrecks emit lingering black smoke',async()=>{
   const game=createGame();await game.start();game.g.enemies=[enemy()];

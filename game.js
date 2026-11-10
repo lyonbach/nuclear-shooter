@@ -4,6 +4,7 @@ import { Renderer } from './renderer.js';
 import { languages, setLocale, t } from './i18n.js';
 
 const $ = id => document.getElementById(id);
+const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
 const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
@@ -22,7 +23,7 @@ const keys=new Set();
 const pointer={x:600,y:230,screenX:null,screenY:null,down:false};
 const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
-  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],warnings:[],floaters:[],decals:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
+  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],warnings:[],floaters:[],decals:[],treadMarks:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
   combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
   camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
@@ -51,7 +52,7 @@ function resize(){
   g.touch=matchMedia('(pointer:coarse), (max-width:600px)').matches;
   g.world.width=clamp(rect.width*1.3,680,1700);g.world.height=g.world.width*rect.height/rect.width;
   if(old.width&&old.height){
-  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
+  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.treadMarks,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
     if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
@@ -86,7 +87,7 @@ async function start(){
   if(dialog.open||starting)return;
   starting=true;
   await sound.init();
-  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.warnings=[];g.floaters=[];g.decals=[];g.wreckSmoke=[];
+  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.warnings=[];g.floaters=[];g.decals=[];g.treadMarks=[];g.wreckSmoke=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
   pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
   updateCamera(0,true);
@@ -95,7 +96,7 @@ async function start(){
 }
 function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
-  g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
+  g.map=mapForWave(g.wave);g.decals=[];g.treadMarks=[];renderer.setMap(g.map);
   renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;
   $('wave').innerHTML=`${t('hud.wave')} <b>${pad(g.wave,2)}</b>`;
   announce(t(g.plan.boss?'wave.bossTag':'wave.enemyTag'),t(g.plan.boss?'wave.bossTitle':'wave.title',{wave:pad(g.wave,2)}),`${renderer.mapLabel} · ${t(g.plan.boss?'wave.bossNote':g.wave===1?'wave.firstNote':'wave.note')}`,3.2);
@@ -240,8 +241,14 @@ function update(dt){
     for(const other of g.enemies){if(e===other||other.health<=0)continue;const dist=distance(e,other),min=e.radius+other.radius+9;if(dist>0&&dist<min){vx+=(e.x-other.x)/dist*(min-dist)*1.5;vy+=(e.y-other.y)/dist*(min-dist)*1.5;}}
     e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*stats.turnRate);
     if(e.type!=='drone'&&e.type!=='kamikaze'){
+      e.treadDistance=(e.treadDistance||0)+Math.hypot(vx,vy)*dt;
+      if(e.treadDistance>=TREAD_MARK_SPACING){
+        e.treadDistance%=TREAD_MARK_SPACING;
+        g.treadMarks.push({x:e.x,y:e.y,angle:e.angle,life:TREAD_MARK_LIFETIME,maxLife:TREAD_MARK_LIFETIME});
+        if(g.treadMarks.length>TREAD_MARK_LIMIT)g.treadMarks.shift();
+      }
       const direction=vx*Math.cos(e.angle)+vy*Math.sin(e.angle)<0?-1:1;
-      e.trackPhase=((e.trackPhase||0)-direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
+      e.trackPhase=((e.trackPhase||0)+direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
     }
     e.turret=turn(e.turret,a,dt*stats.turretRate);e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
     if(e.type!=='kamikaze'&&e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
@@ -273,6 +280,7 @@ function update(dt){
     if(b.x < -90 || b.x > W+90 || b.y < -90 || b.y > H+90)b.life=0;
   }
   g.bullets=g.bullets.filter(b=>b.life>0);g.enemies=g.enemies.filter(e=>e.health>0);
+  for(const mark of g.treadMarks)mark.life-=dt;g.treadMarks=g.treadMarks.filter(mark=>mark.life>0);
   for(const warning of g.warnings){
     warning.life-=dt;
     if(warning.life<=0){explosion(warning.x,warning.y,warning.radius);if(distance(warning,p)<warning.radius+17)damagePlayer(warning.damage);if(g.state!=='playing')return;}

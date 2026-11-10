@@ -180,6 +180,10 @@ export class Renderer {
     c.setTransform(this.scale*zoom,0,0,this.scale*zoom,-camera.x*this.scale*zoom,-camera.y*this.scale*zoom);
     c.save();if(this.settings.shake&&g.shake>0){c.translate((Math.random()-.5)*g.shake,(Math.random()-.5)*g.shake);}
     c.drawImage(this.terrain,0,0,W,H);
+    for(const mark of g.treadMarks||[]){
+      c.save();c.translate(mark.x,mark.y);c.rotate(mark.angle);c.globalAlpha=clamp(mark.life/mark.maxLife,0,1)*.45;
+      c.fillStyle='#111812';c.fillRect(-8,-21,16,6);c.fillRect(-8,15,16,6);c.restore();
+    }
     for(const d of g.decals){c.save();c.translate(d.x,d.y);c.rotate(d.angle);ellipse(c,0,0,d.size,d.size*.66,'#1c211c88');ellipse(c,0,0,d.size*.65,d.size*.42,'#0c150d66');c.fillStyle='#4a4b37';c.fillRect(-11,-6,21,12);c.restore();}
     // A very slow cloud shadow drifts over the map.
     if(this.settings.effects){c.save();c.translate(camera.x*.3,camera.y*.3);const x=(t*12)%(W+600)-300,cloud=c.createRadialGradient(x,H*.35,30,x,H*.35,380);cloud.addColorStop(0,'#14231524');cloud.addColorStop(1,'#14231500');c.fillStyle=cloud;c.fillRect(-W,-H,W*3,H*3);c.restore();}
