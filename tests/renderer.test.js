@@ -25,6 +25,26 @@ test('helicopter movement changes the rendered pose',()=>{
   assert.ok(moving.calls.some(call=>call.name==='scale'&&call.args[1]<.9));
 });
 
+test('helicopter strobe lights flash once every two seconds',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const flashing=context(),dark=context(),player={x:100,y:100,angle:0,bank:0,pitch:0};
+  renderer.helicopter(flashing,player,0);
+  renderer.helicopter(dark,player,1);
+  const hasStrobes=c=>c.calls.some(call=>call.name==='fill'&&['#ffffff','#ff5d52'].includes(call.fillStyle));
+  assert.equal(hasStrobes(flashing),true);
+  assert.equal(hasStrobes(dark),false);
+});
+
+test('helicopter tail strobe flashes once every 1.5 seconds',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const flashing=context(),dark=context(),player={x:100,y:100,angle:0,bank:0,pitch:0};
+  renderer.helicopter(flashing,player,1.5);
+  renderer.helicopter(dark,player,1);
+  const hasTailStrobe=c=>c.calls.some(call=>call.name==='fill'&&call.fillStyle==='#ffb35c');
+  assert.equal(hasTailStrobe(flashing),true);
+  assert.equal(hasTailStrobe(dark),false);
+});
+
 test('tank tread marks visibly shift with track phase',()=>{
   const renderer=new Renderer({getContext:()=>context()},{});
   const stationary=context(),moving=context();

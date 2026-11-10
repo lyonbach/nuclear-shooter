@@ -133,6 +133,8 @@ export class Renderer {
     for(let i=0;i<4;i++){c.rotate(Math.PI/2);path(c,[[0,-2],[46,-3],[44,0],[0,2]],'#e2e7cc99');}
     ellipse(c,0,0,5,5,'#374e3e');ellipse(c,-1,-1,2,2,'#c3caa9');c.restore();
     if(Math.sin(t*5)>0)ellipse(c,-51,0,2,2,'#f7a26d');ellipse(c,1,-19,1.5,1.5,'#c1ed95');
+    if(!ghost&&t%2<.12){ellipse(c,18,-18,3,3,'#ffffff');ellipse(c,18,18,3,3,'#ff5d52');}
+    if(!ghost&&t%1.5<.12)ellipse(c,-62,0,2.5,2.5,'#ffb35c');
     c.restore();
   }
   enemy(c,e,t) {

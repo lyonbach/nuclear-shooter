@@ -136,7 +136,7 @@ export const ENEMY_DATA = {
     "speedMultiplier": 2,
     "points": 160,
     "radius": 5.25,
-    "scale": 0.25,
+    "scale": 0.55,
     "stopDistance": 0,
     "contactDamage": 0,
     "spawnWave": 2,
