@@ -1,4 +1,4 @@
-import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES, WEAPONS } from './core.js';
+import { TAU, clamp, distance, turn, segmentHitsCircle, wavePlan, enemyType, mapForWave, UPGRADES, ENEMIES, WEAPONS, ROCKET_IGNITION_DELAY } from './core.js';
 import { SoundEngine } from './audio.js';
 import { Renderer } from './renderer.js';
 import { languages, setLocale, t } from './i18n.js';
@@ -146,7 +146,7 @@ function launchRocket(){
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
   const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.cannonAngle;
-  g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0});
+  g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0,launchAngle:a,launchDelay:ROCKET_IGNITION_DELAY});
   p.rockets--;p.rocketCooldown=w.launchCooldown;sound.play('rocket');updateHud();
 }
 function dash(){
@@ -294,22 +294,31 @@ function update(dt){
   if(settings.difficulty!=='hard'&&p.flareCooldown<=0&&incomingMissile())deployFlares();
   for(const b of g.bullets){
     if(b.life<=0)continue;
+    let stepDt=dt;
+    if(b.kind==='rocket'&&b.launchDelay>0){
+      const ejectionDt=Math.min(dt,b.launchDelay);
+      b.launchDelay-=ejectionDt;
+      b.x+=b.vx*ejectionDt;b.y+=b.vy*ejectionDt;b.life-=ejectionDt;
+      if(b.launchDelay>0)continue;
+      stepDt-=ejectionDt;
+      if(stepDt<=0)continue;
+    }
     const ox=b.x,oy=b.y;
     if(b.kind==='rocket'){
       if(b.target?.health<=0)b.target=g.enemies.find(e=>e.health>0)||null;
-      const speed=Math.min(WEAPONS.rocket.maxSpeed,Math.hypot(b.vx,b.vy)+WEAPONS.rocket.acceleration*dt);
-      const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),dt*WEAPONS.rocket.turnRate):Math.atan2(b.vy,b.vx);
+      const speed=Math.min(WEAPONS.rocket.maxSpeed,Math.hypot(b.vx,b.vy)+WEAPONS.rocket.acceleration*stepDt);
+      const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),stepDt*WEAPONS.rocket.turnRate):Math.atan2(b.vy,b.vx);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
-      b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
+      b.trail-=stepDt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }else if(b.kind==='enemyRocket'){
-      const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*dt);
-      if(b.decoyed){b.decoyTimer-=dt;if(b.decoyTimer<=0){b.life=0;burst(b.x,b.y,'#ffc866',5,.25);continue;}}
+      const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*stepDt);
+      if(b.decoyed){b.decoyTimer-=stepDt;if(b.decoyTimer<=0){b.life=0;burst(b.x,b.y,'#ffc866',5,.25);continue;}}
       const target=b.decoyed?{x:b.decoyX,y:b.decoyY}:p;
-      const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(target.y-b.y,target.x-b.x),dt*b.turn);
+      const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(target.y-b.y,target.x-b.x),stepDt*b.turn);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
-      b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
+      b.trail-=stepDt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }
-    b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
+    b.x+=b.vx*stepDt;b.y+=b.vy*stepDt;b.life-=stepDt;
     if(b.friendly){
       let target=null,nearest=Infinity;
       for(const e of g.enemies)if(e.health>0&&segmentHitsCircle(ox,oy,b.x,b.y,e.x,e.y,e.radius+(b.kind==='rocket'?8:2))){const d=Math.hypot(e.x-ox,e.y-oy);if(d<nearest){target=e;nearest=d;}}

@@ -1,3 +1,5 @@
+import { ROCKET_IGNITION_DELAY } from './core.js';
+
 // Music uses local soundtrack files, with synthesized scores as an offline fallback.
 export class SoundEngine {
   constructor(settings) {
@@ -131,8 +133,8 @@ export class SoundEngine {
     if (name === 'enemy') { this.hiss(0.05, level(0.07), 1900, pan); this.tone(120, 45, 0.12, level(0.045), 'sawtooth'); }
     if (name === 'hit') { this.hiss(0.09, level(0.18), 3800, pan); this.tone(420, 160, 0.07, level(0.055), 'square'); }
     if (name === 'explode') { this.hiss(0.82, level(0.48), 1000, pan); this.tone(100, 22, 0.78, level(0.32)); this.hiss(0.22, level(0.2), 4200, pan); this.hiss(0.09, level(0.11), 6200, pan); }
-    if (name === 'rocket') { const whooshAt=this.ctx.currentTime+.1; this.hiss(0.06, level(0.24), 4200, pan); this.tone(125, 45, 0.08, level(0.1), 'sine'); this.hiss(1.05, level(0.72), 1700, pan, whooshAt); this.hiss(0.9, level(0.24), 650, pan, whooshAt); }
-    if (name === 'missile') { const whooshAt=this.ctx.currentTime+.1; this.hiss(0.05, level(0.18), 4000, pan); this.tone(115, 40, 0.07, level(0.08), 'sine'); this.hiss(1.15, level(0.68), 1500, pan, whooshAt); this.hiss(0.95, level(0.28), 650, pan, whooshAt); }
+    if (name === 'rocket') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY; this.hiss(0.06, level(0.24), 4200, pan); this.tone(125, 45, 0.08, level(0.1), 'sine'); this.hiss(1.05, level(0.72), 1700, pan, whooshAt); this.hiss(0.9, level(0.24), 650, pan, whooshAt); }
+    if (name === 'missile') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY; this.hiss(0.05, level(0.18), 4000, pan); this.tone(115, 40, 0.07, level(0.08), 'sine'); this.hiss(1.15, level(0.68), 1500, pan, whooshAt); this.hiss(0.95, level(0.28), 650, pan, whooshAt); }
     if (name === 'flare') { this.hiss(0.28, level(0.26), 4200, pan); this.tone(760, 190, 0.2, level(0.1), 'triangle'); this.tone(1240, 620, 0.15, level(0.045), 'sine'); }
     if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
     if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }

@@ -265,8 +265,9 @@ test('gun cools when fire is released before overheating and pause freezes heat'
 test('rockets accelerate with and without a target and keep their heading',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   const p=game.g.player;p.angle=0;p.cannonAngle=0;game.launchRocket();
-  const rocket=game.g.bullets[0],initial=Math.hypot(rocket.vx,rocket.vy);
-  game.update(.1);assert.equal(initial,100);assert.equal(Math.hypot(rocket.vx,rocket.vy),340);assert.equal(rocket.vy,0);
+  const rocket=game.g.bullets[0],initial=Math.hypot(rocket.vx,rocket.vy),initialX=rocket.x;
+  game.update(.29);assert.equal(initial,100);assert.equal(Math.hypot(rocket.vx,rocket.vy),100);assert.equal(rocket.x,initialX+29);
+  game.update(.02);assert.ok(Math.hypot(rocket.vx,rocket.vy)>100);assert.equal(rocket.vy,0);
   for(let i=0;i<10;i++)game.update(.05);
   assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-820)<1e-8);
 });
