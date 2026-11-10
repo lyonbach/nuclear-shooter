@@ -351,67 +351,231 @@ const WEAPON_DATA = {
 };
 
 // i18n.js
-const languages = {
-  tr: 'Türkçe',
-  en: 'English',
-  de: 'Deutsch',
-  es: 'Español',
-  fr: 'Français'
-};
+const languages = { en:'English',tr:'Türkçe',de:'Deutsch',es:'Español',fr:'Français' };
 
 const translations = {
-  tr: {
-    online: 'SİSTEM ÇEVRİMİÇİ', mission: 'HAVA ÜSTÜNLÜĞÜ SENDE.', missionNote: 'Geri çekilmek bir seçenek değil.', connected: 'PİLOT BAĞLANTISI KURULDU',
-    introTitle: 'GECE SENİN. GÖKYÜZÜ SENİN.', introText: 'Düşman hattının gerisindesin. Helikopterini uçur, dalgaları durdur. Her sortide daha da güçlen.',
-    start: 'OPERASYONU BAŞLAT', objective: 'HEDEF: HAYATTA KAL / HER 5. DALGADA KOMUTAN', difficulty: 'Zorluk', easy: 'ÇAYLAK', normal: 'PİLOT', hard: 'AS',
-    language: 'Dil', settings: 'Ayarlar', sound: 'Ses', fullscreen: 'Tam ekran', ready: 'BEKLEMEDE', playing: 'AKTİF', paused: 'DURAKLATILDI',
-    menuMission: 'UÇUŞ İZNİ BEKLENİYOR', playingMission: 'ANGAJMAN SERBEST · HATTI KORU', pausedMission: 'OTOPİLOT DEVREDE',
-    over: 'SİNYAL KAYIP', overMission: 'OPERASYON SONLANDI', wave: 'DALGA', hostiles: 'DÜŞMAN KALDI', scanning: 'BÖLGE TARANIYOR',
-    flight: 'UÇUŞ', readyLabel: 'HAZIR', cooling: 'SOĞUYOR', languageChanged: 'Dil değiştirildi'
+  en:{
+    'nav.online':'SYSTEM ONLINE','nav.language':'Language','nav.soundOn':'Turn sound on','nav.soundOff':'Turn sound off',
+    'mission.tag':'OPERATION 001','mission.sector':'SECTOR 07','mission.heading':'AIR SUPERIORITY IS YOURS.','mission.note':'Retreat is not an option.',
+    'frame.label':'Blackout battlefield','frame.live':'LIVE FEED','frame.exit':'EXIT FULLSCREEN',
+    'hud.hull':'HULL STATUS','hud.healthy':'HEALTHY','hud.damaged':'DAMAGED','hud.critical':'CRITICAL','hud.threat':'THREAT LEVEL',
+    'hud.wave':'WAVE','hud.scanning':'SCANNING AREA','hud.hostiles':'HOSTILES REMAIN','hud.score':'OPERATION SCORE','hud.best':'BEST','hud.combo':'KILL STREAK',
+    'hud.boss':'GOLIATH / ARMORED COMMAND VEHICLE','hud.base':'FORWARD OPERATING BASE','hud.cannonHeat':'CANNON HEAT','hud.dash':'DASH','hud.rocket':'ROCKET',
+    'intro.connected':'PILOT LINK ESTABLISHED','intro.title':'THE NIGHT IS YOURS.<br><em>THE SKY IS YOURS.</em>',
+    'intro.text':'You are behind enemy lines. Fly your helicopter and stop the waves. Get stronger with every sortie.',
+    'difficulty.label':'Difficulty','difficulty.easy':'ROOKIE','difficulty.normal':'PILOT','difficulty.hard':'ACE',
+    'intro.start':'START OPERATION <span>↗</span>','intro.objective':'OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES',
+    'panel.pause.kicker':'LINK SECURE','panel.pause.title':'TAKE A <em>BREATH.</em>','panel.pause.text':'The operation will be waiting, pilot.',
+    'panel.resume':'RESUME FLIGHT <span>→</span>','panel.restart':'START NEW SORTIE',
+    'panel.over.kicker':'AFTER-ACTION REPORT','panel.over.title':'SEE YOU ON THE<br><em>NEXT SORTIE.</em>',
+    'panel.score':'SCORE','panel.wave':'WAVE','panel.kills':'KILLS','panel.flightTime':'FLIGHT TIME','panel.retry':'TAKE OFF AGAIN <span>↗</span>',
+    'panel.upgrade.kicker':'AREA SECURED','panel.upgrade.title':'COME BACK <em>STRONGER.</em>',
+    'touch.move':'MOVE','touch.dash':'Dash','touch.rocket':'Fire rocket','touch.fire':'Fire',
+    'manual.title':'FLIGHT MANUAL','manual.heading':'Trust your instincts.','manual.move':'MOVE','manual.arrows':'or arrow keys',
+    'manual.aim':'AIM & FIRE','manual.mouse':'Mouse · left click / space','manual.dash':'DASH','manual.invulnerable':'Brief invulnerability',
+    'manual.guidedRocket':'GUIDED ROCKET','manual.areaDamage':'Area damage · auto-reload','manual.pause':'PAUSE','manual.breathe':'Take a breath',
+    'footer.tip':'Move. Fire. Survive.','footer.signoff':'GOOD HUNTING, PILOT.',
+    'settings.kicker':'FLIGHT COMPUTER','settings.title':'FLIGHT <em>SETTINGS</em>','settings.volume':'Master volume',
+    'settings.music':'Tactical music','settings.shake':'Screen shake','settings.effects':'Visual effects',
+    'settings.note':'Settings and your high score are saved in this browser.<br>Audio starts after your first interaction.',
+    'settings.done':'DONE <span>✓</span>','settings.close':'Close settings','settings.label':'Settings','settings.fullscreen':'Fullscreen',
+    'status.ready':'STANDBY','status.playing':'ACTIVE','status.paused':'PAUSED','status.upgrade':'RESUPPLY','status.over':'SIGNAL LOST',
+    'mission.ready':'AWAITING FLIGHT CLEARANCE','mission.playing':'ENGAGEMENT CLEARED · HOLD THE LINE',
+    'mission.paused':'AUTOPILOT ENGAGED','mission.upgrade':'FIELD RESUPPLY · SELECT AN UPGRADE','mission.over':'OPERATION ENDED',
+    'flight.label':'FLIGHT','dash.ready':'READY','heat.cooling':'COOLING','hull.repairing':'CRITICAL HULL DAMAGE',
+    'supply.collect':'COLLECT SUPPLIES','supply.note':'Green supply crates repair your hull.',
+    'wave.bossTag':'COMMAND VEHICLE DETECTED','wave.enemyTag':'ENEMY FORCE ON THE MOVE','wave.bossTitle':'GOLIATH INBOUND',
+    'wave.title':'WAVE {wave}','wave.bossNote':'Prepare your rockets.','wave.firstNote':'Keep moving. Maintain your distance.','wave.note':'New targets. Same mission.',
+    'wave.cleared':'WAVE CLEARED +{score}','upgrade.note':'Wave {wave} cleared. Choose an upgrade to continue.',
+    'record.new':'NEW RECORD. The skies will remember you.','record.again':'Every flight makes you stronger. Take off again.',
+    'fullscreen.errorTitle':'FULLSCREEN UNAVAILABLE','fullscreen.errorNote':'Use your browser’s fullscreen command instead.',
+    'upgrade.damage.title':'Armor-Piercing Rounds','upgrade.damage.description':'Cannon damage increased by 25%.','upgrade.damage.detail':'+25% DAMAGE',
+    'upgrade.fireRate.title':'Rapid Feed','upgrade.fireRate.description':'Cannon fires 18% faster.','upgrade.fireRate.detail':'+18% FIRE RATE',
+    'upgrade.armor.title':'Composite Armor','upgrade.armor.description':'Maximum hull +25. Repairs 35 immediately.','upgrade.armor.detail':'+25 HULL',
+    'upgrade.engine.title':'Turbine Upgrade','upgrade.engine.description':'Movement speed +12%. Dash recharges faster.','upgrade.engine.detail':'+12% SPEED',
+    'upgrade.rockets.title':'Missile System','upgrade.rockets.description':'One extra rocket. Rockets recharge 20% faster.','upgrade.rockets.detail':'+1 ROCKET CAPACITY',
+    'upgrade.repair.title':'Field Repairs','upgrade.repair.description':'Fully repairs the hull.','upgrade.repair.detail':'FULL REPAIR',
+    'map.desert':'DESERT FRONT','map.valley':'GREEN VALLEY','map.canyon':'RED ZONE'
   },
-  en: {
-    online: 'SYSTEM ONLINE', mission: 'AIR SUPERIORITY IS YOURS.', missionNote: 'Retreat is not an option.', connected: 'PILOT LINK ESTABLISHED',
-    introTitle: 'THE NIGHT IS YOURS. THE SKY IS YOURS.', introText: 'You are behind enemy lines. Fly your helicopter, stop the waves, and grow stronger every sortie.',
-    start: 'START OPERATION', objective: 'OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES', difficulty: 'Difficulty', easy: 'ROOKIE', normal: 'PILOT', hard: 'ACE',
-    language: 'Language', settings: 'Settings', sound: 'Sound', fullscreen: 'Fullscreen', ready: 'STANDBY', playing: 'ACTIVE', paused: 'PAUSED',
-    menuMission: 'AWAITING FLIGHT CLEARANCE', playingMission: 'ENGAGEMENT CLEARED · HOLD THE LINE', pausedMission: 'AUTOPILOT ENGAGED',
-    over: 'SIGNAL LOST', overMission: 'OPERATION ENDED', wave: 'WAVE', hostiles: 'HOSTILES REMAIN', scanning: 'SCANNING AREA',
-    flight: 'FLIGHT', readyLabel: 'READY', cooling: 'COOLING', languageChanged: 'Language changed'
+  tr:{
+    'nav.online':'SİSTEM ÇEVRİMİÇİ','nav.language':'Dil','nav.soundOn':'Sesi aç','nav.soundOff':'Sesi kapat',
+    'mission.tag':'OPERASYON 001','mission.sector':'SEKTÖR 07','mission.heading':'HAVA ÜSTÜNLÜĞÜ SENDE.','mission.note':'Geri çekilmek bir seçenek değil.',
+    'frame.label':'Blackout savaş alanı','frame.live':'CANLI BAĞLANTI','frame.exit':'TAM EKRANDAN ÇIK',
+    'hud.hull':'GÖVDE DURUMU','hud.healthy':'SAĞLAM','hud.damaged':'HASARLI','hud.critical':'KRİTİK','hud.threat':'TEHDİT SEVİYESİ',
+    'hud.wave':'DALGA','hud.scanning':'BÖLGE TARANIYOR','hud.hostiles':'DÜŞMAN KALDI','hud.score':'OPERASYON PUANI','hud.best':'REKOR','hud.combo':'İMHA SERİSİ',
+    'hud.boss':'GOLIATH / AĞIR ZIRHLI KOMUTA ARACI','hud.base':'İLERİ HAREKÂT ÜSSÜ','hud.cannonHeat':'TOP ISISI','hud.dash':'KAÇIŞ','hud.rocket':'ROKET',
+    'intro.connected':'PİLOT BAĞLANTISI KURULDU','intro.title':'GECE SENİN.<br><em>GÖKYÜZÜ SENİN.</em>',
+    'intro.text':'Düşman hattının gerisindesin. Helikopterini uçur ve dalgaları durdur. Her sortide daha da güçlen.',
+    'difficulty.label':'Zorluk','difficulty.easy':'ÇAYLAK','difficulty.normal':'PİLOT','difficulty.hard':'AS',
+    'intro.start':'OPERASYONU BAŞLAT <span>↗</span>','intro.objective':'HEDEF: HAYATTA KAL / HER 5. DALGADA KOMUTAN',
+    'panel.pause.kicker':'BAĞLANTI KORUNUYOR','panel.pause.title':'BİR NEFES <em>AL.</em>','panel.pause.text':'Operasyon seni bekliyor, pilot.',
+    'panel.resume':'UÇUŞA DEVAM ET <span>→</span>','panel.restart':'YENİ SORTİ BAŞLAT',
+    'panel.over.kicker':'OPERASYON RAPORU','panel.over.title':'SONRAKİ SORTİDE<br><em>GÖRÜŞÜRÜZ.</em>',
+    'panel.score':'PUAN','panel.wave':'DALGA','panel.kills':'İMHA','panel.flightTime':'UÇUŞ SÜRESİ','panel.retry':'TEKRAR HAVALAN <span>↗</span>',
+    'panel.upgrade.kicker':'BÖLGE TEMİZLENDİ','panel.upgrade.title':'DAHA <em>GÜÇLÜ DÖN.</em>',
+    'touch.move':'HAREKET','touch.dash':'Kaçış manevrası','touch.rocket':'Roket ateşle','touch.fire':'Ateş et',
+    'manual.title':'UÇUŞ KILAVUZU','manual.heading':'Reflekslerine güven.','manual.move':'MANEVRA','manual.arrows':'veya yön tuşları',
+    'manual.aim':'NİŞAN & ATEŞ','manual.mouse':'Fare · sol tık / boşluk','manual.dash':'KAÇIŞ','manual.invulnerable':'Kısa süreli dokunulmazlık',
+    'manual.guidedRocket':'GÜDÜMLÜ ROKET','manual.areaDamage':'Alan hasarı · otomatik dolum','manual.pause':'DURAKLAT','manual.breathe':'Bir nefes al',
+    'footer.tip':'Hareket et. Ateş et. Hayatta kal.','footer.signoff':'İYİ UÇUŞLAR, PİLOT.',
+    'settings.kicker':'UÇUŞ BİLGİSAYARI','settings.title':'UÇUŞ <em>AYARLARI</em>','settings.volume':'Ana ses',
+    'settings.music':'Taktik müzik','settings.shake':'Ekran sarsıntısı','settings.effects':'Yoğun efektler',
+    'settings.note':'Ayarların ve rekorun bu tarayıcıda saklanır.<br>Ses, ilk etkileşimden sonra başlar.',
+    'settings.done':'TAMAM <span>✓</span>','settings.close':'Ayarları kapat','settings.label':'Ayarlar','settings.fullscreen':'Tam ekran',
+    'status.ready':'BEKLEMEDE','status.playing':'AKTİF','status.paused':'DURAKLATILDI','status.upgrade':'İKMAL','status.over':'SİNYAL KAYIP',
+    'mission.ready':'UÇUŞ İZNİ BEKLENİYOR','mission.playing':'ANGAJMAN SERBEST · HATTI KORU',
+    'mission.paused':'OTOPİLOT DEVREDE','mission.upgrade':'SAHA İKMALİ · GELİŞTİRME SEÇ','mission.over':'OPERASYON SONLANDI',
+    'flight.label':'UÇUŞ','dash.ready':'HAZIR','heat.cooling':'SOĞUYOR','hull.repairing':'KRİTİK GÖVDE HASARI',
+    'supply.collect':'İKMAL TOPLA','supply.note':'Yeşil ikmal paketleri gövdeyi onarır.',
+    'wave.bossTag':'KOMUTA ARACI TESPİT EDİLDİ','wave.enemyTag':'DÜŞMAN HATTI HAREKETLENDİ','wave.bossTitle':'GOLIATH YAKLAŞIYOR',
+    'wave.title':'DALGA {wave}','wave.bossNote':'Roketlerini hazırla.','wave.firstNote':'Hareket et. Mesafeni koru.','wave.note':'Yeni hedefler. Aynı görev.',
+    'wave.cleared':'DALGA TAMAMLANDI +{score}','upgrade.note':'Dalga {wave} tamamlandı. Bir geliştirme seç, uçuşa devam et.',
+    'record.new':'YENİ REKOR. Bu gökyüzü seni hatırlayacak.','record.again':'Her uçuş bir tecrübe. Tekrar havalan.',
+    'fullscreen.errorTitle':'TAM EKRAN KULLANILAMIYOR','fullscreen.errorNote':'Tarayıcının tam ekran komutunu kullanabilirsin.',
+    'upgrade.damage.title':'Delici mühimmat','upgrade.damage.description':'Top hasarı %25 artar.','upgrade.damage.detail':'+%25 HASAR',
+    'upgrade.fireRate.title':'Hızlı besleme','upgrade.fireRate.description':'Top %18 daha hızlı ateş eder.','upgrade.fireRate.detail':'+%18 ATIŞ HIZI',
+    'upgrade.armor.title':'Kompozit zırh','upgrade.armor.description':'Azami gövde +25. Anında 35 onarım.','upgrade.armor.detail':'+25 GÖVDE',
+    'upgrade.engine.title':'Türbin yükseltmesi','upgrade.engine.description':'Hareket hızı %12 artar. Kaçış daha çabuk dolar.','upgrade.engine.detail':'+%12 HIZ',
+    'upgrade.rockets.title':'Füze sistemi','upgrade.rockets.description':'Bir ek roket. Roketler %20 daha çabuk dolar.','upgrade.rockets.detail':'+1 ROKET KAPASİTESİ',
+    'upgrade.repair.title':'Saha bakımı','upgrade.repair.description':'Gövdeyi tamamen onarır.','upgrade.repair.detail':'TAM ONARIM',
+    'map.desert':'ÇÖL HATTI','map.valley':'YEŞİL VADİ','map.canyon':'KIZIL BÖLGE'
   },
-  de: {
-    online: 'SYSTEM ONLINE', mission: 'DIE LUFTHOHEIT GEHÖRT DIR.', missionNote: 'Rückzug ist keine Option.', connected: 'PILOTENVERBINDUNG HERGESTELLT',
-    introTitle: 'DIE NACHT GEHÖRT DIR. DER HIMMEL GEHÖRT DIR.', introText: 'Du bist hinter den feindlichen Linien. Fliege deinen Hubschrauber und halte die Wellen auf.',
-    start: 'OPERATION STARTEN', objective: 'ZIEL: ÜBERLEBEN / KOMMANDANT ALLE 5 WELLEN', difficulty: 'Schwierigkeit', easy: 'NEULING', normal: 'PILOT', hard: 'ASS',
-    language: 'Sprache', settings: 'Einstellungen', sound: 'Ton', fullscreen: 'Vollbild', ready: 'BEREIT', playing: 'AKTIV', paused: 'PAUSIERT',
-    menuMission: 'FLUGFREIGABE AUSSTEHEND', playingMission: 'EINSATZ FREIGEGEBEN · LINIE HALTEN', pausedMission: 'AUTOPILOT AKTIV',
-    over: 'SIGNAL VERLOREN', overMission: 'OPERATION BEENDET', wave: 'WELLE', hostiles: 'FEINDE VERBLEIBEN', scanning: 'GEBIET WIRD GESCANNT',
-    flight: 'FLUG', readyLabel: 'BEREIT', cooling: 'KÜHLT', languageChanged: 'Sprache geändert'
+  de:{
+    'nav.online':'SYSTEM ONLINE','nav.language':'Sprache','nav.soundOn':'Ton einschalten','nav.soundOff':'Ton ausschalten',
+    'mission.tag':'OPERATION 001','mission.sector':'SEKTOR 07','mission.heading':'DIE LUFTHOHEIT GEHÖRT DIR.','mission.note':'Rückzug ist keine Option.',
+    'frame.label':'Blackout-Schlachtfeld','frame.live':'LIVE-ÜBERTRAGUNG','frame.exit':'VOLLbild VERLASSEN',
+    'hud.hull':'RUMPFSTATUS','hud.healthy':'UNVERSEHRT','hud.damaged':'BESCHÄDIGT','hud.critical':'KRITISCH','hud.threat':'BEDROHUNGSSTUFE',
+    'hud.wave':'WELLE','hud.scanning':'GEBIET WIRD GESCANNT','hud.hostiles':'FEINDE VERBLEIBEN','hud.score':'EINSATZPUNKTE','hud.best':'REKORD','hud.combo':'ABSCHUSSERIE',
+    'hud.boss':'GOLIATH / ARMIERTES KOMMANDOFAHRZEUG','hud.base':'VORGESCHOBENER STÜTZPUNKT','hud.cannonHeat':'KANONENHITZE','hud.dash':'AUSWEICHEN','hud.rocket':'RAKETE',
+    'intro.connected':'PILOTENVERBINDUNG HERGESTELLT','intro.title':'DIE NACHT GEHÖRT DIR.<br><em>DER HIMMEL GEHÖRT DIR.</em>',
+    'intro.text':'Du bist hinter den feindlichen Linien. Fliege deinen Hubschrauber und halte die Wellen auf. Werde mit jedem Einsatz stärker.',
+    'difficulty.label':'Schwierigkeit','difficulty.easy':'NEULING','difficulty.normal':'PILOT','difficulty.hard':'ASS',
+    'intro.start':'OPERATION STARTEN <span>↗</span>','intro.objective':'ZIEL: ÜBERLEBEN / KOMMANDANT ALLE 5 WELLEN',
+    'panel.pause.kicker':'VERBINDUNG GESICHERT','panel.pause.title':'ATME <em>DURCH.</em>','panel.pause.text':'Der Einsatz wartet auf dich, Pilot.',
+    'panel.resume':'FLUG FORTSETZEN <span>→</span>','panel.restart':'NEUEN EINSATZ STARTEN',
+    'panel.over.kicker':'EINSATZBERICHT','panel.over.title':'BIS ZUM<br><em>NÄCHSTEN EINSATZ.</em>',
+    'panel.score':'PUNKTE','panel.wave':'WELLE','panel.kills':'ABSCHÜSSE','panel.flightTime':'FLUGZEIT','panel.retry':'WIEDER ABHEBEN <span>↗</span>',
+    'panel.upgrade.kicker':'GEBIET GESICHERT','panel.upgrade.title':'KOMM <em>STÄRKER ZURÜCK.</em>',
+    'touch.move':'BEWEGEN','touch.dash':'Ausweichmanöver','touch.rocket':'Rakete abfeuern','touch.fire':'Feuern',
+    'manual.title':'FLUGHANDBUCH','manual.heading':'Verlass dich auf deinen Instinkt.','manual.move':'BEWEGEN','manual.arrows':'oder Pfeiltasten',
+    'manual.aim':'ZIELEN & FEUERN','manual.mouse':'Maus · Linksklick / Leertaste','manual.dash':'AUSWEICHEN','manual.invulnerable':'Kurzzeitig unverwundbar',
+    'manual.guidedRocket':'LENKRAKETE','manual.areaDamage':'Flächenschaden · lädt automatisch nach','manual.pause':'PAUSE','manual.breathe':'Atme kurz durch',
+    'footer.tip':'Bewegen. Feuern. Überleben.','footer.signoff':'GUTEN JAGDERFOLG, PILOT.',
+    'settings.kicker':'FLUGCOMPUTER','settings.title':'FLUG-<em>EINSTELLUNGEN</em>','settings.volume':'Gesamtlautstärke',
+    'settings.music':'Taktische Musik','settings.shake':'Bildschirmwackeln','settings.effects':'Visuelle Effekte',
+    'settings.note':'Einstellungen und Bestwert werden in diesem Browser gespeichert.<br>Audio startet nach der ersten Interaktion.',
+    'settings.done':'FERTIG <span>✓</span>','settings.close':'Einstellungen schließen','settings.label':'Einstellungen','settings.fullscreen':'Vollbild',
+    'status.ready':'BEREIT','status.playing':'AKTIV','status.paused':'PAUSIERT','status.upgrade':'NACHSCHUB','status.over':'SIGNAL VERLOREN',
+    'mission.ready':'FLUGFREIGABE AUSSTEHEND','mission.playing':'EINSATZ FREIGEGEBEN · LINIE HALTEN',
+    'mission.paused':'AUTOPILOT AKTIV','mission.upgrade':'NACHSCHUB · VERBESSERUNG WÄHLEN','mission.over':'OPERATION BEENDET',
+    'flight.label':'FLUG','dash.ready':'BEREIT','heat.cooling':'KÜHLT AB','hull.repairing':'KRITISCHER RUMPF-SCHADEN',
+    'supply.collect':'NACHSCHUB SAMMELN','supply.note':'Grüne Versorgungskisten reparieren den Rumpf.',
+    'wave.bossTag':'KOMMANDOFAHRZEUG ENTDECKT','wave.enemyTag':'FEINDKRÄFTE IN BEWEGUNG','wave.bossTitle':'GOLIATH IM ANFLUG',
+    'wave.title':'WELLE {wave}','wave.bossNote':'Bereite deine Raketen vor.','wave.firstNote':'Bleib in Bewegung und auf Abstand.','wave.note':'Neue Ziele. Derselbe Auftrag.',
+    'wave.cleared':'WELLE GESCHAFFT +{score}','upgrade.note':'Welle {wave} geschafft. Wähle eine Verbesserung.',
+    'record.new':'NEUER REKORD. Der Himmel wird sich an dich erinnern.','record.again':'Jeder Flug macht dich stärker. Heb wieder ab.',
+    'fullscreen.errorTitle':'VOLLBILD NICHT VERFÜGBAR','fullscreen.errorNote':'Nutze stattdessen den Vollbildbefehl deines Browsers.',
+    'upgrade.damage.title':'Panzerbrechende Munition','upgrade.damage.description':'Kanonen-Schaden +25%.','upgrade.damage.detail':'+25% SCHADEN',
+    'upgrade.fireRate.title':'Schnellzufuhr','upgrade.fireRate.description':'Die Kanone feuert 18% schneller.','upgrade.fireRate.detail':'+18% FEUERRATE',
+    'upgrade.armor.title':'Verbundpanzerung','upgrade.armor.description':'Maximale Hülle +25. Repariert sofort 35.','upgrade.armor.detail':'+25 HÜLLE',
+    'upgrade.engine.title':'Turbinen-Upgrade','upgrade.engine.description':'Bewegungstempo +12%. Ausweichen lädt schneller.','upgrade.engine.detail':'+12% TEMPO',
+    'upgrade.rockets.title':'Raketensystem','upgrade.rockets.description':'Eine zusätzliche Rakete. 20% schnelleres Nachladen.','upgrade.rockets.detail':'+1 RAKETENKAPAZITÄT',
+    'upgrade.repair.title':'Feldreparatur','upgrade.repair.description':'Repariert die Hülle vollständig.','upgrade.repair.detail':'VOLLREPARATUR',
+    'map.desert':'WÜSTENFRONT','map.valley':'GRÜNES TAL','map.canyon':'ROTE ZONE'
   },
-  es: {
-    online: 'SISTEMA EN LÍNEA', mission: 'LA SUPERIORIDAD AÉREA ES TUYA.', missionNote: 'Retirarse no es una opción.', connected: 'ENLACE DE PILOTO ESTABLECIDO',
-    introTitle: 'LA NOCHE ES TUYA. EL CIELO ES TUYO.', introText: 'Estás tras las líneas enemigas. Pilota tu helicóptero y detén las oleadas.',
-    start: 'INICIAR OPERACIÓN', objective: 'OBJETIVO: SOBREVIVE / COMANDANTE CADA 5 OLEADAS', difficulty: 'Dificultad', easy: 'NOVATO', normal: 'PILOTO', hard: 'AS',
-    language: 'Idioma', settings: 'Ajustes', sound: 'Sonido', fullscreen: 'Pantalla completa', ready: 'EN ESPERA', playing: 'ACTIVO', paused: 'PAUSADO',
-    menuMission: 'ESPERANDO AUTORIZACIÓN DE VUELO', playingMission: 'COMBATE AUTORIZADO · MANTÉN LA LÍNEA', pausedMission: 'PILOTO AUTOMÁTICO ACTIVO',
-    over: 'SEÑAL PERDIDA', overMission: 'OPERACIÓN FINALIZADA', wave: 'OLEADA', hostiles: 'HOSTILES RESTANTES', scanning: 'ESCANEANDO ZONA',
-    flight: 'VUELO', readyLabel: 'LISTO', cooling: 'ENFRIANDO', languageChanged: 'Idioma cambiado'
+  es:{
+    'nav.online':'SISTEMA EN LÍNEA','nav.language':'Idioma','nav.soundOn':'Activar sonido','nav.soundOff':'Desactivar sonido',
+    'mission.tag':'OPERACIÓN 001','mission.sector':'SECTOR 07','mission.heading':'LA SUPERIORIDAD AÉREA ES TUYA.','mission.note':'Retirarse no es una opción.',
+    'frame.label':'Campo de batalla Blackout','frame.live':'SEÑAL EN DIRECTO','frame.exit':'SALIR DE PANTALLA COMPLETA',
+    'hud.hull':'ESTADO DEL CASCO','hud.healthy':'EN BUEN ESTADO','hud.damaged':'DAÑADO','hud.critical':'CRÍTICO','hud.threat':'NIVEL DE AMENAZA',
+    'hud.wave':'OLEADA','hud.scanning':'ESCANEANDO ZONA','hud.hostiles':'HOSTILES RESTANTES','hud.score':'PUNTUACIÓN','hud.best':'RÉCORD','hud.combo':'RACHA DE BAJAS',
+    'hud.boss':'GOLIATH / VEHÍCULO DE MANDO BLINDADO','hud.base':'BASE DE OPERACIONES AVANZADA','hud.cannonHeat':'TEMPERATURA DEL CAÑÓN','hud.dash':'EVADE','hud.rocket':'COHETE',
+    'intro.connected':'ENLACE DE PILOTO ESTABLECIDO','intro.title':'LA NOCHE ES TUYA.<br><em>EL CIELO ES TUYO.</em>',
+    'intro.text':'Estás tras las líneas enemigas. Pilota tu helicóptero y detén las oleadas. Hazte más fuerte en cada salida.',
+    'difficulty.label':'Dificultad','difficulty.easy':'NOVATO','difficulty.normal':'PILOTO','difficulty.hard':'AS',
+    'intro.start':'INICIAR OPERACIÓN <span>↗</span>','intro.objective':'OBJETIVO: SOBREVIVE / COMANDANTE CADA 5 OLEADAS',
+    'panel.pause.kicker':'ENLACE SEGURO','panel.pause.title':'TOMA UN <em>RESPIRO.</em>','panel.pause.text':'La operación te espera, piloto.',
+    'panel.resume':'REANUDAR VUELO <span>→</span>','panel.restart':'INICIAR NUEVA SALIDA',
+    'panel.over.kicker':'INFORME DE OPERACIÓN','panel.over.title':'NOS VEMOS EN LA<br><em>PRÓXIMA SALIDA.</em>',
+    'panel.score':'PUNTOS','panel.wave':'OLEADA','panel.kills':'BAJAS','panel.flightTime':'TIEMPO DE VUELO','panel.retry':'DESPEGAR DE NUEVO <span>↗</span>',
+    'panel.upgrade.kicker':'ZONA ASEGURADA','panel.upgrade.title':'VUELVE <em>MÁS FUERTE.</em>',
+    'touch.move':'MOVER','touch.dash':'Maniobra evasiva','touch.rocket':'Lanzar cohete','touch.fire':'Disparar',
+    'manual.title':'MANUAL DE VUELO','manual.heading':'Confía en tus reflejos.','manual.move':'MOVER','manual.arrows':'o teclas de dirección',
+    'manual.aim':'APUNTAR Y DISPARAR','manual.mouse':'Ratón · clic izq. / espacio','manual.dash':'EVADE','manual.invulnerable':'Invulnerabilidad breve',
+    'manual.guidedRocket':'COHETE GUIADO','manual.areaDamage':'Daño de área · recarga automática','manual.pause':'PAUSA','manual.breathe':'Tómate un respiro',
+    'footer.tip':'Muévete. Dispara. Sobrevive.','footer.signoff':'BUENA CAZA, PILOTO.',
+    'settings.kicker':'ORDENADOR DE VUELO','settings.title':'AJUSTES DE <em>VUELO</em>','settings.volume':'Volumen general',
+    'settings.music':'Música táctica','settings.shake':'Vibración de pantalla','settings.effects':'Efectos visuales',
+    'settings.note':'Los ajustes y tu récord se guardan en este navegador.<br>El audio comienza tras la primera interacción.',
+    'settings.done':'LISTO <span>✓</span>','settings.close':'Cerrar ajustes','settings.label':'Ajustes','settings.fullscreen':'Pantalla completa',
+    'status.ready':'EN ESPERA','status.playing':'ACTIVO','status.paused':'PAUSADO','status.upgrade':'REABASTECIMIENTO','status.over':'SEÑAL PERDIDA',
+    'mission.ready':'ESPERANDO AUTORIZACIÓN DE VUELO','mission.playing':'COMBATE AUTORIZADO · MANTÉN LA LÍNEA',
+    'mission.paused':'PILOTO AUTOMÁTICO ACTIVO','mission.upgrade':'REABASTECIMIENTO · ELIGE UNA MEJORA','mission.over':'OPERACIÓN FINALIZADA',
+    'flight.label':'VUELO','dash.ready':'LISTO','heat.cooling':'ENFRIANDO','hull.repairing':'DAÑO CRÍTICO EN EL CASCO',
+    'supply.collect':'RECOGE SUMINISTROS','supply.note':'Las cajas verdes reparan el casco.',
+    'wave.bossTag':'VEHÍCULO DE MANDO DETECTADO','wave.enemyTag':'FUERZAS ENEMIGAS EN MOVIMIENTO','wave.bossTitle':'GOLIATH EN CAMINO',
+    'wave.title':'OLEADA {wave}','wave.bossNote':'Prepara tus cohetes.','wave.firstNote':'No dejes de moverte. Mantén la distancia.','wave.note':'Nuevos objetivos. La misma misión.',
+    'wave.cleared':'OLEADA COMPLETADA +{score}','upgrade.note':'Oleada {wave} completada. Elige una mejora.',
+    'record.new':'NUEVO RÉCORD. El cielo te recordará.','record.again':'Cada vuelo te hace más fuerte. Vuelve a despegar.',
+    'fullscreen.errorTitle':'PANTALLA COMPLETA NO DISPONIBLE','fullscreen.errorNote':'Usa el comando de pantalla completa de tu navegador.',
+    'upgrade.damage.title':'Munición perforante','upgrade.damage.description':'El cañón inflige un 25% más de daño.','upgrade.damage.detail':'+25% DAÑO',
+    'upgrade.fireRate.title':'Alimentación rápida','upgrade.fireRate.description':'El cañón dispara un 18% más rápido.','upgrade.fireRate.detail':'+18% CADENCIA',
+    'upgrade.armor.title':'Blindaje compuesto','upgrade.armor.description':'Casco máximo +25. Repara 35 al instante.','upgrade.armor.detail':'+25 CASCO',
+    'upgrade.engine.title':'Mejora de turbina','upgrade.engine.description':'Velocidad +12%. La evasión se recarga antes.','upgrade.engine.detail':'+12% VELOCIDAD',
+    'upgrade.rockets.title':'Sistema de misiles','upgrade.rockets.description':'Un cohete extra. Recarga un 20% más rápido.','upgrade.rockets.detail':'+1 COHETE',
+    'upgrade.repair.title':'Reparación de campo','upgrade.repair.description':'Repara el casco por completo.','upgrade.repair.detail':'REPARACIÓN TOTAL',
+    'map.desert':'FRENTE DEL DESIERTO','map.valley':'VALLE VERDE','map.canyon':'ZONA ROJA'
   },
-  fr: {
-    online: 'SYSTÈME EN LIGNE', mission: 'LA SUPÉRIORITÉ AÉRIENNE EST À VOUS.', missionNote: 'Se replier n’est pas une option.', connected: 'LIAISON PILOTE ÉTABLIE',
-    introTitle: 'LA NUIT EST À VOUS. LE CIEL EST À VOUS.', introText: 'Vous êtes derrière les lignes ennemies. Pilotez votre hélicoptère et arrêtez les vagues.',
-    start: 'LANCER L’OPÉRATION', objective: 'OBJECTIF : SURVIVRE / COMMANDANT TOUS LES 5 ASSAUTS', difficulty: 'Difficulté', easy: 'DÉBUTANT', normal: 'PILOTE', hard: 'AS',
-    language: 'Langue', settings: 'Paramètres', sound: 'Son', fullscreen: 'Plein écran', ready: 'EN ATTENTE', playing: 'ACTIF', paused: 'EN PAUSE',
-    menuMission: 'AUTORISATION DE VOL EN ATTENTE', playingMission: 'ENGAGEMENT AUTORISÉ · TENEZ LA LIGNE', pausedMission: 'PILOTE AUTOMATIQUE ACTIF',
-    over: 'SIGNAL PERDU', overMission: 'OPÉRATION TERMINÉE', wave: 'VAGUE', hostiles: 'HOSTILES RESTANTS', scanning: 'BALAYAGE DE ZONE',
-    flight: 'VOL', readyLabel: 'PRÊT', cooling: 'REFROIDISSEMENT', languageChanged: 'Langue modifiée'
+  fr:{
+    'nav.online':'SYSTÈME EN LIGNE','nav.language':'Langue','nav.soundOn':'Activer le son','nav.soundOff':'Couper le son',
+    'mission.tag':'OPÉRATION 001','mission.sector':'SECTEUR 07','mission.heading':'LA SUPÉRIORITÉ AÉRIENNE EST À VOUS.','mission.note':'Se replier n’est pas une option.',
+    'frame.label':'Champ de bataille Blackout','frame.live':'LIAISON EN DIRECT','frame.exit':'QUITTER LE PLEIN ÉCRAN',
+    'hud.hull':'ÉTAT DE LA CARLINGUE','hud.healthy':'INTACTE','hud.damaged':'ENDOMMAGÉE','hud.critical':'CRITIQUE','hud.threat':'NIVEAU DE MENACE',
+    'hud.wave':'VAGUE','hud.scanning':'SCAN DE LA ZONE','hud.hostiles':'ENNEMIS RESTANTS','hud.score':'SCORE DE L’OPÉRATION','hud.best':'RECORD','hud.combo':'SÉRIE D’ÉLIMINATIONS',
+    'hud.boss':'GOLIATH / VÉHICULE DE COMMANDEMENT BLINDÉ','hud.base':'BASE AVANCÉE','hud.cannonHeat':'CHALEUR DU CANON','hud.dash':'ESQUIVE','hud.rocket':'ROQUETTE',
+    'intro.connected':'LIAISON PILOTE ÉTABLIE','intro.title':'LA NUIT EST À VOUS.<br><em>LE CIEL EST À VOUS.</em>',
+    'intro.text':'Vous êtes derrière les lignes ennemies. Pilotez votre hélicoptère et arrêtez les vagues. Renforcez-vous à chaque sortie.',
+    'difficulty.label':'Difficulté','difficulty.easy':'DÉBUTANT','difficulty.normal':'PILOTE','difficulty.hard':'AS',
+    'intro.start':'LANCER L’OPÉRATION <span>↗</span>','intro.objective':'OBJECTIF : SURVIVRE / COMMANDANT TOUS LES 5 ASSAUTS',
+    'panel.pause.kicker':'LIAISON SÉCURISÉE','panel.pause.title':'REPRENEZ <em>VOTRE SOUFFLE.</em>','panel.pause.text':'L’opération vous attend, pilote.',
+    'panel.resume':'REPRENDRE LE VOL <span>→</span>','panel.restart':'NOUVELLE SORTIE',
+    'panel.over.kicker':'RAPPORT D’OPÉRATION','panel.over.title':'À LA PROCHAINE<br><em>SORTIE.</em>',
+    'panel.score':'SCORE','panel.wave':'VAGUE','panel.kills':'ÉLIMINATIONS','panel.flightTime':'TEMPS DE VOL','panel.retry':'REDÉCOLLER <span>↗</span>',
+    'panel.upgrade.kicker':'ZONE SÉCURISÉE','panel.upgrade.title':'REVENEZ <em>PLUS FORT.</em>',
+    'touch.move':'DÉPLACER','touch.dash':'Manœuvre d’esquive','touch.rocket':'Tirer une roquette','touch.fire':'Tirer',
+    'manual.title':'MANUEL DE VOL','manual.heading':'Fiez-vous à vos réflexes.','manual.move':'DÉPLACEMENT','manual.arrows':'ou flèches directionnelles',
+    'manual.aim':'VISER ET TIRER','manual.mouse':'Souris · clic gauche / espace','manual.dash':'ESQUIVE','manual.invulnerable':'Invulnérabilité temporaire',
+    'manual.guidedRocket':'ROQUETTE GUIDÉE','manual.areaDamage':'Dégâts de zone · recharge automatique','manual.pause':'PAUSE','manual.breathe':'Reprenez votre souffle',
+    'footer.tip':'Bougez. Tirez. Survivez.','footer.signoff':'BONNE CHASSE, PILOTE.',
+    'settings.kicker':'ORDINATEUR DE VOL','settings.title':'RÉGLAGES DE <em>VOL</em>','settings.volume':'Volume principal',
+    'settings.music':'Musique tactique','settings.shake':'Secousses de l’écran','settings.effects':'Effets visuels',
+    'settings.note':'Vos réglages et votre record sont enregistrés dans ce navigateur.<br>Le son démarre après votre première interaction.',
+    'settings.done':'TERMINÉ <span>✓</span>','settings.close':'Fermer les réglages','settings.label':'Réglages','settings.fullscreen':'Plein écran',
+    'status.ready':'EN ATTENTE','status.playing':'ACTIF','status.paused':'EN PAUSE','status.upgrade':'RAVITAILLEMENT','status.over':'SIGNAL PERDU',
+    'mission.ready':'AUTORISATION DE VOL EN ATTENTE','mission.playing':'ENGAGEMENT AUTORISÉ · TENEZ LA LIGNE',
+    'mission.paused':'PILOTE AUTOMATIQUE ACTIF','mission.upgrade':'RAVITAILLEMENT · CHOISISSEZ UNE AMÉLIORATION','mission.over':'OPÉRATION TERMINÉE',
+    'flight.label':'VOL','dash.ready':'PRÊT','heat.cooling':'REFROIDISSEMENT','hull.repairing':'DÉGÂTS CRITIQUES À LA CARLINGUE',
+    'supply.collect':'RÉCUPÉREZ LE RAVITAILLEMENT','supply.note':'Les caisses vertes réparent la carlingue.',
+    'wave.bossTag':'VÉHICULE DE COMMANDEMENT REPÉRÉ','wave.enemyTag':'FORCES ENNEMIES EN MOUVEMENT','wave.bossTitle':'GOLIATH EN APPROCHE',
+    'wave.title':'VAGUE {wave}','wave.bossNote':'Préparez vos roquettes.','wave.firstNote':'Restez en mouvement et gardez vos distances.','wave.note':'De nouvelles cibles. La même mission.',
+    'wave.cleared':'VAGUE TERMINÉE +{score}','upgrade.note':'Vague {wave} terminée. Choisissez une amélioration.',
+    'record.new':'NOUVEAU RECORD. Le ciel se souviendra de vous.','record.again':'Chaque vol vous rend plus fort. Redécollez.',
+    'fullscreen.errorTitle':'PLEIN ÉCRAN INDISPONIBLE','fullscreen.errorNote':'Utilisez plutôt la commande plein écran de votre navigateur.',
+    'upgrade.damage.title':'Munitions perforantes','upgrade.damage.description':'Dégâts du canon augmentés de 25%.','upgrade.damage.detail':'+25% DÉGÂTS',
+    'upgrade.fireRate.title':'Alimentation rapide','upgrade.fireRate.description':'Le canon tire 18% plus vite.','upgrade.fireRate.detail':'+18% CADENCE',
+    'upgrade.armor.title':'Blindage composite','upgrade.armor.description':'Carlingue max. +25. Répare immédiatement 35.','upgrade.armor.detail':'+25 CARLINGUE',
+    'upgrade.engine.title':'Turbine améliorée','upgrade.engine.description':'Vitesse +12%. L’esquive se recharge plus vite.','upgrade.engine.detail':'+12% VITESSE',
+    'upgrade.rockets.title':'Système de missiles','upgrade.rockets.description':'Une roquette en plus. Recharge 20% plus rapide.','upgrade.rockets.detail':'+1 ROQUETTE',
+    'upgrade.repair.title':'Réparation de campagne','upgrade.repair.description':'Répare entièrement la carlingue.','upgrade.repair.detail':'RÉPARATION COMPLÈTE',
+    'map.desert':'FRONT DU DÉSERT','map.valley':'VALLÉE VERTE','map.canyon':'ZONE ROUGE'
   }
 };
 
-let locale = 'tr';
-function setLocale(next) { locale = translations[next] ? next : 'tr'; }
-function t(key, values = {}) {
-  const text = translations[locale][key] ?? translations.tr[key] ?? key;
-  return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
+let locale='en';
+function setLocale(next){locale=translations[next]?next:'en';}
+function t(key,values={}){
+  const text=translations[locale][key]??translations.en[key]??key;
+  return text.replace(/\{(\w+)\}/g,(_,name)=>values[name]??'');
 }
 
 // core.js
@@ -449,20 +613,20 @@ function seededRandom(seed = 73) {
   return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
 }
 const MAPS = [
-  { name:'ÇÖL HATTI', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
-  { name:'YEŞİL VADİ', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
-  { name:'KIZIL BÖLGE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
+  { name:'DESERT FRONT', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
+  { name:'GREEN VALLEY', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
+  { name:'RED ZONE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
 ];
 function mapForWave(wave) {
   return MAPS[(Math.max(1, wave)-1)%MAPS.length];
 }
 const UPGRADES = [
-  { id: 'damage', icon: '✳', title: 'Delici mühimmat', description: 'Top hasarı %25 artar.', detail: '+%25 HASAR', max: 4 },
-  { id: 'fireRate', icon: '≋', title: 'Hızlı besleme', description: 'Top %18 daha hızlı ateş eder.', detail: '+%18 ATIŞ HIZI', max: 4 },
-  { id: 'armor', icon: '⬡', title: 'Kompozit zırh', description: 'Azami gövde +25. Anında 35 onarım.', detail: '+25 GÖVDE', max: 4 },
-  { id: 'engine', icon: '↗', title: 'Türbin yükseltmesi', description: 'Hareket hızı %12 artar. Kaçış daha çabuk dolar.', detail: '+%12 HIZ', max: 3 },
-  { id: 'rockets', icon: '⌁', title: 'Füze sistemi', description: 'Bir ek roket. Roketler %20 daha çabuk dolar.', detail: '+1 ROKET KAPASİTESİ', max: 3 },
-  { id: 'repair', icon: '+', title: 'Saha bakımı', description: 'Gövdeyi tamamen onarır.', detail: 'TAM ONARIM', max: Infinity },
+  { id: 'damage', icon: '✳', title: 'Armor-Piercing Rounds', description: 'Cannon damage increased by 25%.', detail: '+25% DAMAGE', max: 4 },
+  { id: 'fireRate', icon: '≋', title: 'Rapid Feed', description: 'Cannon fires 18% faster.', detail: '+18% FIRE RATE', max: 4 },
+  { id: 'armor', icon: '⬡', title: 'Composite Armor', description: 'Maximum hull +25. Repairs 35 immediately.', detail: '+25 HULL', max: 4 },
+  { id: 'engine', icon: '↗', title: 'Turbine Upgrade', description: 'Movement speed +12%. Dash recharges faster.', detail: '+12% SPEED', max: 3 },
+  { id: 'rockets', icon: '⌁', title: 'Missile System', description: 'One extra rocket. Rockets recharge 20% faster.', detail: '+1 ROCKET CAPACITY', max: 3 },
+  { id: 'repair', icon: '+', title: 'Field Repairs', description: 'Fully repairs the hull.', detail: 'FULL REPAIR', max: Infinity },
 ];
 
 // audio.js
@@ -718,7 +882,7 @@ class Renderer {
     for(let y=0;y<H;y+=100){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
     c.font='8px monospace';c.fillStyle='#d3d6b533';c.textAlign='left';
     for(let x=90;x<W;x+=260)for(let y=150;y<H-100;y+=250){c.fillText('+',x,y);c.fillText(`${Math.round(x/10)}.${Math.round(y/10)}`,x+10,y+2);}
-    c.save();c.translate(W*.69,H*.85);c.rotate(-.2);c.font='bold 45px Arial';c.fillStyle='#d7d8b620';c.fillText(this.map.name,0,0);c.restore();
+    c.save();c.translate(W*.69,H*.85);c.rotate(-.2);c.font='bold 45px Arial';c.fillStyle='#d7d8b620';c.fillText(this.mapLabel||this.map.name,0,0);c.restore();
   }
   compound(c,x,y,s) {
     c.save();c.translate(x,y);c.scale(s,s);c.rotate(.08);
@@ -852,7 +1016,7 @@ class Renderer {
 const $ = id => document.getElementById(id);
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
-const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'tr'};
+const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
 const stored=read('blackout.settings',{});
 const settings={...defaults};
@@ -876,15 +1040,17 @@ let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,sett
 let upgrades={},choices=[];
 const pad=(n,length=6)=>String(Math.floor(n)).padStart(length,'0');
 const clock=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
-function setText(selector,text){const element=document.querySelector?.(selector);if(!element)return;const node=[...element.childNodes].find(child=>child.nodeType===Node.TEXT_NODE&&child.nodeValue.trim());if(node)node.nodeValue=` ${text} `;else element.textContent=text;}
-function setPlainText(selector,text){const element=document.querySelector?.(selector);if(element)element.textContent=text;}
 function applyLanguage(){
   setLocale(settings.language);document.documentElement.lang=settings.language;
-  const text={'.online':'online','.mission-meta span':'mission','.mission-meta p':'missionNote','.intro-kicker':'connected','#start':'start','.intro-note':'objective'};
-  Object.entries(text).forEach(([selector,key])=>setText(selector,t(key)));
-  setPlainText('#intro-panel h2',t('introTitle'));setPlainText('#intro-panel p',t('introText'));
-  document.querySelectorAll?.('[data-difficulty]').forEach(button=>setText(`[data-difficulty="${button.dataset.difficulty}"]`,t(button.dataset.difficulty)));
-  $('language').value=settings.language;$('language').setAttribute('aria-label',t('language'));
+  document.querySelectorAll('[data-i18n]').forEach(element=>{element.innerHTML=t(element.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(element=>element.setAttribute('aria-label',t(element.dataset.i18nAria)));
+  document.querySelectorAll('[data-difficulty]').forEach(button=>{button.textContent=t(`difficulty.${button.dataset.difficulty}`);});
+  $('language').value=settings.language;$('language').setAttribute('aria-label',t('nav.language'));
+  $('settings-open').setAttribute('aria-label',t('settings.label'));$('settings-open').title=t('settings.label');
+  $('fullscreen').setAttribute('aria-label',t('settings.fullscreen'));$('fullscreen').title=t('settings.fullscreen');
+  $('fullscreen-exit').textContent=t('frame.exit');
+  $('sound-toggle').title=`${t(settings.muted?'nav.soundOn':'nav.soundOff')} (M)`;
+  renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;
   updateStateText();updateSettingsUI();updateHud();
 }
 
@@ -907,8 +1073,8 @@ function clearInput(){
   keys.clear();pointer.down=false;gamePointer=null;firePointer=null;joystick={x:0,y:0,id:null};$('joystick-knob').style.transform='';
 }
 function updateStateText(){
-  $('feed-status').textContent=t({ready:'ready',playing:'playing',paused:'paused',upgrade:'ready',over:'over'}[g.state]);
-  $('mission-status').textContent=t({ready:'menuMission',playing:'playingMission',paused:'pausedMission',upgrade:'playingMission',over:'overMission'}[g.state]);
+  $('feed-status').textContent=t(`status.${g.state}`);
+  $('mission-status').textContent=t(`mission.${g.state}`);
 }
 function setState(state,panel){
   g.state=state;clearInput();overlay.hidden=!panel;
@@ -940,9 +1106,9 @@ async function start(){
 function nextWave(){
   g.wave++;g.plan=wavePlan(g.wave,settings.difficulty);g.spawnRemaining=g.plan.count;g.spawnIndex=0;g.spawnTimer=2.4;g.waveWait=-1;
   g.map=mapForWave(g.wave);g.decals=[];renderer.setMap(g.map);
-  $('sector-name').textContent=g.map.name;
-  $('wave').innerHTML=`${t('wave')} <b>${pad(g.wave,2)}</b>`;
-  announce(g.plan.boss?'KOMUTA ARACI TESPİT EDİLDİ':'DÜŞMAN HATTI HAREKETLENDİ',g.plan.boss?'GOLIATH YAKLAŞIYOR':`DALGA ${pad(g.wave,2)}`,`${g.map.name} · ${g.plan.boss?'Roketlerini hazırla.':g.wave===1?'Hareket et. Mesafeni koru.':'Yeni hedefler. Aynı görev.'}`,3.2);
+  renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;
+  $('wave').innerHTML=`${t('hud.wave')} <b>${pad(g.wave,2)}</b>`;
+  announce(t(g.plan.boss?'wave.bossTag':'wave.enemyTag'),t(g.plan.boss?'wave.bossTitle':'wave.title',{wave:pad(g.wave,2)}),`${renderer.mapLabel} · ${t(g.plan.boss?'wave.bossNote':g.wave===1?'wave.firstNote':'wave.note')}`,3.2);
   sound.play(g.plan.boss?'alert':'wave');
   if(g.plan.boss)spawnEnemy('boss');
   sound.setMusicScene(g.plan.boss?'boss':'waves');
@@ -974,7 +1140,7 @@ function gun(){
   g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'gun'});
   p.cooldown=w.cooldown*Math.pow(w.cooldownUpgradeFactor,upgrades.fireRate||0);p.muzzle=w.muzzleTime;
   p.heat=Math.min(1,p.heat+w.heatPerShot);
-  if(p.heat>=1){p.overheated=true;float('TOP AŞIRI ISINDI',p.x,p.y-55,'#ffb586',true);}
+  if(p.heat>=1){p.overheated=true;float(t('heat.cooling'),p.x,p.y-55,'#ffb586',true);}
   sound.play('shot',p.x/g.world.width*1.4-.7);
 }
 const rocketRecharge=()=>WEAPONS.rocket.rechargeTime*Math.pow(WEAPONS.rocket.rechargeUpgradeFactor,upgrades.rockets||0);
@@ -1027,7 +1193,7 @@ function damagePlayer(amount){
   p.health=Math.max(0,p.health-amount*g.plan.damage);p.invulnerable=.65;g.shake=10;g.combo=0;g.comboTimer=0;
   burst(p.x,p.y,'#f5c78d',14);sound.play('damage');
   $('damage-flash').classList.remove('hit');void $('damage-flash').offsetWidth;$('damage-flash').classList.add('hit');
-  if(p.health<=25&&p.health>0)announce('KRİTİK GÖVDE HASARI','İKMAL TOPLA','Yeşil ikmal paketleri gövdeyi onarır.',1.8);
+  if(p.health<=25&&p.health>0)announce(t('hull.repairing'),t('supply.collect'),t('supply.note'),1.8);
   if(p.health<=0)endGame();updateHud();
 }
 function detonate(b){
@@ -1125,11 +1291,11 @@ function update(dt){
   g.pickups=g.pickups.filter(item=>{
     item.life-=dt;const d=distance(item,p);
     if(d<90&&p.health<p.maxHealth){item.x+=(p.x-item.x)*dt*4;item.y+=(p.y-item.y)*dt*4;}
-    if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float('+30 ONARIM',p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
+    if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float(`+30 ${t('upgrade.repair.detail')}`,p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
     return item.life>0;
   });
   if(!g.spawnRemaining&&!g.enemies.length&&!g.warnings.length){
-    if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(`DALGA TAMAMLANDI +${g.wave*100}`,p.x,p.y-65,'#e5f1ac',true);}
+    if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(t('wave.cleared',{score:g.wave*100}),p.x,p.y-65,'#e5f1ac',true);}
     else{g.waveWait-=dt;if(g.waveWait<=0){showUpgrades();return;}}
   }
   g.comboTimer-=dt;if(g.comboTimer<=0)g.combo=0;
@@ -1156,22 +1322,23 @@ function updateEffects(dt){
 }
 function updateHud(){
   const p=g.player,percent=Math.ceil(p.health/p.maxHealth*100),multiplier=Math.min(5,1+Math.floor(g.combo/3));
+  $('wave').innerHTML=`${t('hud.wave')} <b>${pad(g.wave,2)}</b>`;
   $('health').textContent=percent;$('health-fill').style.width=`${percent}%`;$('health-fill').style.background=percent<=25?'#ee9b6b':'#dbea9b';
-  $('hull-status').textContent=percent<=25?'KRİTİK':percent<=60?'HASARLI':'SAĞLAM';$('hull-status').style.color=percent<=25?'#ee9b6b':'';
+  $('hull-status').textContent=t(percent<=25?'hud.critical':percent<=60?'hud.damaged':'hud.healthy');$('hull-status').style.color=percent<=25?'#ee9b6b':'';
   $('score').textContent=pad(g.score);$('best').textContent=pad(Math.max(g.best,g.score));
-  $('hostiles').textContent=g.state==='ready'?t('scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hostiles')}`;
-  $('flight-time').textContent=`${t('flight')} ${clock(g.time)}`;
-  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s` :t('readyLabel');
+  $('hostiles').textContent=g.state==='ready'?t('hud.scanning'):`${g.enemies.length+g.spawnRemaining} ${t('hud.hostiles')}`;
+  $('flight-time').textContent=`${t('flight.label')} ${clock(g.time)}`;
+  $('dash-status').textContent=p.dashCooldown>0?`${p.dashCooldown.toFixed(1)} s`:t('dash.ready');
   $('dash-fill').style.width=`${(1-p.dashCooldown/(3.5*Math.pow(.87,upgrades.engine||0)))*100}%`;
   $('dash-ability').classList.toggle('cooldown',p.dashCooldown>0);
   $('rocket-status').textContent=`${p.rockets} / ${p.maxRockets}`;
   $('rocket-fill').style.width=`${p.rockets===p.maxRockets?100:p.rocketTimer/rocketRecharge()*100}%`;
   $('rocket-ability').classList.toggle('cooldown',p.rockets===0);
-  $('heat-status').textContent=p.overheated?t('cooling'):`%${Math.round(p.heat*100)}`;
+  $('heat-status').textContent=p.overheated?t('heat.cooling'):`${Math.round(p.heat*100)}%`;
   $('heat-fill').style.width=`${p.heat*100}%`;
   $('heat-ability').classList.toggle('overheated',p.overheated);
   $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
-  $('heat-meter').setAttribute('aria-valuetext',p.overheated?'Aşırı ısındı, soğuyor':`%${Math.round(p.heat*100)}`);
+  $('heat-meter').setAttribute('aria-valuetext',p.overheated?t('heat.cooling'):`${Math.round(p.heat*100)}%`);
   $('touch-dash').disabled=p.dashCooldown>0;$('touch-rocket').disabled=p.rockets===0;
   $('combo').hidden=multiplier<2;$('combo-value').textContent=`×${multiplier}`;
   const boss=g.enemies.find(e=>e.type==='boss');$('boss-hud').hidden=!boss||g.state==='over';
@@ -1182,11 +1349,11 @@ function showUpgrades(){
   const available=UPGRADES.filter(u=>(upgrades[u.id]||0)<u.max&&(u.id!=='repair'||g.player.health<g.player.maxHealth*.8));
   choices=available.map(value=>({value,sort:Math.random()})).sort((a,b)=>a.sort-b.sort).slice(0,3).map(item=>item.value);
   if(!choices.length)choices=[UPGRADES.find(u=>u.id==='repair')];
-  $('upgrade-note').textContent=`Dalga ${g.wave} tamamlandı. Bir geliştirme seç, uçuşa devam et.`;
+  $('upgrade-note').textContent=t('upgrade.note',{wave:g.wave});
   $('upgrade-cards').replaceChildren();
   choices.forEach((u,i)=>{
     const button=document.createElement('button');button.className='upgrade-card';button.type='button';
-    button.innerHTML=`<span>${u.icon}</span><kbd>${i+1}</kbd><strong>${u.title}</strong><p>${u.description}</p><small>${u.detail} &nbsp; ↗</small>`;
+    button.innerHTML=`<span>${u.icon}</span><kbd>${i+1}</kbd><strong>${t(`upgrade.${u.id}.title`)}</strong><p>${t(`upgrade.${u.id}.description`)}</p><small>${t(`upgrade.${u.id}.detail`)} &nbsp; ↗</small>`;
     button.addEventListener('click',()=>selectUpgrade(u.id));$('upgrade-cards').append(button);
   });
   setState('upgrade','upgrade-panel');sound.play('upgrade');requestAnimationFrame(()=>$('upgrade-cards').firstElementChild?.focus({preventScroll:true}));updateHud();
@@ -1204,14 +1371,14 @@ async function resume(){if(g.state!=='paused'||dialog.open)return;await sound.in
 function endGame(){
   const previous=g.best;g.best=Math.max(g.best,g.score);write('blackout.best',g.best);
   explosion(g.player.x,g.player.y,140);g.bannerTime=0;$('announcement').classList.remove('visible');$('boss-hud').hidden=true;
-  $('record-label').textContent=g.score>previous?'YENİ REKOR. Bu gökyüzü seni hatırlayacak.':'Her uçuş bir tecrübe. Tekrar havalan.';
-  $('result-score').textContent=g.score.toLocaleString('tr-TR');$('result-wave').textContent=pad(g.wave,2);$('result-kills').textContent=g.kills;$('result-time').textContent=clock(g.time);
+  $('record-label').textContent=t(g.score>previous?'record.new':'record.again');
+  $('result-score').textContent=g.score.toLocaleString(settings.language);$('result-wave').textContent=pad(g.wave,2);$('result-kills').textContent=g.kills;$('result-time').textContent=clock(g.time);
   setState('over','over-panel');focusPanel('retry');
 }
 function updateSettingsUI(){
   $('volume').value=settings.volume*100;$('volume-value').textContent=`${Math.round(settings.volume*100)}%`;
   ['music','shake','effects'].forEach(id=>$(id).checked=settings[id]);
-  $('sound-toggle').setAttribute('aria-pressed',String(settings.muted));$('sound-toggle').setAttribute('aria-label',settings.muted?'Sesi aç':'Sesi kapat');
+  $('sound-toggle').setAttribute('aria-pressed',String(settings.muted));$('sound-toggle').setAttribute('aria-label',t(settings.muted?'nav.soundOn':'nav.soundOff'));$('sound-toggle').title=`${t(settings.muted?'nav.soundOn':'nav.soundOff')} (M)`;
   document.querySelectorAll('[data-difficulty]').forEach(button=>{const selected=button.dataset.difficulty===settings.difficulty;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
 }
 function toggleMute(){settings.muted=!settings.muted;sound.init();sound.configure();saveSettings();updateSettingsUI();}
@@ -1223,7 +1390,7 @@ $('volume').addEventListener('input',event=>{settings.volume=event.target.value/
 for(const id of ['music','shake','effects'])$(id).addEventListener('change',()=>{settings[id]=$(id).checked;sound.configure();saveSettings();if(id==='effects')resize();});
 $('sound-toggle').addEventListener('click',toggleMute);
 $('fullscreen').addEventListener('click',async()=>{
-  try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.game-frame').requestFullscreen();}catch{announce('TARAYICI BİLGİSİ','TAM EKRAN KULLANILAMIYOR','Tarayıcının tam ekran komutunu kullanabilirsin.',3);}
+  try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.game-frame').requestFullscreen();}catch{announce(t('settings.fullscreen'),t('fullscreen.errorTitle'),t('fullscreen.errorNote'),3);}
 });
 $('fullscreen-exit').addEventListener('click',()=>document.exitFullscreen());
 if(!document.fullscreenEnabled)$('fullscreen').hidden=true;

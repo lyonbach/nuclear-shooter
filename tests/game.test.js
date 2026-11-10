@@ -187,12 +187,13 @@ test('first main-menu interaction initializes its soundtrack',async()=>{
 });
 test('language selection persists and updates status text',async()=>{
   const game=createGame(),language=game.elements.get('language');
-  await game.start();
-  language.value='en';
-  language.listeners.change[0]({target:language});
   assert.equal(game.settings.language,'en');
-  assert.equal(JSON.parse(game.storage.get('blackout.settings')).language,'en');
-  assert.equal(game.elements.get('feed-status').textContent,'ACTIVE');
+  await game.start();
+  language.value='de';
+  language.listeners.change[0]({target:language});
+  assert.equal(game.settings.language,'de');
+  assert.equal(JSON.parse(game.storage.get('blackout.settings')).language,'de');
+  assert.equal(game.elements.get('feed-status').textContent,'AKTIV');
 });
 test('helicopter coasts after release and eventually stops without crossing the boundary',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
