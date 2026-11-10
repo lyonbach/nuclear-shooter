@@ -24,7 +24,7 @@ function createGame(reducedMotion=false) {
   class Audio{constructor(){this.scene='menu';this.initializations=0;}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,deployFlares,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core),...Object.values(i18n));
   return{...game,elements,storage,windowEvents,documentEvents,sound:game.sound};
 }
@@ -87,6 +87,23 @@ test('rocket semi homing rockets fire faster on harder difficulty',async()=>{
   rocket.x=game.g.player.x-300;rocket.y=game.g.player.y-100;rocket.vx=100;rocket.vy=0;
   game.g.bullets=[rocket];game.update(.1);
   assert.ok(rocket.vy>0);assert.ok(Math.hypot(rocket.vx,rocket.vy)>100);
+});
+test('flares deploy automatically below Ace and require manual activation on Ace',async()=>{
+  const automatic=createGame();await automatic.start();automatic.g.spawnRemaining=100;
+  const p=automatic.g.player,rocket={x:p.x-150,y:p.y,vx:100,vy:0,life:5,kind:'enemyRocket',turn:0,acceleration:0,maxSpeed:100,trail:10};
+  automatic.g.bullets=[rocket];const random=Math.random;Math.random=()=>0;
+  try{automatic.update(.05);}finally{Math.random=random;}
+  assert.equal(rocket.decoyed,true);assert.ok(p.flareCooldown>2);assert.equal(automatic.g.particles.filter(particle=>particle.flare).length,3);
+  const flare=automatic.g.particles.find(particle=>particle.flare),straightX=flare.x+flare.vx*.1;
+  assert.ok(Math.hypot(flare.vx,flare.vy)>380);
+  automatic.updateEffects(.1);assert.notEqual(flare.x,straightX);
+
+  const manual=createGame();await manual.start();manual.settings.difficulty='hard';manual.g.spawnRemaining=100;
+  const hardRocket={...rocket,x:manual.g.player.x-150,y:manual.g.player.y,decoyed:false};
+  manual.g.bullets=[hardRocket];manual.update(.05);assert.equal(hardRocket.decoyed,false);
+  Math.random=()=>0;
+  try{assert.equal(manual.deployFlares(),true);}finally{Math.random=random;}
+  assert.equal(hardRocket.decoyed,true);
 });
 
 test('new sortie resets combat, unlocks controls, and schedules wave one',async()=>{

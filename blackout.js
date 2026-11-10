@@ -370,7 +370,7 @@ const translations = {
     'panel.over.kicker':'AFTER-ACTION REPORT','panel.over.title':'SEE YOU ON THE<br><em>NEXT SORTIE.</em>',
     'panel.score':'SCORE','panel.wave':'WAVE','panel.kills':'KILLS','panel.flightTime':'FLIGHT TIME','panel.retry':'TAKE OFF AGAIN <span>↗</span>',
     'panel.upgrade.kicker':'AREA SECURED','panel.upgrade.title':'COME BACK <em>STRONGER.</em>',
-    'touch.move':'MOVE','touch.dash':'Dash','touch.rocket':'Fire rocket','touch.fire':'Fire',
+    'touch.move':'MOVE','touch.dash':'Dash','touch.rocket':'Fire rocket','touch.flare':'Deploy flares','touch.fire':'Fire',
     'manual.title':'FLIGHT MANUAL','manual.heading':'Trust your instincts.','manual.move':'MOVE','manual.arrows':'or arrow keys',
     'manual.aim':'AIM & FIRE','manual.mouse':'Mouse · left click / space','manual.dash':'DASH','manual.invulnerable':'Brief invulnerability',
     'manual.guidedRocket':'GUIDED ROCKET','manual.areaDamage':'Area damage · auto-reload','manual.pause':'PAUSE','manual.breathe':'Take a breath',
@@ -413,7 +413,7 @@ const translations = {
     'panel.over.kicker':'OPERASYON RAPORU','panel.over.title':'SONRAKİ SORTİDE<br><em>GÖRÜŞÜRÜZ.</em>',
     'panel.score':'PUAN','panel.wave':'DALGA','panel.kills':'İMHA','panel.flightTime':'UÇUŞ SÜRESİ','panel.retry':'TEKRAR HAVALAN <span>↗</span>',
     'panel.upgrade.kicker':'BÖLGE TEMİZLENDİ','panel.upgrade.title':'DAHA <em>GÜÇLÜ DÖN.</em>',
-    'touch.move':'HAREKET','touch.dash':'Kaçış manevrası','touch.rocket':'Roket ateşle','touch.fire':'Ateş et',
+    'touch.move':'HAREKET','touch.dash':'Kaçış manevrası','touch.rocket':'Roket ateşle','touch.flare':'Fişek bırak','touch.fire':'Ateş et',
     'manual.title':'UÇUŞ KILAVUZU','manual.heading':'Reflekslerine güven.','manual.move':'MANEVRA','manual.arrows':'veya yön tuşları',
     'manual.aim':'NİŞAN & ATEŞ','manual.mouse':'Fare · sol tık / boşluk','manual.dash':'KAÇIŞ','manual.invulnerable':'Kısa süreli dokunulmazlık',
     'manual.guidedRocket':'GÜDÜMLÜ ROKET','manual.areaDamage':'Alan hasarı · otomatik dolum','manual.pause':'DURAKLAT','manual.breathe':'Bir nefes al',
@@ -456,7 +456,7 @@ const translations = {
     'panel.over.kicker':'EINSATZBERICHT','panel.over.title':'BIS ZUM<br><em>NÄCHSTEN EINSATZ.</em>',
     'panel.score':'PUNKTE','panel.wave':'WELLE','panel.kills':'ABSCHÜSSE','panel.flightTime':'FLUGZEIT','panel.retry':'WIEDER ABHEBEN <span>↗</span>',
     'panel.upgrade.kicker':'GEBIET GESICHERT','panel.upgrade.title':'KOMM <em>STÄRKER ZURÜCK.</em>',
-    'touch.move':'BEWEGEN','touch.dash':'Ausweichmanöver','touch.rocket':'Rakete abfeuern','touch.fire':'Feuern',
+    'touch.move':'BEWEGEN','touch.dash':'Ausweichmanöver','touch.rocket':'Rakete abfeuern','touch.flare':'Täuschkörper ausstoßen','touch.fire':'Feuern',
     'manual.title':'FLUGHANDBUCH','manual.heading':'Verlass dich auf deinen Instinkt.','manual.move':'BEWEGEN','manual.arrows':'oder Pfeiltasten',
     'manual.aim':'ZIELEN & FEUERN','manual.mouse':'Maus · Linksklick / Leertaste','manual.dash':'AUSWEICHEN','manual.invulnerable':'Kurzzeitig unverwundbar',
     'manual.guidedRocket':'LENKRAKETE','manual.areaDamage':'Flächenschaden · lädt automatisch nach','manual.pause':'PAUSE','manual.breathe':'Atme kurz durch',
@@ -499,7 +499,7 @@ const translations = {
     'panel.over.kicker':'INFORME DE OPERACIÓN','panel.over.title':'NOS VEMOS EN LA<br><em>PRÓXIMA SALIDA.</em>',
     'panel.score':'PUNTOS','panel.wave':'OLEADA','panel.kills':'BAJAS','panel.flightTime':'TIEMPO DE VUELO','panel.retry':'DESPEGAR DE NUEVO <span>↗</span>',
     'panel.upgrade.kicker':'ZONA ASEGURADA','panel.upgrade.title':'VUELVE <em>MÁS FUERTE.</em>',
-    'touch.move':'MOVER','touch.dash':'Maniobra evasiva','touch.rocket':'Lanzar cohete','touch.fire':'Disparar',
+    'touch.move':'MOVER','touch.dash':'Maniobra evasiva','touch.rocket':'Lanzar cohete','touch.flare':'Lanzar bengalas','touch.fire':'Disparar',
     'manual.title':'MANUAL DE VUELO','manual.heading':'Confía en tus reflejos.','manual.move':'MOVER','manual.arrows':'o teclas de dirección',
     'manual.aim':'APUNTAR Y DISPARAR','manual.mouse':'Ratón · clic izq. / espacio','manual.dash':'EVADE','manual.invulnerable':'Invulnerabilidad breve',
     'manual.guidedRocket':'COHETE GUIADO','manual.areaDamage':'Daño de área · recarga automática','manual.pause':'PAUSA','manual.breathe':'Tómate un respiro',
@@ -542,7 +542,7 @@ const translations = {
     'panel.over.kicker':'RAPPORT D’OPÉRATION','panel.over.title':'À LA PROCHAINE<br><em>SORTIE.</em>',
     'panel.score':'SCORE','panel.wave':'VAGUE','panel.kills':'ÉLIMINATIONS','panel.flightTime':'TEMPS DE VOL','panel.retry':'REDÉCOLLER <span>↗</span>',
     'panel.upgrade.kicker':'ZONE SÉCURISÉE','panel.upgrade.title':'REVENEZ <em>PLUS FORT.</em>',
-    'touch.move':'DÉPLACER','touch.dash':'Manœuvre d’esquive','touch.rocket':'Tirer une roquette','touch.fire':'Tirer',
+    'touch.move':'DÉPLACER','touch.dash':'Manœuvre d’esquive','touch.rocket':'Tirer une roquette','touch.flare':'Lancer des leurres','touch.fire':'Tirer',
     'manual.title':'MANUEL DE VOL','manual.heading':'Fiez-vous à vos réflexes.','manual.move':'DÉPLACEMENT','manual.arrows':'ou flèches directionnelles',
     'manual.aim':'VISER ET TIRER','manual.mouse':'Souris · clic gauche / espace','manual.dash':'ESQUIVE','manual.invulnerable':'Invulnérabilité temporaire',
     'manual.guidedRocket':'ROQUETTE GUIDÉE','manual.areaDamage':'Dégâts de zone · recharge automatique','manual.pause':'PAUSE','manual.breathe':'Reprenez votre souffle',
@@ -1007,7 +1007,7 @@ class Renderer {
       c.globalAlpha=g.player.invulnerable>0&&Math.floor(t*18)%2===0?.55:1;this.helicopter(c,g.player,t);c.globalAlpha=1;
       if(g.player.invulnerable>0){c.strokeStyle='#dbea9b40';c.lineWidth=1;c.beginPath();c.arc(g.player.x,g.player.y,43,0,TAU);c.stroke();}
     }
-    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();}}c.globalAlpha=1;
+    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();if(p.flare){ellipse(c,p.x,p.y,p.size*3.4,p.size*3.4,'#ff9b59aa');ellipse(c,p.x,p.y,p.size*1.8,p.size*1.8,'#fff6c4');}}}c.globalAlpha=1;
     for(const e of g.explosions){const progress=1-e.life/e.maxLife;c.globalAlpha=(1-progress)*.75;c.strokeStyle='#ffcf8b';c.lineWidth=3*(1-progress);c.beginPath();c.arc(e.x,e.y,e.size*progress,0,TAU);c.stroke();if(progress<.4){const flash=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.size*.6);flash.addColorStop(0,'#fff6c9aa');flash.addColorStop(1,'#ffc06b00');c.fillStyle=flash;c.fillRect(e.x-e.size,e.y-e.size,e.size*2,e.size*2);}}c.globalAlpha=1;
     for(const f of g.floaters){c.globalAlpha=clamp(f.life,0,1);c.font=`bold ${f.big?19:12}px monospace`;c.fillStyle=f.color;c.textAlign='center';c.fillText(f.text,f.x,f.y);}c.globalAlpha=1;
     // Enemy arrival indicators give the pilot time to react.
@@ -1027,6 +1027,7 @@ class Renderer {
 const $ = id => document.getElementById(id);
 const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
 const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
+const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
 const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
@@ -1067,7 +1068,7 @@ function applyLanguage(){
   updateStateText();updateSettingsUI();updateHud();
 }
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -1232,9 +1233,35 @@ function fireEnemy(e){
   }
   burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play('enemy');
 }
+function incomingMissile(){
+  const p=g.player;let threat=null,nearest=FLARE_RANGE;
+  for(const bullet of g.bullets){
+    if(bullet.kind!=='enemyRocket'||bullet.life<=0||bullet.decoyed)continue;
+    const d=distance(bullet,p),closing=bullet.vx*(p.x-bullet.x)+bullet.vy*(p.y-bullet.y)>0;
+    if(closing&&d<nearest){threat=bullet;nearest=d;}
+  }
+  return threat;
+}
+function deployFlares(){
+  const p=g.player;
+  if(g.state!=='playing'||p.flareCooldown>0)return false;
+  p.flareCooldown=FLARE_COOLDOWN;
+  for(const spread of [-.3,0,.3]){
+    const angle=p.angle+Math.PI+spread+(Math.random()-.5)*.24,life=.85;
+    const speed=(130+Math.random()*70)*3;
+    g.particles.push({x:p.x+Math.cos(angle)*25,y:p.y+Math.sin(angle)*25,vx:p.vx+Math.cos(angle)*speed,vy:p.vy+Math.sin(angle)*speed,life,maxLife:life,color:'#ffc866',size:5,flare:true,flarePhase:Math.random()*TAU,flareWobble:35+Math.random()*40});
+  }
+  const missile=incomingMissile();
+  if(missile&&Math.random()<FLARE_DEFLECTION_CHANCE){
+    missile.decoyed=true;missile.decoyTimer=.85;
+    missile.decoyX=p.x-Math.cos(p.angle)*48;missile.decoyY=p.y-Math.sin(p.angle)*48;
+  }
+  sound.play('dash');updateHud();
+  return true;
+}
 function update(dt){
   const p=g.player,W=g.world.width,H=g.world.height;g.time+=dt;g.shake=Math.max(0,g.shake-dt*35);
-  p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.rocketCooldown-=dt;p.muzzle-=dt;
+  p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.flareCooldown=Math.max(0,p.flareCooldown-dt);p.rocketCooldown-=dt;p.muzzle-=dt;
   const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-(Math.hypot(move.x,move.y)>.01?PLAYER_ACCELERATION:PLAYER_DECELERATION)*dt);
   if(p.dashTime<=0){p.vx+=(move.x*speed-p.vx)*response;p.vy+=(move.y*speed-p.vy)*response;}
   p.x=clamp(p.x+p.vx*dt,34,W-34);p.y=clamp(p.y+p.vy*dt,104,H-42);
@@ -1280,6 +1307,7 @@ function update(dt){
     if(distance(e,p)<e.radius+22){if(e.type==='kamikaze')hitEnemy(e,e.health);else damagePlayer(stats.contactDamage);}
     if(g.state!=='playing')return;
   }
+  if(settings.difficulty!=='hard'&&p.flareCooldown<=0&&incomingMissile())deployFlares();
   for(const b of g.bullets){
     if(b.life<=0)continue;
     const ox=b.x,oy=b.y;
@@ -1291,7 +1319,9 @@ function update(dt){
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }else if(b.kind==='enemyRocket'){
       const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*dt);
-      const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(p.y-b.y,p.x-b.x),dt*b.turn);
+      if(b.decoyed){b.decoyTimer-=dt;if(b.decoyTimer<=0){b.life=0;burst(b.x,b.y,'#ffc866',5,.25);continue;}}
+      const target=b.decoyed?{x:b.decoyX,y:b.decoyY}:p;
+      const a=turn(Math.atan2(b.vy,b.vx),Math.atan2(target.y-b.y,target.x-b.x),dt*b.turn);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
       b.trail-=dt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
     }
@@ -1337,7 +1367,8 @@ function updateEffects(dt){
   g.wreckSmoke=g.wreckSmoke.filter(source=>source.life>0);
   for(const p of g.particles){
     const drag=p.persistent?0.35:p.smoke?1.5:3;
-    p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*drag);p.vy*=Math.exp(-dt*drag);p.life-=dt;
+    const flareDrift=p.flare?Math.sin(g.time*15+p.flarePhase)*p.flareWobble:0;
+    p.x+=(p.vx+flareDrift)*dt;p.y+=(p.vy+flareDrift*.55)*dt;p.vx*=Math.exp(-dt*drag);p.vy*=Math.exp(-dt*drag);p.life-=dt;
   }
   g.particles=g.particles.filter(p=>p.life>0);
   for(const e of g.explosions)e.life-=dt;g.explosions=g.explosions.filter(e=>e.life>0);
@@ -1363,6 +1394,7 @@ function updateHud(){
   $('heat-meter').setAttribute('aria-valuenow',String(Math.round(p.heat*100)));
   $('heat-meter').setAttribute('aria-valuetext',p.overheated?t('heat.cooling'):`${Math.round(p.heat*100)}%`);
   $('touch-dash').disabled=p.dashCooldown>0;$('touch-rocket').disabled=p.rockets===0;
+  $('touch-flare').hidden=settings.difficulty!=='hard';$('touch-flare').disabled=p.flareCooldown>0;
   $('combo').hidden=multiplier<2;$('combo-value').textContent=`×${multiplier}`;
   const boss=g.enemies.find(e=>e.type==='boss');$('boss-hud').hidden=!boss||g.state==='over';
   if(boss)$('boss-fill').style.width=`${clamp(boss.health/boss.maxHealth*100,0,100)}%`;
@@ -1420,7 +1452,7 @@ if(!document.fullscreenEnabled)$('fullscreen').hidden=true;
 $('language').addEventListener('change',event=>{settings.language=event.target.value;saveSettings();applyLanguage();});
 document.addEventListener('pointerdown',activateMenuMusic,{once:true});
 document.addEventListener('keydown',activateMenuMusic,{once:true});
-document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>{settings.difficulty=button.dataset.difficulty;saveSettings();updateSettingsUI();sound.init();sound.play('ui');}));
+document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>{settings.difficulty=button.dataset.difficulty;saveSettings();updateSettingsUI();updateHud();sound.init();sound.play('ui');}));
 for(const id of ['start','retry','restart'])$(id).addEventListener('click',start);
 $('resume').addEventListener('click',resume);$('pause').addEventListener('click',pause);
 window.addEventListener('keydown',event=>{
@@ -1433,7 +1465,7 @@ window.addEventListener('keydown',event=>{
   if(code==='KeyM'){toggleMute();return;}
   if(g.state==='upgrade'&&/^Digit[123]$/.test(code)){const choice=choices[Number(code.slice(-1))-1];if(choice)selectUpgrade(choice.id);return;}
   if(g.state!=='playing')return;
-  keys.add(code);if(code==='ShiftLeft'||code==='ShiftRight')dash();if(code==='KeyE')launchRocket();
+  keys.add(code);if(code==='ShiftLeft'||code==='ShiftRight')dash();if(code==='KeyE')launchRocket();if(code==='KeyF'&&settings.difficulty==='hard')deployFlares();
 });
 window.addEventListener('keyup',event=>keys.delete(event.code));
 window.addEventListener('blur',()=>{clearInput();if(g.state==='playing')pause();});
@@ -1456,7 +1488,7 @@ const releaseStick=event=>{if(event.pointerId===joystick.id){joystick={x:0,y:0,i
 for(const type of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(type,releaseStick);
 $('touch-fire').addEventListener('pointerdown',event=>{if(g.state!=='playing')return;event.preventDefault();g.touch=true;pointer.down=true;firePointer=event.pointerId;$('touch-fire').setPointerCapture(event.pointerId);sound.init();});
 for(const type of ['pointerup','pointercancel','lostpointercapture'])$('touch-fire').addEventListener(type,event=>{if(event.pointerId===firePointer){pointer.down=false;firePointer=null;}});
-$('touch-dash').addEventListener('pointerdown',event=>{event.preventDefault();g.touch=true;dash();});$('touch-rocket').addEventListener('pointerdown',event=>{event.preventDefault();g.touch=true;launchRocket();});
+$('touch-dash').addEventListener('pointerdown',event=>{event.preventDefault();g.touch=true;dash();});$('touch-rocket').addEventListener('pointerdown',event=>{event.preventDefault();g.touch=true;launchRocket();});$('touch-flare').addEventListener('pointerdown',event=>{event.preventDefault();g.touch=true;if(settings.difficulty==='hard')deployFlares();});
 function frame(time){
   const dt=Math.min((time-(lastTime||time))/1000,.05);lastTime=time;
   if(!document.hidden){

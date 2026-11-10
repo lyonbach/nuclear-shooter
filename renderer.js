@@ -213,7 +213,7 @@ export class Renderer {
       c.globalAlpha=g.player.invulnerable>0&&Math.floor(t*18)%2===0?.55:1;this.helicopter(c,g.player,t);c.globalAlpha=1;
       if(g.player.invulnerable>0){c.strokeStyle='#dbea9b40';c.lineWidth=1;c.beginPath();c.arc(g.player.x,g.player.y,43,0,TAU);c.stroke();}
     }
-    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();}}c.globalAlpha=1;
+    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();if(p.flare){ellipse(c,p.x,p.y,p.size*3.4,p.size*3.4,'#ff9b59aa');ellipse(c,p.x,p.y,p.size*1.8,p.size*1.8,'#fff6c4');}}}c.globalAlpha=1;
     for(const e of g.explosions){const progress=1-e.life/e.maxLife;c.globalAlpha=(1-progress)*.75;c.strokeStyle='#ffcf8b';c.lineWidth=3*(1-progress);c.beginPath();c.arc(e.x,e.y,e.size*progress,0,TAU);c.stroke();if(progress<.4){const flash=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.size*.6);flash.addColorStop(0,'#fff6c9aa');flash.addColorStop(1,'#ffc06b00');c.fillStyle=flash;c.fillRect(e.x-e.size,e.y-e.size,e.size*2,e.size*2);}}c.globalAlpha=1;
     for(const f of g.floaters){c.globalAlpha=clamp(f.life,0,1);c.font=`bold ${f.big?19:12}px monospace`;c.fillStyle=f.color;c.textAlign='center';c.fillText(f.text,f.x,f.y);}c.globalAlpha=1;
     // Enemy arrival indicators give the pilot time to react.
