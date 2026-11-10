@@ -23,7 +23,16 @@ export class SoundEngine {
         for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
         const noise = this.ctx.createBufferSource(); noise.buffer = this.noise; noise.loop = true;
         const filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 240;
-        noise.connect(filter); filter.connect(this.rotor); noise.start();
+        const rotorNoise = this.ctx.createGain(); rotorNoise.gain.value = 0.62;
+        const bladePulse = this.ctx.createOscillator(), bladePulseGain = this.ctx.createGain();
+        const bladeAir = this.ctx.createBiquadFilter(), bladeAirGain = this.ctx.createGain(), bladeAirPulseGain = this.ctx.createGain();
+        bladePulse.type = 'square'; bladePulse.frequency.value = 18; bladePulseGain.gain.value = 0.2;
+        bladeAir.type = 'bandpass'; bladeAir.frequency.value = 1550; bladeAir.Q.value = 1.2; bladeAirGain.gain.value = 0.09; bladeAirPulseGain.gain.value = 0.075;
+        noise.connect(filter); filter.connect(rotorNoise); rotorNoise.connect(this.rotor);
+        noise.connect(bladeAir); bladeAir.connect(bladeAirGain); bladeAirGain.connect(this.rotor);
+        bladePulse.connect(bladePulseGain); bladePulseGain.connect(rotorNoise.gain); noise.start(); bladePulse.start();
+        bladePulse.connect(bladeAirPulseGain); bladeAirPulseGain.connect(bladeAirGain.gain);
+        this.bladePulse = bladePulse; this.bladeAir = bladeAir;
         const engine = this.ctx.createOscillator(); engine.type = 'triangle'; engine.frequency.value = 43;
         const engineGain = this.ctx.createGain(); engineGain.gain.value = 0.12;
         engine.connect(engineGain); engineGain.connect(this.rotor); engine.start();
@@ -129,13 +138,15 @@ export class SoundEngine {
   play(name, pan = 0, gain = 1) {
     if (!this.ctx || this.settings.muted) return;
     const level = volume => volume * gain;
+    const random = (value, spread = 0.1) => value * (1 + (Math.random() * 2 - 1) * spread);
     if (name === 'shot') { this.hiss(0.09, level(0.24), 4200, pan); this.hiss(0.04, level(0.12), 7200, pan); this.tone(180, 65, 0.06, level(0.07), 'sine'); }
     if (name === 'enemy') { this.hiss(0.05, level(0.07), 1900, pan); this.tone(120, 45, 0.12, level(0.045), 'sawtooth'); }
-    if (name === 'hit') { this.hiss(0.09, level(0.18), 3800, pan); this.tone(420, 160, 0.07, level(0.055), 'square'); }
-    if (name === 'explode') { this.hiss(0.82, level(0.48), 1000, pan); this.tone(100, 22, 0.78, level(0.32)); this.hiss(0.22, level(0.2), 4200, pan); this.hiss(0.09, level(0.11), 6200, pan); }
-    if (name === 'rocket') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY; this.hiss(0.06, level(0.24), 4200, pan); this.tone(125, 45, 0.08, level(0.1), 'sine'); this.hiss(1.05, level(0.72), 1700, pan, whooshAt); this.hiss(0.9, level(0.24), 650, pan, whooshAt); }
-    if (name === 'missile') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY; this.hiss(0.05, level(0.18), 4000, pan); this.tone(115, 40, 0.07, level(0.08), 'sine'); this.hiss(1.15, level(0.68), 1500, pan, whooshAt); this.hiss(0.95, level(0.28), 650, pan, whooshAt); }
-    if (name === 'flare') { this.hiss(0.28, level(0.26), 4200, pan); this.tone(760, 190, 0.2, level(0.1), 'triangle'); this.tone(1240, 620, 0.15, level(0.045), 'sine'); }
+    if (name === 'aa') { this.hiss(0.05, level(0.07), 1700, pan); this.tone(92, 35, 0.13, level(0.045), 'sawtooth'); }
+    if (name === 'hit') { const pitch=random(1,0.08),decay=random(1,0.12),heavy=Math.random()<1/20; this.hiss(0.018*decay, level(0.045), 7200*pitch, pan); this.hiss(0.028*decay, level(0.14), 6500*pitch, pan); this.hiss(0.055*decay, level(0.08), 900*pitch, pan); this.tone(155*pitch, 60*pitch, 0.055*decay, level(0.08), 'sine'); this.tone(780*pitch, 610*pitch, 0.07*decay, level(0.05), 'sine'); this.tone(1230*pitch, 910*pitch, 0.055*decay, level(0.035), 'sine'); this.tone(1920*pitch, 1430*pitch, 0.04*decay, level(0.02), 'sine'); if(heavy){this.hiss(0.08*decay, level(0.1), 650*pitch, pan);this.tone(105*pitch, 35*pitch, 0.12*decay, level(0.085), 'sine');this.tone(520*pitch, 300*pitch, 0.13*decay, level(0.04), 'sine');} }
+    if (name === 'explode') { const pitch=random(1,0.12),decay=random(1,0.1); this.hiss(0.82*decay, level(0.48), 1000*pitch, pan); this.tone(100*pitch, 22*pitch, 0.78*decay, level(0.32)); this.hiss(0.22*decay, level(0.2), 4200*pitch, pan); this.hiss(0.09*decay, level(0.11), 6200*pitch, pan); }
+    if (name === 'rocket') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY,pitch=random(1,0.08),duration=random(1,0.1); this.hiss(0.06, level(0.24), 4200*pitch, pan); this.tone(125*pitch, 45*pitch, 0.08, level(0.1), 'sine'); this.hiss(1.05*duration, level(0.72), 1700*pitch, pan, whooshAt); this.hiss(0.9*duration, level(0.24), 650*pitch, pan, whooshAt); }
+    if (name === 'missile') { const whooshAt=this.ctx.currentTime+ROCKET_IGNITION_DELAY,pitch=random(1,0.08),duration=random(1,0.1); this.hiss(0.05, level(0.18), 4000*pitch, pan); this.tone(115*pitch, 40*pitch, 0.07, level(0.08), 'sine'); this.hiss(1.15*duration, level(0.68), 1500*pitch, pan, whooshAt); this.hiss(0.95*duration, level(0.28), 650*pitch, pan, whooshAt); }
+    if (name === 'flare') { const pitch=random(1,0.1); this.hiss(0.025, level(0.13), 4000*pitch, pan); this.tone(110*pitch, 42*pitch, 0.045, level(0.06), 'sine'); this.hiss(0.24, level(0.25), 1600*pitch, pan); this.hiss(0.18, level(0.1), 650*pitch, pan); }
     if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
     if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
     if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
@@ -143,9 +154,11 @@ export class SoundEngine {
     if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
     if (name === 'ui') this.tone(700, 1000, 0.08, level(0.06));
   }
-  update(speed = 0) {
+  update(speed = 0, rotorUpgrade = 0) {
     if (!this.ctx || this.ctx.state !== 'running') return;
     const t = this.ctx.currentTime;
+    this.bladePulse?.frequency.setTargetAtTime(18 * Math.pow(1.12, rotorUpgrade), t, 0.06);
+    this.bladeAir?.frequency.setTargetAtTime(1550 * Math.pow(1.13, rotorUpgrade), t, 0.08);
     if (this.active) this.rotor.gain.setTargetAtTime((0.24 + Math.sin(t * 42) * 0.045) + speed * 0.045, t, 0.015);
     if (!this.settings.music || this.musicTrack || t < this.nextBeat) return;
     const scores = {

@@ -218,7 +218,7 @@ function fireEnemy(e){
     e.cooldown=(stats.fireInterval-Math.min(g.wave*stats.fireWaveReduction,stats.fireWaveReductionCap)+Math.random()*stats.fireRandom)*multiplier;
   }
   const audio=positionalAudio(e);
-  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play(kind==='rocketSemi'?'missile':'enemy',audio.pan,audio.gain);
+  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play(kind==='rocketSemi'?'missile':kind==='aa'?'aa':'enemy',audio.pan,audio.gain);
 }
 function incomingMissile(){
   const p=g.player;let threat=null,nearest=FLARE_RANGE;
@@ -490,7 +490,7 @@ function frame(time){
   if(!document.hidden){
     if(g.state==='playing'){g.visualTime+=dt;update(dt);updateEffects(dt);}
     else if(g.state==='ready'||g.state==='over'){if(!matchMedia('(prefers-reduced-motion:reduce)').matches)g.visualTime+=dt;updateEffects(dt);}
-    sound.update(g.state==='playing'?Math.hypot(g.player.vx,g.player.vy)/300:0);
+    sound.update(g.state==='playing'?Math.hypot(g.player.vx,g.player.vy)/300:0,upgrades.engine||0);
     renderer.draw(g,dt);
   }
   requestAnimationFrame(frame);
