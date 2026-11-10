@@ -114,31 +114,32 @@ export class SoundEngine {
     gain.gain.setValueAtTime(0, time); gain.gain.linearRampToValueAtTime(volume, time + 0.006); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
     osc.connect(gain); gain.connect(bus); osc.start(time); osc.stop(time + duration + 0.03);
   }
-  hiss(duration, volume, frequency, pan = 0) {
+  hiss(duration, volume, frequency, pan = 0, time = this.ctx?.currentTime) {
     if (!this.ctx || this.ctx.state !== 'running') return;
     const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
     source.buffer = this.noise; filter.type = 'lowpass'; filter.frequency.value = frequency;
-    gain.gain.setValueAtTime(volume, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    gain.gain.setValueAtTime(volume, time); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
     source.connect(filter); filter.connect(gain);
     if (this.ctx.createStereoPanner) { const panner = this.ctx.createStereoPanner(); panner.pan.value = Math.max(-1, Math.min(1, pan)); gain.connect(panner); panner.connect(this.fx); }
     else gain.connect(this.fx);
-    source.start(0, Math.random()); source.stop(this.ctx.currentTime + duration);
+    source.start(time, Math.random()); source.stop(time + duration);
   }
-  play(name, pan = 0) {
+  play(name, pan = 0, gain = 1) {
     if (!this.ctx || this.settings.muted) return;
-    if (name === 'shot') { this.hiss(0.09, 0.24, 4200, pan); this.hiss(0.04, 0.12, 7200, pan); this.tone(180, 65, 0.06, 0.07, 'sine'); }
-    if (name === 'enemy') { this.hiss(0.05, 0.07, 1900, pan); this.tone(120, 45, 0.12, 0.045, 'sawtooth'); }
-    if (name === 'hit') { this.hiss(0.09, 0.18, 3800, pan); this.tone(420, 160, 0.07, 0.055, 'square'); }
-    if (name === 'explode') { this.hiss(0.82, 0.48, 1000, pan); this.tone(100, 22, 0.78, 0.32); this.hiss(0.22, 0.2, 4200, pan); this.hiss(0.09, 0.11, 6200, pan); }
-    if (name === 'rocket') { this.hiss(0.5, 0.27, 2200, pan); this.tone(150, 560, 0.3, 0.12, 'sawtooth'); this.tone(720, 1180, 0.12, 0.04, 'triangle'); }
-    if (name === 'missile') { this.tone(740, 1120, 0.1, 0.09, 'square'); this.tone(1180, 760, 0.16, 0.045, 'triangle'); }
-    if (name === 'flare') { this.hiss(0.28, 0.26, 4200, pan); this.tone(760, 190, 0.2, 0.1, 'triangle'); this.tone(1240, 620, 0.15, 0.045, 'sine'); }
-    if (name === 'dash') { this.hiss(0.28, 0.2, 1400); this.tone(150, 60, 0.3, 0.1); }
-    if (name === 'damage') { this.hiss(0.22, 0.3, 700); this.tone(160, 50, 0.25, 0.16, 'sawtooth'); }
-    if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, 0.1, 'sine', this.fx, this.ctx.currentTime + i * 0.08));
-    if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, 0.1, 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
-    if (name === 'alert') { this.tone(440, 330, 0.25, 0.1, 'square'); }
-    if (name === 'ui') this.tone(700, 1000, 0.08, 0.06);
+    const level = volume => volume * gain;
+    if (name === 'shot') { this.hiss(0.09, level(0.24), 4200, pan); this.hiss(0.04, level(0.12), 7200, pan); this.tone(180, 65, 0.06, level(0.07), 'sine'); }
+    if (name === 'enemy') { this.hiss(0.05, level(0.07), 1900, pan); this.tone(120, 45, 0.12, level(0.045), 'sawtooth'); }
+    if (name === 'hit') { this.hiss(0.09, level(0.18), 3800, pan); this.tone(420, 160, 0.07, level(0.055), 'square'); }
+    if (name === 'explode') { this.hiss(0.82, level(0.48), 1000, pan); this.tone(100, 22, 0.78, level(0.32)); this.hiss(0.22, level(0.2), 4200, pan); this.hiss(0.09, level(0.11), 6200, pan); }
+    if (name === 'rocket') { const whooshAt=this.ctx.currentTime+.1; this.hiss(0.06, level(0.24), 4200, pan); this.tone(125, 45, 0.08, level(0.1), 'sine'); this.hiss(1.05, level(0.72), 1700, pan, whooshAt); this.hiss(0.9, level(0.24), 650, pan, whooshAt); }
+    if (name === 'missile') { const whooshAt=this.ctx.currentTime+.1; this.hiss(0.05, level(0.18), 4000, pan); this.tone(115, 40, 0.07, level(0.08), 'sine'); this.hiss(1.15, level(0.68), 1500, pan, whooshAt); this.hiss(0.95, level(0.28), 650, pan, whooshAt); }
+    if (name === 'flare') { this.hiss(0.28, level(0.26), 4200, pan); this.tone(760, 190, 0.2, level(0.1), 'triangle'); this.tone(1240, 620, 0.15, level(0.045), 'sine'); }
+    if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
+    if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
+    if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
+    if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, level(0.1), 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
+    if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
+    if (name === 'ui') this.tone(700, 1000, 0.08, level(0.06));
   }
   update(speed = 0) {
     if (!this.ctx || this.ctx.state !== 'running') return;

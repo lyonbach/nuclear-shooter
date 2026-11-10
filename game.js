@@ -7,6 +7,10 @@ const $ = id => document.getElementById(id);
 const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
 const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
 const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
+const positionalAudio=(source)=>{
+  const p=g.player,distanceToSource=distance(source,p);
+  return { pan:clamp((source.x-p.x)/(g.world.width*.35),-1,1),gain:clamp(1-distanceToSource/(g.world.width*.7),.15,1) };
+};
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
 const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
@@ -124,8 +128,8 @@ function burst(x,y,color,count=10,force=1,smoke=false){
   }
 }
 function explosion(x,y,size=75){
-  g.explosions.push({x,y,size,life:.5,maxLife:.5});burst(x,y,'#f9c57f',30,size/65);burst(x,y,'#28342a',10,.45,true);
-  g.shake=Math.max(g.shake,size/10);sound.play('explode',x/g.world.width*2-1);
+  g.explosions.push({x,y,size,life:.65,maxLife:.65});burst(x,y,'#f9c57f',38,size/65);burst(x,y,'#28342a',12,.45,true);
+  g.shake=Math.max(g.shake,size/6);sound.play('explode');
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
 function gun(){
@@ -179,7 +183,7 @@ function hitEnemy(e,damage){
     if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
     if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
-  }else sound.play('hit',e.x/g.world.width*2-1);
+  }else sound.play('hit');
 }
 function damagePlayer(amount){
   const p=g.player;if(p.invulnerable>0||g.state!=='playing')return;
@@ -210,7 +214,8 @@ function fireEnemy(e){
     const multiplier=kind==='rocketSemi'?stats[`${settings.difficulty}Interval`]:1;
     e.cooldown=(stats.fireInterval-Math.min(g.wave*stats.fireWaveReduction,stats.fireWaveReductionCap)+Math.random()*stats.fireRandom)*multiplier;
   }
-  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play(kind==='rocketSemi'?'missile':'enemy');
+  const audio=positionalAudio(e);
+  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play(kind==='rocketSemi'?'missile':'enemy',audio.pan,audio.gain);
 }
 function incomingMissile(){
   const p=g.player;let threat=null,nearest=FLARE_RANGE;
