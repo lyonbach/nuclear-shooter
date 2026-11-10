@@ -95,7 +95,22 @@ test('new sortie resets combat, unlocks controls, and schedules wave one',async(
   assert.equal(game.g.player.health,100);assert.equal(game.g.player.rockets,3);
   game.keys.add('KeyD');const x=game.g.player.x;
   for(let i=0;i<30;i++)game.update(1/60);
-  assert.ok(game.g.player.x>x+80);
+  assert.ok(game.g.player.x>x+50);
+});
+test('helicopter acceleration and turning retain momentum',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player;
+  game.g.pointer.x=p.x+500;game.g.pointer.y=p.y;game.update(.05);
+  assert.ok(p.angle<-.5);
+  game.keys.add('KeyD');game.update(.05);
+  assert.ok(p.vx>0&&p.vx<60);
+});
+test('cannon tracks aim faster than the helicopter hull',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player;
+  game.g.pointer.x=p.x+500;game.g.pointer.y=p.y;game.update(.05);
+  assert.ok(p.cannonAngle>p.angle);
+  assert.ok(p.cannonAngle>-.5);
 });
 test('pause clears held inputs and the animation loop stops simulation',async()=>{
   const game=createGame();await game.start();game.keys.add('KeyW');game.g.pointer.down=true;game.pause();
@@ -114,7 +129,7 @@ test('swept bullets destroy targets crossed entirely in a single frame',async()=
 test('helicopter banks smoothly toward its movement direction',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;game.keys.add('KeyD');
   for(let i=0;i<30;i++)game.update(1/60);
-  assert.ok(Math.hypot(game.g.player.bank,game.g.player.pitch)>0.15);
+  assert.ok(Math.hypot(game.g.player.bank,game.g.player.pitch)>.05);
   game.keys.delete('KeyD');
   for(let i=0;i<240;i++)game.update(1/60);
   assert.ok(Math.hypot(game.g.player.bank,game.g.player.pitch)<0.001);
@@ -232,7 +247,7 @@ test('gun cools when fire is released before overheating and pause freezes heat'
 });
 test('rockets accelerate with and without a target and keep their heading',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
-  const p=game.g.player;p.angle=0;game.launchRocket();
+  const p=game.g.player;p.angle=0;p.cannonAngle=0;game.launchRocket();
   const rocket=game.g.bullets[0],initial=Math.hypot(rocket.vx,rocket.vy);
   game.update(.1);assert.equal(initial,100);assert.equal(Math.hypot(rocket.vx,rocket.vy),340);assert.equal(rocket.vy,0);
   for(let i=0;i<10;i++)game.update(.05);

@@ -25,6 +25,23 @@ test('helicopter movement changes the rendered pose',()=>{
   assert.ok(moving.calls.some(call=>call.name==='scale'&&call.args[1]<.9));
 });
 
+test('helicopter uses a projected hull silhouette and rotor blade shadow',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const c=context();
+  renderer.helicopter(c,{x:100,y:100,angle:0,bank:0,pitch:0},0);
+  assert.equal(c.calls.filter(call=>call.name==='fill'&&call.fillStyle==='#0b170c4d').length,2);
+  assert.ok(c.calls.some(call=>call.name==='fillRect'&&call.fillStyle==='#0b170c24'&&call.args[0]===-48&&call.args[2]===96));
+});
+
+test('cannon is half-sized and fires from its barrel tip',()=>{
+  const renderer=new Renderer({getContext:()=>context()},{});
+  const c=context();
+  renderer.helicopter(c,{x:100,y:100,angle:0,cannonAngle:Math.PI/2,bank:0,pitch:0,muzzle:1},0);
+  assert.ok(c.calls.some(call=>call.name==='translate'&&call.args[0]===20&&call.args[1]===0));
+  assert.ok(c.calls.some(call=>call.name==='scale'&&call.args[0]===.5&&call.args[1]===.5));
+  assert.ok(c.calls.some(call=>call.name==='fill'&&call.fillStyle==='#fff2a8'));
+});
+
 test('helicopter strobe lights flash once every two seconds',()=>{
   const renderer=new Renderer({getContext:()=>context()},{});
   const flashing=context(),dark=context(),player={x:100,y:100,angle:0,bank:0,pitch:0};

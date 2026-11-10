@@ -5,6 +5,7 @@ import { languages, setLocale, t } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
+const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
 const canvas=$('game'),arena=$('arena'),overlay=$('overlay'),dialog=$('settings-dialog');
 const panels=['intro-panel','pause-panel','over-panel','upgrade-panel'];
 const defaults={volume:.6,muted:false,music:true,shake:!matchMedia('(prefers-reduced-motion: reduce)').matches,effects:true,difficulty:'normal',language:'en'};
@@ -45,7 +46,7 @@ function applyLanguage(){
   updateStateText();updateSettingsUI();updateHud();
 }
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -127,7 +128,7 @@ function explosion(x,y,size=75){
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
 function gun(){
-  const p=g.player,w=WEAPONS.gun,a=p.angle+(Math.random()-.5)*w.spread,speed=w.speed;
+  const p=g.player,w=WEAPONS.gun,a=p.cannonAngle+(Math.random()-.5)*w.spread,speed=w.speed;
   g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'gun'});
   p.cooldown=w.cooldown*Math.pow(w.cooldownUpgradeFactor,upgrades.fireRate||0);p.muzzle=w.muzzleTime;
   p.heat=Math.min(1,p.heat+w.heatPerShot);
@@ -139,7 +140,7 @@ function launchRocket(){
   const p=g.player,w=WEAPONS.rocket;if(g.state!=='playing'||!p.rockets||p.rocketCooldown>0)return;
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
-  const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.angle;
+  const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.cannonAngle;
   g.bullets.push({x:p.x,y:p.y,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0});
   p.rockets--;p.rocketCooldown=w.launchCooldown;sound.play('rocket');updateHud();
 }
@@ -213,17 +214,20 @@ function fireEnemy(e){
 function update(dt){
   const p=g.player,W=g.world.width,H=g.world.height;g.time+=dt;g.shake=Math.max(0,g.shake-dt*35);
   p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.rocketCooldown-=dt;p.muzzle-=dt;
-  const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-(Math.hypot(move.x,move.y)>.01?10:3)*dt);
+  const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-(Math.hypot(move.x,move.y)>.01?PLAYER_ACCELERATION:PLAYER_DECELERATION)*dt);
   if(p.dashTime<=0){p.vx+=(move.x*speed-p.vx)*response;p.vy+=(move.y*speed-p.vy)*response;}
   p.x=clamp(p.x+p.vx*dt,34,W-34);p.y=clamp(p.y+p.vy*dt,104,H-42);
   if((p.x===34&&p.vx<0)||(p.x===W-34&&p.vx>0))p.vx=0;
   if((p.y===104&&p.vy<0)||(p.y===H-42&&p.vy>0))p.vy=0;
   updateCamera(dt);
-  if(g.touch){let nearest=null,near=Infinity;for(const e of g.enemies){if(e.health<=0)continue;const d=distance(p,e);if(d<near){nearest=e;near=d;}}if(nearest)p.angle=turn(p.angle,Math.atan2(nearest.y-p.y,nearest.x-p.x),dt*14);else if(Math.hypot(move.x,move.y)>.2)p.angle=turn(p.angle,Math.atan2(move.y,move.x),dt*8);}
-  else p.angle=turn(p.angle,Math.atan2(pointer.y-p.y,pointer.x-p.x),dt*22);
+  let aimAngle;
+  if(g.touch){let nearest=null,near=Infinity;for(const e of g.enemies){if(e.health<=0)continue;const d=distance(p,e);if(d<near){nearest=e;near=d;}}aimAngle=nearest?Math.atan2(nearest.y-p.y,nearest.x-p.x):Math.hypot(move.x,move.y)>.2?Math.atan2(move.y,move.x):p.angle;}
+  else aimAngle=Math.atan2(pointer.y-p.y,pointer.x-p.x);
+  p.angle=turn(p.angle,aimAngle,dt*(g.touch?PLAYER_TOUCH_TURN_RATE:PLAYER_TURN_RATE));
+  p.cannonAngle=turn(p.cannonAngle,aimAngle,dt*PLAYER_CANNON_TURN_RATE);
   const forward=p.vx*Math.cos(p.angle)+p.vy*Math.sin(p.angle);
   const lateral=-p.vx*Math.sin(p.angle)+p.vy*Math.cos(p.angle);
-  const tiltResponse=1-Math.exp(-7*dt);
+  const tiltResponse=1-Math.exp(-PLAYER_BANK_RESPONSE*dt);
   p.bank+=(clamp(lateral/270,-1,1)*.3-p.bank)*tiltResponse;
   p.pitch+=(clamp(forward/270,-1,1)*.2-p.pitch)*tiltResponse;
   const firing=pointer.down||keys.has('Space');
