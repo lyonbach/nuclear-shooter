@@ -758,11 +758,13 @@ class SoundEngine {
   }
   play(name, pan = 0) {
     if (!this.ctx || this.settings.muted) return;
-    if (name === 'shot') { this.hiss(0.065, 0.15, 2500, pan); this.tone(160, 50, 0.07, 0.09, 'triangle'); }
-    if (name === 'enemy') this.tone(110, 40, 0.12, 0.035, 'sawtooth');
-    if (name === 'hit') this.hiss(0.1, 0.12, 3200, pan);
-    if (name === 'explode') { this.hiss(0.6, 0.48, 1000, pan); this.tone(100, 22, 0.55, 0.32); }
-    if (name === 'rocket') { this.hiss(0.45, 0.22, 1800, pan); this.tone(180, 450, 0.25, 0.08, 'sawtooth'); }
+    if (name === 'shot') { this.hiss(0.09, 0.24, 4200, pan); this.hiss(0.04, 0.12, 7200, pan); this.tone(180, 65, 0.06, 0.07, 'sine'); }
+    if (name === 'enemy') { this.hiss(0.05, 0.07, 1900, pan); this.tone(120, 45, 0.12, 0.045, 'sawtooth'); }
+    if (name === 'hit') { this.hiss(0.09, 0.18, 3800, pan); this.tone(420, 160, 0.07, 0.055, 'square'); }
+    if (name === 'explode') { this.hiss(0.82, 0.48, 1000, pan); this.tone(100, 22, 0.78, 0.32); this.hiss(0.22, 0.2, 4200, pan); this.hiss(0.09, 0.11, 6200, pan); }
+    if (name === 'rocket') { this.hiss(0.5, 0.27, 2200, pan); this.tone(150, 560, 0.3, 0.12, 'sawtooth'); this.tone(720, 1180, 0.12, 0.04, 'triangle'); }
+    if (name === 'missile') { this.tone(740, 1120, 0.1, 0.09, 'square'); this.tone(1180, 760, 0.16, 0.045, 'triangle'); }
+    if (name === 'flare') { this.hiss(0.28, 0.26, 4200, pan); this.tone(760, 190, 0.2, 0.1, 'triangle'); this.tone(1240, 620, 0.15, 0.045, 'sine'); }
     if (name === 'dash') { this.hiss(0.28, 0.2, 1400); this.tone(150, 60, 0.3, 0.1); }
     if (name === 'damage') { this.hiss(0.22, 0.3, 700); this.tone(160, 50, 0.25, 0.16, 'sawtooth'); }
     if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, 0.1, 'sine', this.fx, this.ctx.currentTime + i * 0.08));
@@ -1231,7 +1233,7 @@ function fireEnemy(e){
     const multiplier=kind==='rocketSemi'?stats[`${settings.difficulty}Interval`]:1;
     e.cooldown=(stats.fireInterval-Math.min(g.wave*stats.fireWaveReduction,stats.fireWaveReductionCap)+Math.random()*stats.fireRandom)*multiplier;
   }
-  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play('enemy');
+  burst(e.x+Math.cos(a)*33,e.y+Math.sin(a)*33,'#f0c185',4,.3);sound.play(kind==='rocketSemi'?'missile':'enemy');
 }
 function incomingMissile(){
   const p=g.player;let threat=null,nearest=FLARE_RANGE;
@@ -1256,7 +1258,7 @@ function deployFlares(){
     missile.decoyed=true;missile.decoyTimer=.85;
     missile.decoyX=p.x-Math.cos(p.angle)*48;missile.decoyY=p.y-Math.sin(p.angle)*48;
   }
-  sound.play('dash');updateHud();
+  sound.play('flare');updateHud();
   return true;
 }
 function update(dt){
