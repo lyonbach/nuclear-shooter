@@ -271,6 +271,13 @@ test('rockets accelerate with and without a target and keep their heading',async
   for(let i=0;i<10;i++)game.update(.05);
   assert.ok(Math.abs(Math.hypot(rocket.vx,rocket.vy)-820)<1e-8);
 });
+test('rockets alternate between left and right launch rails',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player;p.cannonAngle=0;game.launchRocket();
+  const first=game.g.bullets[0];p.rocketCooldown=0;game.launchRocket();
+  const second=game.g.bullets[1];
+  assert.equal(first.x,second.x);assert.equal(first.y-p.y,-(second.y-p.y));
+});
 test('camera follows the player while pointer world coordinates remain aligned',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   game.pointerPosition({clientX:900,clientY:300});const camera=game.g.camera,old=camera.x;

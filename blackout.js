@@ -1033,6 +1033,7 @@ const $ = id => document.getElementById(id);
 const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
 const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
 const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
+const ROCKET_RAIL_FORWARD=28,ROCKET_RAIL_OFFSET=15;
 const positionalAudio=(source)=>{
   const p=g.player,distanceToSource=distance(source,p);
   return { pan:clamp((source.x-p.x)/(g.world.width*.35),-1,1),gain:clamp(1-distanceToSource/(g.world.width*.7),.15,1) };
@@ -1077,7 +1078,7 @@ function applyLanguage(){
   updateStateText();updateSettingsUI();updateHud();
 }
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,rocketSide:-1,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -1172,7 +1173,9 @@ function launchRocket(){
   let target=null,dist=Infinity;
   for(const e of g.enemies){const d=distance(e,g.touch?p:pointer);if(d<dist){target=e;dist=d;}}
   const a=target?Math.atan2(target.y-p.y,target.x-p.x):p.cannonAngle;
-  g.bullets.push({x:p.x+Math.cos(a)*39,y:p.y+Math.sin(a)*39,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0,launchAngle:a,launchDelay:ROCKET_IGNITION_DELAY});
+  const railAngle=a+Math.PI/2,side=p.rocketSide;
+  p.rocketSide*=-1;
+  g.bullets.push({x:p.x+Math.cos(a)*ROCKET_RAIL_FORWARD+Math.cos(railAngle)*ROCKET_RAIL_OFFSET*side,y:p.y+Math.sin(a)*ROCKET_RAIL_FORWARD+Math.sin(railAngle)*ROCKET_RAIL_OFFSET*side,vx:Math.cos(a)*w.launchSpeed,vy:Math.sin(a)*w.launchSpeed,life:w.life,friendly:true,damage:w.damage+(upgrades.damage||0)*w.damagePerUpgrade,kind:'rocket',target,trail:0,launchAngle:a,launchDelay:ROCKET_IGNITION_DELAY});
   p.rockets--;p.rocketCooldown=w.launchCooldown;sound.play('rocket');updateHud();
 }
 function dash(){
