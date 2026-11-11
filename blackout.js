@@ -307,6 +307,44 @@ const ENEMY_DATA = {
   }
 };
 
+// level-data.js
+// Generated from levels.csv by scripts/build.mjs. Do not edit.
+const LEVEL_DATA = [
+  {
+    "name": "DESERT FRONT",
+    "layout": "desert",
+    "seed": 7307,
+    "colors": [
+      "#b69362",
+      "#947952",
+      "#5a6046"
+    ],
+    "accent": "#e5bf76"
+  },
+  {
+    "name": "GREEN VALLEY",
+    "layout": "valley",
+    "seed": 12931,
+    "colors": [
+      "#557c66",
+      "#426e63",
+      "#294c50"
+    ],
+    "accent": "#83d2aa"
+  },
+  {
+    "name": "RED ZONE",
+    "layout": "canyon",
+    "seed": 26843,
+    "colors": [
+      "#b87559",
+      "#885552",
+      "#51485a"
+    ],
+    "accent": "#f1a984"
+  }
+];
+
 // weapon-data.js
 // Generated from weapons.csv by scripts/build.mjs. Do not edit.
 const WEAPON_DATA = {
@@ -580,6 +618,7 @@ function t(key,values={}){
 
 // core.js
 const ENEMIES = ENEMY_DATA;
+const MAPS = LEVEL_DATA;
 const WEAPONS = WEAPON_DATA;
 const ROCKET_IGNITION_DELAY = .3;
 const TAU = Math.PI * 2;
@@ -613,11 +652,6 @@ function enemyType(wave, index) {
 function seededRandom(seed = 73) {
   return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
 }
-const MAPS = [
-  { name:'DESERT FRONT', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
-  { name:'GREEN VALLEY', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
-  { name:'RED ZONE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
-];
 function mapForWave(wave) {
   return MAPS[(Math.max(1, wave)-1)%MAPS.length];
 }

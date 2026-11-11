@@ -1,6 +1,8 @@
 import { ENEMY_DATA } from './enemy-data.js';
+import { LEVEL_DATA } from './level-data.js';
 import { WEAPON_DATA } from './weapon-data.js';
 export const ENEMIES = ENEMY_DATA;
+export const MAPS = LEVEL_DATA;
 export const WEAPONS = WEAPON_DATA;
 export const ROCKET_IGNITION_DELAY = .3;
 export const TAU = Math.PI * 2;
@@ -34,11 +36,6 @@ export function enemyType(wave, index) {
 export function seededRandom(seed = 73) {
   return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
 }
-export const MAPS = [
-  { name:'DESERT FRONT', layout:'desert', seed:7307, colors:['#b69362','#947952','#5a6046'], accent:'#e5bf76' },
-  { name:'GREEN VALLEY', layout:'valley', seed:12931, colors:['#557c66','#426e63','#294c50'], accent:'#83d2aa' },
-  { name:'RED ZONE', layout:'canyon', seed:26843, colors:['#b87559','#885552','#51485a'], accent:'#f1a984' },
-];
 export function mapForWave(wave) {
   return MAPS[(Math.max(1, wave)-1)%MAPS.length];
 }

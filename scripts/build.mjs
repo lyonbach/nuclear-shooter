@@ -31,6 +31,19 @@ if(!enemies.aa.warningDelay||!enemies.aa.explosionRadius||!enemies.aa.burstInter
   !enemies.kamikaze.explosionRadius||!enemies.rocketSemi.projectileLife||!enemies.rocketSemi.rocketMaxSpeed||
   !enemies.rocketSemi.easyInterval||!enemies.rocketSemi.normalInterval||!enemies.rocketSemi.hardInterval)
   throw new Error('Invalid special enemy configuration');
+const levelCsv=(await readFile(new URL('levels.csv',root),'utf8')).trim().split(/\r?\n/);
+const levelColumns=levelCsv.shift().split(',');
+const expectedLevelColumns='name,layout,seed,color1,color2,color3,accent';
+if(levelColumns.join(',')!==expectedLevelColumns)throw new Error('Invalid levels.csv header');
+const layouts=new Set(['desert','valley','canyon']),levels=[];
+for(const line of levelCsv){
+  const [name,layout,seed,...colors]=line.split(',');
+  if(!name||!layouts.has(layout)||colors.length!==4||!colors.every(color=>/^#[\da-f]{6}$/i.test(color))||!Number.isInteger(Number(seed))||Number(seed)<0)
+    throw new Error(`Invalid level row: ${line}`);
+  levels.push({name,layout,seed:Number(seed),colors:colors.slice(0,3),accent:colors[3]});
+}
+if(!levels.length)throw new Error('Missing levels');
+await writeFile(new URL('level-data.js',root),`// Generated from levels.csv by scripts/build.mjs. Do not edit.\nexport const LEVEL_DATA = ${JSON.stringify(levels,null,2)};\n`);
 const wcsv=(await readFile(new URL('weapons.csv',root),'utf8')).trim().split(/\r?\n/);
 const wcolumns=wcsv.shift().split(',');
 const wexpected='weapon,damage,damagePerUpgrade,speed,life,cooldown,cooldownUpgradeFactor,spread,muzzleTime,heatPerShot,coolTime,launchSpeed,maxSpeed,acceleration,turnRate,launchCooldown,rechargeTime,rechargeUpgradeFactor';
@@ -56,7 +69,7 @@ if(!weapons.gun.speed||!weapons.gun.life||!weapons.gun.cooldown||!weapons.gun.he
 await writeFile(new URL('weapon-data.js',root),`// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons,null,2)};\n`);
 const data=`// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies,null,2)};\n`;
 await writeFile(new URL('enemy-data.js',root),data);
-const files=['enemy-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game.js'];
+const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game.js'];
 const modules=[];
 for(const file of files){
   const source=(await readFile(new URL(file,root),'utf8'))

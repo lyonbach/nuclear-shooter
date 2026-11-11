@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { segmentHitsCircle, wavePlan, enemyType, turn, seededRandom, mapForWave } from '../core.js';
+import { MAPS, segmentHitsCircle, wavePlan, enemyType, turn, seededRandom, mapForWave } from '../core.js';
 
 test('fast projectiles hit a target crossed between frames',()=>{
   assert.equal(segmentHitsCircle(0,0,100,0,50,0,4),true);
@@ -40,6 +40,7 @@ test('terrain seeds reproduce the same map with values in range',()=>{
   for(let i=0;i<100;i++){const value=a();assert.equal(value,b());assert.ok(value>=0&&value<1);}
 });
 test('waves rotate through three distinct deterministic sectors',()=>{
+  assert.equal(MAPS.length,3);
   assert.equal(new Set([1,2,3].map(w=>mapForWave(w).seed)).size,3);
   assert.equal(mapForWave(4),mapForWave(1));
   assert.equal(mapForWave(5),mapForWave(2));
