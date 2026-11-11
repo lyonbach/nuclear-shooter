@@ -34,7 +34,7 @@ const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
   enemies:[],bullets:[],particles:[],pickups:[],explosions:[],deathBursts:[],warnings:[],floaters:[],decals:[],treadMarks:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
-  combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
+  combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,testRange:null,
   camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
 let joystick={x:0,y:0,id:null},firePointer=null,gamePointer=null,lastTime=0,settingsPaused=false,starting=false;
 let upgrades={},choices=[];
@@ -55,6 +55,17 @@ function applyLanguage(){
 }
 
 function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,lowHealthAlarm:0,missileAlarm:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,rocketSide:-1,muzzle:0};}
+function readTestRange(){
+  const enemy=$('test-enemy').value,validEnemy=Object.hasOwn(ENEMIES,enemy)?enemy:'tank';
+  const number=(id,fallback,min,max)=>clamp(Number($(`test-${id}`).value)||fallback,min,max);
+  return {enemy:validEnemy,interval:number('interval',1,.2,5),maxActive:number('max-active',3,1,20),health:number('health',1,.25,5),distance:number('distance',350,120,700),
+    upgrades:{damage:number('damage',0,0,4),fireRate:number('fire-rate',0,0,4),armor:number('armor',0,0,4),engine:number('engine',0,0,3),rockets:number('rockets',0,0,3)}};
+}
+function applyStartingUpgrades(){
+  const p=g.player;
+  p.maxHealth+=25*(upgrades.armor||0);p.health=p.maxHealth;
+  p.maxRockets+=upgrades.rockets||0;p.rockets=p.maxRockets;
+}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -92,15 +103,20 @@ function announce(tag,title,note='',duration=2.5){
   g.bannerTime=duration;$('announcement').classList.add('visible');
 }
 function activateMenuMusic(){if(g.state==='ready'||g.state==='over')void sound.init();}
-async function start(){
+async function start(mode='operation'){
   if(dialog.open||starting)return;
   starting=true;
   await sound.init();
-  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.deathBursts=[];g.warnings=[];g.floaters=[];g.decals=[];g.treadMarks=[];g.wreckSmoke=[];
+  g.testRange=mode==='test'?readTestRange():null;
+  g.player=newPlayer();upgrades=g.testRange?{...g.testRange.upgrades}:{};applyStartingUpgrades();g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.deathBursts=[];g.warnings=[];g.floaters=[];g.decals=[];g.treadMarks=[];g.wreckSmoke=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
   pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
   updateCamera(0,true);
-  setState('playing');nextWave();updateHud();canvas.focus({preventScroll:true});
+  setState('playing');
+  if(g.testRange){
+    g.wave=1;g.plan=wavePlan(1,settings.difficulty);g.spawnRemaining=0;g.spawnTimer=0;g.map=mapForWave(1);renderer.setMap(g.map);renderer.mapLabel=t(`map.${g.map.layout}`);$('sector-name').textContent=renderer.mapLabel;$('wave').innerHTML='TEST RANGE';sound.setMusicScene('waves');
+  }else nextWave();
+  updateHud();canvas.focus({preventScroll:true});
   starting=false;
 }
 function nextWave(){
@@ -117,11 +133,13 @@ function spawnEnemy(forced){
   const {width:W,height:H}=g.world,p=g.player;let x,y;
   for(let attempt=0;attempt<8;attempt++){
     const side=Math.floor(Math.random()*4);x=side===0?-45:side===1?W+45:60+Math.random()*(W-120);y=side===2?-45:side===3?H+45:110+Math.random()*(H-170);
-    if(Math.hypot(x-p.x,y-p.y)>300)break;
+    if(Math.hypot(x-p.x,y-p.y)>(g.testRange?.distance??300))break;
   }
   const type=forced||enemyType(g.wave,g.spawnIndex++);
   const stats=ENEMIES[type],health=(stats.health+stats.healthPerWave*g.wave)*g.plan.health;
-  g.enemies.push({x,y,type,health,maxHealth:health,speed:(stats.speed+Math.min(g.wave*stats.speedPerWave,stats.speedWaveCap))*stats.speedMultiplier,points:stats.points,radius:stats.radius,angle:Math.atan2(p.y-y,p.x-x),turret:0,cooldown:stats.initialCooldown+Math.random()*stats.initialRandom,charge:0,hit:0,seed:Math.random()*TAU});
+  const enemy={x,y,type,health,maxHealth:health,speed:(stats.speed+Math.min(g.wave*stats.speedPerWave,stats.speedWaveCap))*stats.speedMultiplier,points:stats.points,radius:stats.radius,angle:Math.atan2(p.y-y,p.x-x),turret:0,cooldown:stats.initialCooldown+Math.random()*stats.initialRandom,charge:0,hit:0,seed:Math.random()*TAU};
+  if(g.testRange){enemy.health*=g.testRange.health;enemy.maxHealth=enemy.health;}
+  g.enemies.push(enemy);return enemy;
 }
 function burst(x,y,color,count=10,force=1,smoke=false){
   const limit=settings.effects?650:180,amount=settings.effects?count:Math.ceil(count*.45);
@@ -200,7 +218,7 @@ function hitEnemy(e,damage){
     if(!['drone','kamikaze','boss'].includes(e.type))g.wreckSmoke.push({x:e.x,y:e.y,life:18,timer:0});
     if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26,wreck:true,type:e.type,scale:ENEMIES[e.type].scale,turretAngle:(e.turret??e.angle)-e.angle,burnTime:18});if(g.decals.length>55)g.decals.shift();}
-    if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
+    if(!g.testRange&&(g.kills%4===0||e.type==='boss'))g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
   }else sound.play('hit');
 }
 function damagePlayer(amount){
@@ -209,7 +227,10 @@ function damagePlayer(amount){
   burst(p.x,p.y,'#f5c78d',14);sound.play('damage');
   $('damage-flash').classList.remove('hit');void $('damage-flash').offsetWidth;$('damage-flash').classList.add('hit');
   if(p.health<=25&&p.health>0)announce(t('hull.repairing'),t('supply.collect'),t('supply.note'),1.8);
-  if(p.health<=0)endGame();updateHud();
+  if(p.health<=0){
+    if(g.testRange){p.health=p.maxHealth;p.invulnerable=1;p.x=g.world.width*.43;p.y=g.world.height*.52;}
+    else endGame();
+  }updateHud();
 }
 function detonate(b){
   explosion(b.x,b.y,135);
@@ -284,7 +305,9 @@ function update(dt){
   if(p.overheated||!firing){p.heat=Math.max(0,p.heat-dt/WEAPONS.gun.coolTime);if(p.overheated&&p.heat===0)p.overheated=false;}
   if(firing&&!p.overheated&&p.cooldown<=0)gun();
   if(p.rockets<p.maxRockets){p.rocketTimer+=dt;const delay=rocketRecharge();if(p.rocketTimer>=delay){p.rockets++;p.rocketTimer=0;}}else p.rocketTimer=0;
-  if(g.spawnRemaining>0){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy();g.spawnRemaining--;g.spawnTimer=g.plan.interval;}}
+  if(g.testRange){
+    if(g.enemies.length<g.testRange.maxActive){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy(g.testRange.enemy);g.spawnTimer=g.testRange.interval;}}
+  }else if(g.spawnRemaining>0){g.spawnTimer-=dt;if(g.spawnTimer<=0){spawnEnemy();g.spawnRemaining--;g.spawnTimer=g.plan.interval;}}
   for(const e of g.enemies){
     if(e.health<=0)continue;e.hit=Math.max(0,e.hit-dt);
     const stats=ENEMIES[e.type],a=Math.atan2(p.y-e.y,p.x-e.x),d=distance(e,p),stop=stats.stopDistance;
@@ -373,7 +396,7 @@ function update(dt){
     if(d<28&&p.health<p.maxHealth){p.health=Math.min(p.maxHealth,p.health+30);float(`+30 ${t('upgrade.repair.detail')}`,p.x,p.y-45);burst(item.x,item.y,'#dbea9b',15);sound.play('pickup');return false;}
     return item.life>0;
   });
-  if(!g.spawnRemaining&&!g.enemies.length&&!g.warnings.length){
+  if(!g.testRange&&!g.spawnRemaining&&!g.enemies.length&&!g.warnings.length){
     if(g.waveWait<0){g.waveWait=1.4;g.bullets=g.bullets.filter(b=>b.friendly);g.score+=g.wave*100;float(t('wave.cleared',{score:g.wave*100}),p.x,p.y-65,'#e5f1ac',true);}
     else{g.waveWait-=dt;if(g.waveWait<=0){showUpgrades();return;}}
   }
@@ -483,7 +506,10 @@ $('language').addEventListener('change',event=>{settings.language=event.target.v
 document.addEventListener('pointerdown',activateMenuMusic,{once:true});
 document.addEventListener('keydown',activateMenuMusic,{once:true});
 document.querySelectorAll('[data-difficulty]').forEach(button=>button.addEventListener('click',()=>{settings.difficulty=button.dataset.difficulty;saveSettings();updateSettingsUI();updateHud();sound.init();sound.play('ui');}));
-for(const id of ['start','retry','restart'])$(id).addEventListener('click',start);
+for(const id of ['start','retry','restart'])$(id).addEventListener('click',()=>start(g.testRange?'test':'operation'));
+$('test-range-open').addEventListener('click',()=>{$('test-range').hidden=false;$('start').hidden=true;$('test-range-open').hidden=true;$('intro-panel').querySelector('.intro-note').hidden=true;});
+$('test-range-close').addEventListener('click',()=>{$('test-range').hidden=true;$('start').hidden=false;$('test-range-open').hidden=false;$('intro-panel').querySelector('.intro-note').hidden=false;});
+$('test-range-start').addEventListener('click',()=>start('test'));
 $('resume').addEventListener('click',resume);$('pause').addEventListener('click',pause);
 window.addEventListener('keydown',event=>{
   if(dialog.open||/^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))return;

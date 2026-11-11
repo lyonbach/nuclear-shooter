@@ -88,6 +88,25 @@ test('rocket semi homing rockets fire faster on harder difficulty',async()=>{
   game.g.bullets=[rocket];game.update(.1);
   assert.ok(rocket.vy>0);assert.ok(Math.hypot(rocket.vx,rocket.vy)>100);
 });
+test('test range spawns only the configured enemy with selected upgrades',async()=>{
+  const game=createGame();
+  await game.start('test');
+  Object.assign(game.elements.get('test-enemy'),{value:'aa'});
+  Object.assign(game.elements.get('test-interval'),{value:'.2'});
+  Object.assign(game.elements.get('test-max-active'),{value:'1'});
+  Object.assign(game.elements.get('test-health'),{value:'2'});
+  Object.assign(game.elements.get('test-distance'),{value:'220'});
+  Object.assign(game.elements.get('test-damage'),{value:'2'});
+  Object.assign(game.elements.get('test-fire-rate'),{value:'1'});
+  Object.assign(game.elements.get('test-armor'),{value:'3'});
+  Object.assign(game.elements.get('test-engine'),{value:'2'});
+  Object.assign(game.elements.get('test-rockets'),{value:'1'});
+  await game.start('test');game.update(.01);
+  assert.equal(game.g.testRange.enemy,'aa');assert.equal(game.g.enemies.length,1);assert.equal(game.g.enemies[0].type,'aa');
+  assert.equal(game.g.enemies[0].health,game.g.enemies[0].maxHealth);assert.equal(game.g.player.maxHealth,175);assert.equal(game.g.player.maxRockets,4);
+  game.g.player.invulnerable=0;game.damagePlayer(1000);
+  assert.equal(game.g.state,'playing');assert.equal(game.g.player.health,game.g.player.maxHealth);
+});
 test('flares deploy automatically below Ace and require manual activation on Ace',async()=>{
   const automatic=createGame();await automatic.start();automatic.g.spawnRemaining=100;
   const p=automatic.g.player,rocket={x:p.x-150,y:p.y,vx:100,vy:0,life:5,kind:'enemyRocket',turn:0,acceleration:0,maxSpeed:100,trail:10};

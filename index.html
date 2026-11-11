@@ -56,7 +56,28 @@
             <p data-i18n="intro.text">You are behind enemy lines. Fly your helicopter and stop the waves. Get stronger with every sortie.</p>
             <div class="difficulty" role="group" aria-label="Difficulty" data-i18n-aria="difficulty.label"><button data-difficulty="easy" aria-pressed="false">ROOKIE</button><button data-difficulty="normal" class="selected" aria-pressed="true">PILOT</button><button data-difficulty="hard" aria-pressed="false">ACE</button></div>
             <button class="primary-button" id="start" data-i18n="intro.start">START OPERATION <span>↗</span></button>
+            <button class="text-button" id="test-range-open">OPEN TEST RANGE</button>
             <span class="intro-note" data-i18n="intro.objective">OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES</span>
+            <section class="test-range" id="test-range" hidden>
+              <span class="panel-kicker">TEST RANGE</span>
+              <div class="test-grid">
+                <label>ENEMY<select id="test-enemy"><option value="tank">TANK</option><option value="drone">DRONE</option><option value="artillery">ARTILLERY</option><option value="kamikaze">KAMIKAZE</option><option value="aa">AA</option><option value="rocketSemi">MISSILE LAUNCHER</option><option value="boss">GOLIATH</option></select></label>
+                <label>SPAWN RATE<select id="test-interval"><option value=".35">FAST</option><option value="1" selected>NORMAL</option><option value="2">SLOW</option></select></label>
+                <label>ACTIVE LIMIT<select id="test-max-active"><option value="1">1</option><option value="3" selected>3</option><option value="6">6</option><option value="12">12</option></select></label>
+                <label>HEALTH<select id="test-health"><option value=".5">50%</option><option value="1" selected>100%</option><option value="2">200%</option><option value="5">500%</option></select></label>
+                <label>SPAWN DISTANCE<select id="test-distance"><option value="220">CLOSE</option><option value="350" selected>STANDARD</option><option value="550">FAR</option></select></label>
+              </div>
+              <span class="test-upgrades-title">STARTING UPGRADES</span>
+              <div class="test-grid upgrades">
+                <label>DAMAGE<select id="test-damage"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+                <label>FIRE RATE<select id="test-fire-rate"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+                <label>ARMOR<select id="test-armor"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+                <label>ENGINE<select id="test-engine"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+                <label>ROCKETS<select id="test-rockets"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+              </div>
+              <button class="primary-button" id="test-range-start">LAUNCH TEST RANGE <span>↗</span></button>
+              <button class="text-button" id="test-range-close">BACK TO OPERATION</button>
+            </section>
           </div>
           <div class="panel" id="pause-panel" hidden><span class="panel-kicker" data-i18n="panel.pause.kicker">LINK SECURE</span><h2 data-i18n="panel.pause.title">TAKE A <em>BREATH.</em></h2><p data-i18n="panel.pause.text">The operation will be waiting, pilot.</p><button class="primary-button" id="resume" data-i18n="panel.resume">RESUME FLIGHT <span>→</span></button><button class="text-button" id="restart" data-i18n="panel.restart">START NEW SORTIE</button></div>
           <div class="panel debrief" id="over-panel" hidden><span class="panel-kicker" data-i18n="panel.over.kicker">AFTER-ACTION REPORT</span><h2 data-i18n="panel.over.title">SEE YOU ON THE<br><em>NEXT SORTIE.</em></h2><p id="record-label">Every flight makes you stronger. Take off again.</p><div class="results"><div><strong id="result-score">0</strong><span data-i18n="panel.score">SCORE</span></div><div><strong id="result-wave">1</strong><span data-i18n="panel.wave">WAVE</span></div><div><strong id="result-kills">0</strong><span data-i18n="panel.kills">KILLS</span></div><div><strong id="result-time">00:00</strong><span data-i18n="panel.flightTime">FLIGHT TIME</span></div></div><button class="primary-button" id="retry" data-i18n="panel.retry">TAKE OFF AGAIN <span>↗</span></button></div>
