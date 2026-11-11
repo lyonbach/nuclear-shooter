@@ -35,7 +35,7 @@ test('kamikazes use quarter scale and double drone speed and explode for four sh
   const game=createGame();await game.start();
   game.spawnEnemy('drone');game.spawnEnemy('kamikaze');
   const drone=game.g.enemies[0],kamikaze=game.g.enemies[1],p=game.g.player;
-  assert.equal(core.ENEMIES.kamikaze.scale,core.ENEMIES.drone.scale/4);
+  assert.equal(core.ENEMIES.kamikaze.scale,core.ENEMIES.drone.scale/100*55);
   assert.equal(kamikaze.radius,drone.radius/4);
   assert.equal(kamikaze.speed,drone.speed*2);
   kamikaze.x=p.x+20;kamikaze.y=p.y;

@@ -95,5 +95,5 @@ test('kamikaze drone is rendered at quarter scale',()=>{
   const renderer=new Renderer({getContext:()=>context()},{});
   const c=context();
   renderer.enemy(c,{x:0,y:0,angle:0,type:'kamikaze',health:1,maxHealth:1},0);
-  assert.ok(c.calls.some(call=>call.name==='scale'&&call.args[0]===.25&&call.args[1]===.25));
+  assert.ok(c.calls.some(call=>call.name==='scale'&&call.args[0]===.55&&call.args[1]===.55));
 });
