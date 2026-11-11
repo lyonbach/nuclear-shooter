@@ -69,7 +69,7 @@ if(!weapons.gun.speed||!weapons.gun.life||!weapons.gun.cooldown||!weapons.gun.he
 await writeFile(new URL('weapon-data.js',root),`// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons,null,2)};\n`);
 const data=`// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies,null,2)};\n`;
 await writeFile(new URL('enemy-data.js',root),data);
-const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game.js'];
+const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game/constants.js','game/state.js','game/entities.js','game/waves.js','game/loop.js','game/combat.js','game/upgrades.js','game/input.js','game.js'];
 const modules=[];
 for(const file of files){
   const source=(await readFile(new URL(file,root),'utf8'))
