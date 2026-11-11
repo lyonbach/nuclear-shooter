@@ -32,7 +32,7 @@ const keys=new Set();
 const pointer={x:600,y:230,screenX:null,screenY:null,down:false};
 const bestValue=read('blackout.best',0);
 const g={world:{width:1600,height:900},state:'ready',pointer,touch:matchMedia('(pointer:coarse)').matches,
-  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],warnings:[],floaters:[],decals:[],treadMarks:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
+  enemies:[],bullets:[],particles:[],pickups:[],explosions:[],deathBursts:[],warnings:[],floaters:[],decals:[],treadMarks:[],wreckSmoke:[],time:0,visualTime:0,shake:0,
   wave:1,score:0,kills:0,best:typeof bestValue==='number'&&Number.isFinite(bestValue)?Math.max(0,bestValue):0,
   combo:0,comboTimer:0,spawnRemaining:0,spawnTimer:0,waveWait:-1,bannerTime:0,hudTimer:0,
   camera:{x:0,y:0,zoom:1},map:mapForWave(1)};
@@ -61,7 +61,7 @@ function resize(){
   g.touch=matchMedia('(pointer:coarse), (max-width:600px)').matches;
   g.world.width=clamp(rect.width*1.3,680,1700);g.world.height=g.world.width*rect.height/rect.width;
   if(old.width&&old.height){
-  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.treadMarks,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
+  for(const obj of [g.player,...g.enemies,...g.pickups,...g.decals,...g.treadMarks,...g.bullets,...g.particles,...g.floaters,...g.explosions,...g.deathBursts,...g.warnings,...g.wreckSmoke]){obj.x=obj.x/old.width*g.world.width;obj.y=obj.y/old.height*g.world.height;}
     pointer.x=pointer.x/old.width*g.world.width;pointer.y=pointer.y/old.height*g.world.height;
     if(pointer.screenX!==null){pointer.screenX=pointer.screenX/old.width*g.world.width;pointer.screenY=pointer.screenY/old.height*g.world.height;}
   }
@@ -96,7 +96,7 @@ async function start(){
   if(dialog.open||starting)return;
   starting=true;
   await sound.init();
-  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.warnings=[];g.floaters=[];g.decals=[];g.treadMarks=[];g.wreckSmoke=[];
+  g.player=newPlayer();upgrades={};g.enemies=[];g.bullets=[];g.particles=[];g.pickups=[];g.explosions=[];g.deathBursts=[];g.warnings=[];g.floaters=[];g.decals=[];g.treadMarks=[];g.wreckSmoke=[];
   g.time=0;g.wave=0;g.score=0;g.kills=0;g.combo=0;g.comboTimer=0;g.shake=0;g.waveWait=-1;
   pointer.x=g.player.x;pointer.y=g.player.y-150;pointer.screenX=null;pointer.screenY=null;
   updateCamera(0,true);
@@ -130,8 +130,15 @@ function burst(x,y,color,count=10,force=1,smoke=false){
     g.particles.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life,maxLife:life,color,size:smoke?6+Math.random()*12:1+Math.random()*2.5,smoke});
   }
 }
+function fireSplinters(x,y,size){
+  const limit=settings.effects?650:180,amount=settings.effects?Math.ceil(10+size/12):Math.ceil(5+size/24);
+  for(let i=0;i<amount&&g.particles.length<limit;i++){
+    const a=Math.random()*TAU,speed=(100+Math.random()*240)*size/75,life=.16+Math.random()*.28;
+    g.particles.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life,maxLife:life,color:Math.random()<.45?'#fff0ad':'#ff9b59',size:.8+Math.random()*1.7,fireSplinter:true});
+  }
+}
 function explosion(x,y,size=75){
-  g.explosions.push({x,y,size,life:.65,maxLife:.65});burst(x,y,'#f9c57f',38,size/65);burst(x,y,'#28342a',12,.45,true);
+  g.explosions.push({x,y,size,life:.65,maxLife:.65});burst(x,y,'#f9c57f',46,size/65);burst(x,y,'#28342a',16,.45,true);fireSplinters(x,y,size);
   g.shake=Math.max(g.shake,size/6);sound.play('explode');
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
@@ -183,6 +190,12 @@ function hitEnemy(e,damage){
     float(`+${points}${multiplier>1?' ×'+multiplier:''}`,e.x,e.y-35,'#e0efa6',multiplier>1);
     const stats=ENEMIES[e.type];
     explosion(e.x,e.y,stats.deathExplosion);
+    if(e.type==='boss'){
+      for(let i=0;i<5;i++){
+        const a=Math.random()*TAU,distance=10+Math.random()*38;
+        g.deathBursts.push({x:e.x+Math.cos(a)*distance,y:e.y+Math.sin(a)*distance,size:58+Math.random()*28,delay:.1+i*.12+Math.random()*.05});
+      }
+    }
     if(e.type==='kamikaze'&&distance(e,g.player)<stats.explosionRadius+17)damagePlayer(stats.projectileDamage);
     if(!['drone','kamikaze','boss'].includes(e.type))g.wreckSmoke.push({x:e.x,y:e.y,life:18,timer:0});
     if(e.type==='boss')sound.setMusicScene('waves');
@@ -329,11 +342,7 @@ function update(dt){
       const speed=Math.min(WEAPONS.rocket.maxSpeed,Math.hypot(b.vx,b.vy)+WEAPONS.rocket.acceleration*stepDt);
       const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),stepDt*WEAPONS.rocket.turnRate):Math.atan2(b.vy,b.vx);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
-      b.trail-=stepDt;if(b.trail<=0){
-        const exhaust=Math.atan2(b.vy,b.vx)+Math.PI;
-        for(let i=0;i<2;i++){const spread=(Math.random()-.5)*.45,speed=20+Math.random()*30;g.particles.push({x:b.x+Math.cos(exhaust)*12,y:b.y+Math.sin(exhaust)*12,vx:Math.cos(exhaust+spread)*speed,vy:Math.sin(exhaust+spread)*speed,life:.65+Math.random()*.25,maxLife:.9,smoke:true,rocketSmoke:true,color:'#aeb5a5b8',size:10+Math.random()*8});}
-        b.trail=.055;
-      }
+      b.trail-=stepDt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',2,.12,true);b.trail=.035;}
     }else if(b.kind==='enemyRocket'){
       const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*stepDt);
       if(b.decoyed){b.decoyTimer-=stepDt;if(b.decoyTimer<=0){b.life=0;burst(b.x,b.y,'#ffc866',5,.25);continue;}}
@@ -373,6 +382,10 @@ function update(dt){
   g.hudTimer-=dt;if(g.hudTimer<=0){updateHud();g.hudTimer=.08;}
 }
 function updateEffects(dt){
+  for(const burst of g.deathBursts)burst.delay-=dt;
+  const pendingBursts=[];
+  for(const burst of g.deathBursts){if(burst.delay<=0)explosion(burst.x,burst.y,burst.size);else pendingBursts.push(burst);}
+  g.deathBursts=pendingBursts;
   for(const source of g.wreckSmoke){
     source.life-=dt;source.timer-=dt;
     if(source.life>0&&source.timer<=0&&g.particles.length<(settings.effects?650:180)){

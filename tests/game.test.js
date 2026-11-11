@@ -204,10 +204,20 @@ test('armored vehicle wrecks emit lingering black smoke',async()=>{
   game.updateEffects(18.1);
   assert.equal(game.g.wreckSmoke.length,0);
 });
-test('player rockets leave a thick smoke trail after ignition',async()=>{
+test('explosions emit fire splinters and Goliath ruptures in stages',async()=>{
+  const game=createGame();await game.start();
+  const tank=enemy();game.g.enemies=[tank];game.hitEnemy(tank,100);
+  assert.ok(game.g.particles.some(p=>p.fireSplinter));
+  const boss=enemy({type:'boss',health:1,maxHealth:1,points:2500,radius:49});
+  game.g.enemies=[boss];game.hitEnemy(boss,100);
+  assert.equal(game.g.deathBursts.length,5);
+  const explosions=game.g.explosions.length;game.updateEffects(.2);
+  assert.ok(game.g.explosions.length>explosions);
+});
+test('player rockets leave a thick enemy-style smoke trail after ignition',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   game.g.player.cannonAngle=0;game.launchRocket();game.update(.4);
-  assert.ok(game.g.particles.filter(p=>p.rocketSmoke).length>=2);
+  assert.ok(game.g.particles.filter(p=>p.smoke&&p.color==='#c1b89b').length>=2);
 });
 test('rockets consume ammunition, deal area damage, and replenish over time',async()=>{
   const game=createGame();await game.start();const p=game.g.player;
