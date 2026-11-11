@@ -1,4 +1,4 @@
-import { access, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const root = new URL('../', import.meta.url);
@@ -78,6 +78,7 @@ if (!buildSource.includes(oldFiles)) {
 
 const updatedBuild = buildSource.replace(oldFiles, newFiles);
 
+await mkdir(new URL('game/', root), { recursive: true });
 await writeFile(constantsPath, constants, 'utf8');
 await writeFile(gamePath, updatedGame, 'utf8');
 await writeFile(buildPath, updatedBuild, 'utf8');
