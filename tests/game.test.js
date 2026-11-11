@@ -332,9 +332,9 @@ test('reduced motion disables camera tracking and zoom',async()=>{
   game.keys.add('KeyD');for(let i=0;i<60;i++)game.update(1/60);
   assert.deepEqual(game.g.camera,{x:0,y:0,zoom:1});
 });
-test('next wave changes sector and clears decals from the previous map',async()=>{
+test('next wave changes sector and clears persistent battlefield effects',async()=>{
   const game=createGame();await game.start();const first=game.g.map;
-  game.g.decals.push({x:100,y:100});game.nextWave();
+  game.g.decals.push({x:100,y:100});game.g.wreckSmoke.push({x:100,y:100,life:18});game.g.particles.push({smoke:true},{smoke:false});game.nextWave();
   assert.notEqual(game.g.map,first);assert.equal(game.g.map,core.mapForWave(2));
-  assert.equal(game.g.decals.length,0);assert.equal(game.elements.get('sector-name').textContent,game.g.map.name);
+  assert.equal(game.g.decals.length,0);assert.equal(game.g.wreckSmoke.length,0);assert.equal(game.g.particles.length,1);assert.equal(game.elements.get('sector-name').textContent,game.g.map.name);
 });
