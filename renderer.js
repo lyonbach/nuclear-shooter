@@ -159,13 +159,18 @@ export class Renderer {
       c.save();c.rotate((e.turret??e.angle)-e.angle);c.fillStyle='#4b5c45';c.fillRect(-21,-10,38,20);c.fillStyle='#c0b98b';for(const y of [-6,0,6])c.fillRect(-14,y-2,30,4);c.restore();
     }else{
       c.fillStyle='#14231655';c.fillRect(-22+6,-21+7,47,46);
-      c.fillStyle='#27352a';c.fillRect(-23,-22,43,11);c.fillRect(-23,11,43,11);
+      const trackLeft=boss?-30:-23,trackRight=boss?27:20,trackOuter=boss?27:22,trackInner=boss?13:11,trackHeight=trackOuter-trackInner;
+      c.fillStyle='#27352a';c.fillRect(trackLeft,-trackOuter,trackRight-trackLeft,trackHeight);c.fillRect(trackLeft,trackInner,trackRight-trackLeft,trackHeight);
       c.fillStyle='#a1a582';
-      const phase=((e.trackPhase||0)%6+6)%6;
-      for(let x=-27+phase;x<20;x+=6){
-        const left=Math.max(x,-23),right=Math.min(x+3,20);
-        if(right>left){c.fillRect(left,-21,right-left,9);c.fillRect(left,12,right-left,9);}
-      }
+      const drawTrack=(phase,y)=>{
+        phase=(phase%6+6)%6;
+        for(let x=trackLeft-4+phase;x<trackRight;x+=6){
+          const left=Math.max(x,trackLeft),right=Math.min(x+3,trackRight);
+          if(right>left)c.fillRect(left,y,right-left,trackHeight-2);
+        }
+      };
+      drawTrack(e.leftTrackPhase??e.trackPhase??0,-trackOuter+1);
+      drawTrack(e.rightTrackPhase??e.trackPhase??0,trackInner+1);
       path(c,[[-25,-11],[-15,-16],[17,-16],[25,-8],[25,8],[15,16],[-20,16]],boss?'#727356':'#8c8e69','#b4b38a55');
       c.fillStyle='#a3a078';c.fillRect(-16,-12,29,3);c.fillStyle='#535f45';c.fillRect(-20,-7,8,14);
       c.save();c.rotate((e.turret??e.angle)-e.angle);
@@ -188,9 +193,20 @@ export class Renderer {
     c.drawImage(this.terrain,0,0,W,H);
     for(const mark of g.treadMarks||[]){
       c.save();c.translate(mark.x,mark.y);c.rotate(mark.angle);c.globalAlpha=clamp(mark.life/mark.maxLife,0,1)*.45;
-      c.fillStyle='#111812';c.fillRect(-8,-21,16,6);c.fillRect(-8,15,16,6);c.restore();
+      const length=mark.trackLength||16,width=mark.trackWidth||6,offset=mark.trackOffset||18;
+      c.fillStyle='#111812';c.fillRect(-length/2,-offset-width/2,length,width);c.fillRect(-length/2,offset-width/2,length,width);c.restore();
     }
-    for(const d of g.decals){c.save();c.translate(d.x,d.y);c.rotate(d.angle);ellipse(c,0,0,d.size,d.size*.66,'#1c211c88');ellipse(c,0,0,d.size*.65,d.size*.42,'#0c150d66');c.fillStyle='#4a4b37';c.fillRect(-11,-6,21,12);c.restore();}
+    for(const d of g.decals){c.save();c.translate(d.x,d.y);c.rotate(d.angle);
+      if(d.wreck){
+        c.scale(d.scale||1,d.scale||1);
+        c.fillStyle='#111812';c.fillRect(-27,-22,47,10);c.fillRect(-27,12,47,10);
+        c.fillStyle='#353b31';c.fillRect(-24,-20,42,6);c.fillRect(-24,14,42,6);
+        path(c,[[-24,-10],[-15,-15],[18,-13],[25,-6],[22,9],[12,14],[-20,12]],'#3d4436','#141b14');
+        c.fillStyle='#171d17';c.fillRect(-14,-10,28,20);c.save();c.rotate((d.turretAngle??.2)+.18);path(c,[[-9,-9],[10,-8],[16,-4],[14,6],[7,9],[-10,7],[-13,2],[-12,-5]],'#4b503d','#171b16');c.fillStyle='#252a22';c.fillRect(4,-2,18,4);c.restore();
+        ellipse(c,-4,-1,12,7,'#0b100dcc');ellipse(c,12,5,7,4,'#0b100daa');
+        if(d.burnTime>0&&Math.sin(t*18+d.x)>0)ellipse(c,-2,-7,4,7,'#e47b3d88');
+      }else{ellipse(c,0,0,d.size,d.size*.66,'#1c211c88');ellipse(c,0,0,d.size*.65,d.size*.42,'#0c150d66');c.fillStyle='#4a4b37';c.fillRect(-11,-6,21,12);}
+      c.restore();}
     // A very slow cloud shadow drifts over the map.
     if(this.settings.effects){c.save();c.translate(camera.x*.3,camera.y*.3);const x=(t*12)%(W+600)-300,cloud=c.createRadialGradient(x,H*.35,30,x,H*.35,380);cloud.addColorStop(0,'#14231524');cloud.addColorStop(1,'#14231500');c.fillStyle=cloud;c.fillRect(-W,-H,W*3,H*3);c.restore();}
     for(const p of g.pickups){

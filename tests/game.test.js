@@ -175,6 +175,12 @@ test('tank tracks advance only while the tank moves and freeze when paused',asyn
   await game.resume();tank.x=p.x+150;tank.y=p.y;game.update(.05);
   assert.equal(tank.trackPhase,movingPhase);
 });
+test('tank treads turn in opposite directions during an in-place hull turn',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player,tank=enemy({x:p.x+100,y:p.y,speed:40,angle:Math.PI/2,cooldown:100});
+  game.g.enemies=[tank];game.update(.1);
+  assert.ok(tank.leftTrackPhase>0);assert.ok(tank.rightTrackPhase<0);
+});
 test('moving tanks leave tread marks that fade after twenty seconds',async()=>{
   const game=createGame();await game.start();game.g.spawnRemaining=100;
   const p=game.g.player,tank=enemy({x:p.x+400,y:p.y,speed:40,angle:Math.PI,cooldown:100});
@@ -183,14 +189,25 @@ test('moving tanks leave tread marks that fade after twenty seconds',async()=>{
   tank.speed=0;game.update(20.01);
   assert.equal(game.g.treadMarks.length,0);
 });
+test('Goliath leaves wide, aligned tread marks',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  const p=game.g.player,boss=enemy({x:p.x+400,y:p.y,type:'boss',speed:100,angle:Math.PI,cooldown:100});
+  game.g.enemies=[boss];game.update(.5);
+  assert.ok(game.g.treadMarks.some(mark=>mark.trackOffset===36&&mark.trackLength===30&&mark.trackWidth===24));
+});
 test('armored vehicle wrecks emit lingering black smoke',async()=>{
   const game=createGame();await game.start();game.g.enemies=[enemy()];
   game.hitEnemy(game.g.enemies[0],100);
-  assert.equal(game.g.wreckSmoke.length,1);
+  assert.equal(game.g.wreckSmoke.length,1);assert.equal(game.g.wreckSmoke[0].life,18);assert.equal(game.g.decals[0].wreck,true);
   game.updateEffects(.1);
   assert.ok(game.g.particles.some(p=>p.persistent&&p.smoke&&p.color==='#111812b8'));
-  game.updateEffects(7.9);
+  game.updateEffects(18.1);
   assert.equal(game.g.wreckSmoke.length,0);
+});
+test('player rockets leave a thick smoke trail after ignition',async()=>{
+  const game=createGame();await game.start();game.g.spawnRemaining=100;
+  game.g.player.cannonAngle=0;game.launchRocket();game.update(.4);
+  assert.ok(game.g.particles.filter(p=>p.rocketSmoke).length>=2);
 });
 test('rockets consume ammunition, deal area damage, and replenish over time',async()=>{
   const game=createGame();await game.start();const p=game.g.player;

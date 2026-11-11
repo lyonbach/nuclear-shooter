@@ -9,6 +9,7 @@ const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_
 const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
 const LOW_HEALTH_ALARM_INTERVAL=1.4,MISSILE_ALARM_INTERVAL=1.2;
 const ROCKET_RAIL_FORWARD=28,ROCKET_RAIL_OFFSET=15;
+const TANK_TRACK_HALF_WIDTH=16.5,GOLIATH_TRACK_HALF_WIDTH=36;
 const positionalAudio=(source)=>{
   const p=g.player,distanceToSource=distance(source,p);
   return { pan:clamp((source.x-p.x)/(g.world.width*.35),-1,1),gain:clamp(1-distanceToSource/(g.world.width*.7),.15,1) };
@@ -183,9 +184,9 @@ function hitEnemy(e,damage){
     const stats=ENEMIES[e.type];
     explosion(e.x,e.y,stats.deathExplosion);
     if(e.type==='kamikaze'&&distance(e,g.player)<stats.explosionRadius+17)damagePlayer(stats.projectileDamage);
-    if(!['drone','kamikaze','boss'].includes(e.type))g.wreckSmoke.push({x:e.x,y:e.y,life:8,timer:0});
+    if(!['drone','kamikaze','boss'].includes(e.type))g.wreckSmoke.push({x:e.x,y:e.y,life:18,timer:0});
     if(e.type==='boss')sound.setMusicScene('waves');
-    if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26});if(g.decals.length>55)g.decals.shift();}
+    if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26,wreck:true,type:e.type,scale:ENEMIES[e.type].scale,turretAngle:(e.turret??e.angle)-e.angle,burnTime:18});if(g.decals.length>55)g.decals.shift();}
     if(g.kills%4===0||e.type==='boss')g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
   }else sound.play('hit');
 }
@@ -279,16 +280,24 @@ function update(dt){
     if(stats.strafeSpeed){vx+=Math.cos(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*stats.strafeSpeed;vy+=Math.sin(a+Math.PI/2)*Math.sin(g.time*1.3+e.seed)*stats.strafeSpeed;}
     // Gentle separation keeps armor from stacking into one unreadable target.
     for(const other of g.enemies){if(e===other||other.health<=0)continue;const dist=distance(e,other),min=e.radius+other.radius+9;if(dist>0&&dist<min){vx+=(e.x-other.x)/dist*(min-dist)*1.5;vy+=(e.y-other.y)/dist*(min-dist)*1.5;}}
-    e.x+=vx*dt;e.y+=vy*dt;if(Math.hypot(vx,vy)>3)e.angle=turn(e.angle,Math.atan2(vy,vx),dt*stats.turnRate);
+    e.x+=vx*dt;e.y+=vy*dt;
+    const previousAngle=e.angle,heading=Math.hypot(vx,vy)>3?Math.atan2(vy,vx):a;
+    e.angle=turn(e.angle,heading,dt*stats.turnRate);
     if(e.type!=='drone'&&e.type!=='kamikaze'){
-      e.treadDistance=(e.treadDistance||0)+Math.hypot(vx,vy)*dt;
+      const forwardDistance=(vx*Math.cos(previousAngle)+vy*Math.sin(previousAngle))*dt;
+      const turnDistance=Math.atan2(Math.sin(e.angle-previousAngle),Math.cos(e.angle-previousAngle))*(e.type==='boss'?GOLIATH_TRACK_HALF_WIDTH:TANK_TRACK_HALF_WIDTH);
+      const trackScale=e.type==='boss'?1.8:1;
+      const leftTrackDistance=forwardDistance+turnDistance,rightTrackDistance=forwardDistance-turnDistance;
+      e.leftTrackPhase=((e.leftTrackPhase||0)+leftTrackDistance/trackScale)%6;
+      e.rightTrackPhase=((e.rightTrackPhase||0)+rightTrackDistance/trackScale)%6;
+      e.trackPhase=((e.trackPhase||0)+forwardDistance/trackScale)%6;
+      e.treadDistance=(e.treadDistance||0)+Math.max(Math.abs(leftTrackDistance),Math.abs(rightTrackDistance));
       if(e.treadDistance>=TREAD_MARK_SPACING){
         e.treadDistance%=TREAD_MARK_SPACING;
-        g.treadMarks.push({x:e.x,y:e.y,angle:e.angle,life:TREAD_MARK_LIFETIME,maxLife:TREAD_MARK_LIFETIME});
+        const boss=e.type==='boss';
+        g.treadMarks.push({x:e.x,y:e.y,angle:e.angle,life:TREAD_MARK_LIFETIME,maxLife:TREAD_MARK_LIFETIME,trackOffset:boss?36:18,trackLength:boss?30:16,trackWidth:boss?24:6});
         if(g.treadMarks.length>TREAD_MARK_LIMIT)g.treadMarks.shift();
       }
-      const direction=vx*Math.cos(e.angle)+vy*Math.sin(e.angle)<0?-1:1;
-      e.trackPhase=((e.trackPhase||0)+direction*Math.hypot(vx,vy)*dt/(e.type==='boss'?1.8:1))%6;
     }
     e.turret=turn(e.turret,a,dt*stats.turretRate);e.cooldown-=dt;e.charge=clamp(1-e.cooldown/.7,0,1);
     if(e.type!=='kamikaze'&&e.cooldown<=0&&e.x>0&&e.x<W&&e.y>60&&e.y<H)fireEnemy(e);
@@ -320,7 +329,11 @@ function update(dt){
       const speed=Math.min(WEAPONS.rocket.maxSpeed,Math.hypot(b.vx,b.vy)+WEAPONS.rocket.acceleration*stepDt);
       const a=b.target?turn(Math.atan2(b.vy,b.vx),Math.atan2(b.target.y-b.y,b.target.x-b.x),stepDt*WEAPONS.rocket.turnRate):Math.atan2(b.vy,b.vx);
       b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;
-      b.trail-=stepDt;if(b.trail<=0){burst(b.x,b.y,'#c1b89b',1,.12,true);b.trail=.035;}
+      b.trail-=stepDt;if(b.trail<=0){
+        const exhaust=Math.atan2(b.vy,b.vx)+Math.PI;
+        for(let i=0;i<2;i++){const spread=(Math.random()-.5)*.45,speed=20+Math.random()*30;g.particles.push({x:b.x+Math.cos(exhaust)*12,y:b.y+Math.sin(exhaust)*12,vx:Math.cos(exhaust+spread)*speed,vy:Math.sin(exhaust+spread)*speed,life:.65+Math.random()*.25,maxLife:.9,smoke:true,rocketSmoke:true,color:'#aeb5a5b8',size:10+Math.random()*8});}
+        b.trail=.055;
+      }
     }else if(b.kind==='enemyRocket'){
       const speed=Math.min(b.maxSpeed,Math.hypot(b.vx,b.vy)+b.acceleration*stepDt);
       if(b.decoyed){b.decoyTimer-=stepDt;if(b.decoyTimer<=0){b.life=0;burst(b.x,b.y,'#ffc866',5,.25);continue;}}
@@ -363,12 +376,12 @@ function updateEffects(dt){
   for(const source of g.wreckSmoke){
     source.life-=dt;source.timer-=dt;
     if(source.life>0&&source.timer<=0&&g.particles.length<(settings.effects?650:180)){
-      const life=3.5+Math.random()*1.5;
-      g.particles.push({x:source.x+(Math.random()-.5)*12,y:source.y-10,vx:(Math.random()-.5)*12,vy:-28-Math.random()*24,life,maxLife:life,smoke:true,persistent:true,color:'#111812b8',size:8+Math.random()*7});
-      source.timer=settings.effects?0.24:0.5;
+      for(let i=0;i<(settings.effects?2:1);i++){const life=4.5+Math.random()*2;g.particles.push({x:source.x+(Math.random()-.5)*16,y:source.y-12,vx:(Math.random()-.5)*16,vy:-22-Math.random()*28,life,maxLife:life,smoke:true,persistent:true,color:'#111812b8',size:14+Math.random()*12});}
+      source.timer=settings.effects?0.32:0.6;
     }
   }
   g.wreckSmoke=g.wreckSmoke.filter(source=>source.life>0);
+  for(const decal of g.decals)if(decal.burnTime>0)decal.burnTime-=dt;
   for(const p of g.particles){
     const drag=p.persistent?0.35:p.smoke?1.5:3;
     const flareDrift=p.flare?Math.sin(g.time*15+p.flarePhase)*p.flareWobble:0;
