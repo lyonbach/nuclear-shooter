@@ -781,8 +781,8 @@ class SoundEngine {
     if (name === 'flare') { const pitch=random(1,0.1); this.hiss(0.025, level(0.13), 4000*pitch, pan); this.tone(110*pitch, 42*pitch, 0.045, level(0.06), 'sine'); this.hiss(0.24, level(0.25), 1600*pitch, pan); this.hiss(0.18, level(0.1), 650*pitch, pan); }
     if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
     if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
-    if (name === 'lowHealth') { const at=this.ctx.currentTime; [0,0.16].forEach(offset=>{this.hiss(0.1, level(0.1), 1800, 0, at+offset);this.tone(180, 85, 0.12, level(0.14), 'sawtooth', this.fx, at+offset);}); }
-    if (name === 'missileAlert') { const at=this.ctx.currentTime; [0,0.1,0.2].forEach(offset=>this.tone(980, 820, 0.05, level(0.08), 'sine', this.fx, at+offset)); }
+    if (name === 'lowHealth') { const at=this.ctx.currentTime; [0,0.62].forEach(offset=>{this.hiss(0.42, level(0.12), 2400, 0, at+offset);this.tone(240, 110, 0.42, level(0.2), 'sawtooth', this.fx, at+offset);this.tone(420, 190, 0.35, level(0.08), 'square', this.fx, at+offset);}); }
+    if (name === 'missileAlert') { const at=this.ctx.currentTime; [0,0.1,0.2].forEach(offset=>this.tone(980, 820, 0.05, level(0.16), 'sine', this.fx, at+offset)); }
     if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
     if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, level(0.1), 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
     if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
