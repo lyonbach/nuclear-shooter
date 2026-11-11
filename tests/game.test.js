@@ -21,7 +21,7 @@ function createGame(reducedMotion=false) {
   const document={hidden:false,fullscreenEnabled:false,documentElement:{},getElementById:id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},querySelectorAll:()=>[],createElement:()=>new Element(),addEventListener:(event,fn)=>documentEvents.set(event,fn)};
   const window={addEventListener:(event,fn)=>windowEvents.set(event,fn)};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
-  class Audio{constructor(){this.scene='menu';this.initializations=0;}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(){} update(){}}
+  class Audio{constructor(){this.scene='menu';this.initializations=0;this.plays=[];}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(name){this.plays.push(name);} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
   const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
   const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,deployFlares,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
@@ -104,6 +104,20 @@ test('flares deploy automatically below Ace and require manual activation on Ace
   Math.random=()=>0;
   try{assert.equal(manual.deployFlares(),true);}finally{Math.random=random;}
   assert.equal(hardRocket.decoyed,true);
+});
+test('critical health and close missiles trigger repeating cockpit alarms',async()=>{
+  const critical=createGame();await critical.start();critical.g.spawnRemaining=100;
+  critical.g.player.health=25;critical.update(.01);
+  assert.equal(critical.sound.plays.filter(name=>name==='lowHealth').length,1);
+  critical.update(.5);assert.equal(critical.sound.plays.filter(name=>name==='lowHealth').length,1);
+  critical.update(1);assert.equal(critical.sound.plays.filter(name=>name==='lowHealth').length,2);
+
+  const missile=createGame();await missile.start();missile.g.spawnRemaining=100;missile.settings.difficulty='hard';
+  const p=missile.g.player;
+  missile.g.bullets.push({x:p.x-250,y:p.y,vx:1,vy:0,life:5,kind:'enemyRocket',turn:0,acceleration:0,maxSpeed:1,trail:10});
+  missile.update(.01);assert.equal(missile.sound.plays.filter(name=>name==='missileAlert').length,1);
+  missile.update(.5);assert.equal(missile.sound.plays.filter(name=>name==='missileAlert').length,1);
+  missile.update(.8);assert.equal(missile.sound.plays.filter(name=>name==='missileAlert').length,2);
 });
 
 test('new sortie resets combat, unlocks controls, and schedules wave one',async()=>{

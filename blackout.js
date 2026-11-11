@@ -781,6 +781,8 @@ class SoundEngine {
     if (name === 'flare') { const pitch=random(1,0.1); this.hiss(0.025, level(0.13), 4000*pitch, pan); this.tone(110*pitch, 42*pitch, 0.045, level(0.06), 'sine'); this.hiss(0.24, level(0.25), 1600*pitch, pan); this.hiss(0.18, level(0.1), 650*pitch, pan); }
     if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
     if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
+    if (name === 'lowHealth') { const at=this.ctx.currentTime; [0,0.16].forEach(offset=>{this.hiss(0.1, level(0.1), 1800, 0, at+offset);this.tone(180, 85, 0.12, level(0.14), 'sawtooth', this.fx, at+offset);}); }
+    if (name === 'missileAlert') { const at=this.ctx.currentTime; [0,0.1,0.2].forEach(offset=>this.tone(980, 820, 0.05, level(0.08), 'sine', this.fx, at+offset)); }
     if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
     if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, level(0.1), 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
     if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
@@ -1046,6 +1048,7 @@ const $ = id => document.getElementById(id);
 const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
 const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
 const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
+const LOW_HEALTH_ALARM_INTERVAL=1.4,MISSILE_ALARM_INTERVAL=1.2;
 const ROCKET_RAIL_FORWARD=28,ROCKET_RAIL_OFFSET=15;
 const positionalAudio=(source)=>{
   const p=g.player,distanceToSource=distance(source,p);
@@ -1091,7 +1094,7 @@ function applyLanguage(){
   updateStateText();updateSettingsUI();updateHud();
 }
 
-function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,rocketSide:-1,muzzle:0};}
+function newPlayer(){return{x:g.world.width*.43,y:g.world.height*.52,vx:0,vy:0,angle:-Math.PI/2,cannonAngle:-Math.PI/2,bank:0,pitch:0,health:100,maxHealth:100,cooldown:0,heat:0,overheated:false,invulnerable:0,dashTime:0,dashCooldown:0,flareCooldown:0,lowHealthAlarm:0,missileAlarm:0,rockets:3,maxRockets:3,rocketTimer:0,rocketCooldown:0,rocketSide:-1,muzzle:0};}
 g.player=newPlayer();
 function resize(){
   const rect=arena.getBoundingClientRect(),old={...g.world};
@@ -1287,7 +1290,7 @@ function deployFlares(){
 }
 function update(dt){
   const p=g.player,W=g.world.width,H=g.world.height;g.time+=dt;g.shake=Math.max(0,g.shake-dt*35);
-  p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.flareCooldown=Math.max(0,p.flareCooldown-dt);p.rocketCooldown-=dt;p.muzzle-=dt;
+  p.cooldown-=dt;p.invulnerable-=dt;p.dashTime-=dt;p.dashCooldown=Math.max(0,p.dashCooldown-dt);p.flareCooldown=Math.max(0,p.flareCooldown-dt);p.lowHealthAlarm-=dt;p.missileAlarm-=dt;p.rocketCooldown-=dt;p.muzzle-=dt;
   const move=movement(),speed=270*Math.pow(1.12,upgrades.engine||0),response=1-Math.exp(-(Math.hypot(move.x,move.y)>.01?PLAYER_ACCELERATION:PLAYER_DECELERATION)*dt);
   if(p.dashTime<=0){p.vx+=(move.x*speed-p.vx)*response;p.vy+=(move.y*speed-p.vy)*response;}
   p.x=clamp(p.x+p.vx*dt,34,W-34);p.y=clamp(p.y+p.vy*dt,104,H-42);
@@ -1333,7 +1336,14 @@ function update(dt){
     if(distance(e,p)<e.radius+22){if(e.type==='kamikaze')hitEnemy(e,e.health);else damagePlayer(stats.contactDamage);}
     if(g.state!=='playing')return;
   }
-  if(settings.difficulty!=='hard'&&p.flareCooldown<=0&&incomingMissile())deployFlares();
+  if(p.health<=p.maxHealth*.25){
+    if(p.lowHealthAlarm<=0){sound.play('lowHealth');p.lowHealthAlarm=LOW_HEALTH_ALARM_INTERVAL;}
+  }else p.lowHealthAlarm=0;
+  const missileThreat=incomingMissile();
+  if(missileThreat){
+    if(p.missileAlarm<=0){sound.play('missileAlert');p.missileAlarm=MISSILE_ALARM_INTERVAL;}
+    if(settings.difficulty!=='hard'&&p.flareCooldown<=0)deployFlares();
+  }else p.missileAlarm=0;
   for(const b of g.bullets){
     if(b.life<=0)continue;
     let stepDt=dt;
