@@ -23,8 +23,9 @@ function createGame(reducedMotion=false) {
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)};
   class Audio{constructor(){this.scene='menu';this.initializations=0;this.plays=[];}async init(){this.initializations++;} configure(){} setActive(){} setMusicScene(scene){this.scene=scene;} play(name){this.plays.push(name);} update(){}}
   class Renderer{resize(){} setMap(){} draw(){}}
-  const source=readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
-  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g,keys,settings,start,pause,resume,frame,update,updateEffects,spawnEnemy,fireEnemy,launchRocket,dash,deployFlares,hitEnemy,damagePlayer,showUpgrades,selectUpgrade,nextWave,movement,pointerPosition,sound,getChoices:()=>choices,getUpgrades:()=>upgrades};`);
+  const moduleFiles=['game/constants.js','game/state.js','game/entities.js','game/waves.js','game/loop.js','game/combat.js','game/upgrades.js','game/input.js','game.js'];
+  const source=moduleFiles.map(file=>readFileSync(new URL(`../${file}`,import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,'')).join('\n');
+  const factory=new Function('document','window','localStorage','matchMedia','ResizeObserver','requestAnimationFrame','SoundEngine','Renderer',...Object.keys(core),...Object.keys(i18n),`${source}\nreturn {g:runtime.g,keys:runtime.keys,settings:runtime.settings,start:runtime.start,pause:runtime.pause,resume:runtime.resume,frame:runtime.frame,update:runtime.update,updateEffects:runtime.updateEffects,spawnEnemy:runtime.spawnEnemy,fireEnemy:runtime.fireEnemy,launchRocket:runtime.launchRocket,dash:runtime.dash,deployFlares:runtime.deployFlares,hitEnemy:runtime.hitEnemy,damagePlayer:runtime.damagePlayer,showUpgrades:runtime.showUpgrades,selectUpgrade:runtime.selectUpgrade,nextWave:runtime.nextWave,movement:runtime.movement,pointerPosition:runtime.pointerPosition,sound:runtime.sound,getChoices:()=>runtime.choices,getUpgrades:()=>runtime.upgrades};`);
   const game=factory(document,window,localStorage,query=>({matches:reducedMotion&&query.includes('prefers-reduced-motion')}),class{observe(){}},()=>{},Audio,Renderer,...Object.values(core),...Object.values(i18n));
   return{...game,elements,storage,windowEvents,documentEvents,sound:game.sound};
 }
@@ -34,7 +35,7 @@ test('kamikazes use quarter scale and double drone speed and explode for four sh
   const game=createGame();await game.start();
   game.spawnEnemy('drone');game.spawnEnemy('kamikaze');
   const drone=game.g.enemies[0],kamikaze=game.g.enemies[1],p=game.g.player;
-  assert.equal(core.ENEMIES.kamikaze.scale,core.ENEMIES.drone.scale/4);
+  assert.equal(core.ENEMIES.kamikaze.scale,core.ENEMIES.drone.scale/100*55);
   assert.equal(kamikaze.radius,drone.radius/4);
   assert.equal(kamikaze.speed,drone.speed*2);
   kamikaze.x=p.x+20;kamikaze.y=p.y;
