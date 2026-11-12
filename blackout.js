@@ -389,279 +389,796 @@ const WEAPON_DATA = {
 };
 
 // i18n.js
-const languages = { en:'English',tr:'Türkçe',de:'Deutsch',es:'Español',fr:'Français' };
-
-const translations = {
-  en:{
-    'nav.online':'SYSTEM ONLINE','nav.language':'Language','nav.soundOn':'Turn sound on','nav.soundOff':'Turn sound off',
-    'mission.tag':'OPERATION 001','mission.sector':'SECTOR 07','mission.heading':'AIR SUPERIORITY IS YOURS.','mission.note':'Retreat is not an option.',
-    'frame.label':'Blackout battlefield','frame.live':'LIVE FEED','frame.exit':'EXIT FULLSCREEN',
-    'hud.hull':'HULL STATUS','hud.healthy':'HEALTHY','hud.damaged':'DAMAGED','hud.critical':'CRITICAL','hud.threat':'THREAT LEVEL',
-    'hud.wave':'WAVE','hud.scanning':'SCANNING AREA','hud.hostiles':'HOSTILES REMAIN','hud.score':'OPERATION SCORE','hud.best':'BEST','hud.combo':'KILL STREAK',
-    'hud.boss':'GOLIATH / ARMORED COMMAND VEHICLE','hud.base':'FORWARD OPERATING BASE','hud.cannonHeat':'CANNON HEAT','hud.dash':'DASH','hud.rocket':'ROCKET',
-    'intro.connected':'PILOT LINK ESTABLISHED','intro.title':'THE NIGHT IS YOURS.<br><em>THE SKY IS YOURS.</em>',
-    'intro.text':'You are behind enemy lines. Fly your helicopter and stop the waves. Get stronger with every sortie.',
-    'difficulty.label':'Difficulty','difficulty.easy':'ROOKIE','difficulty.normal':'PILOT','difficulty.hard':'ACE',
-    'intro.start':'START OPERATION <span>↗</span>','intro.objective':'OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES',
-    'panel.pause.kicker':'LINK SECURE','panel.pause.title':'TAKE A <em>BREATH.</em>','panel.pause.text':'The operation will be waiting, pilot.',
-    'panel.resume':'RESUME FLIGHT <span>→</span>','panel.restart':'START NEW SORTIE',
-    'panel.over.kicker':'AFTER-ACTION REPORT','panel.over.title':'SEE YOU ON THE<br><em>NEXT SORTIE.</em>',
-    'panel.score':'SCORE','panel.wave':'WAVE','panel.kills':'KILLS','panel.flightTime':'FLIGHT TIME','panel.retry':'TAKE OFF AGAIN <span>↗</span>',
-    'panel.upgrade.kicker':'AREA SECURED','panel.upgrade.title':'COME BACK <em>STRONGER.</em>',
-    'touch.move':'MOVE','touch.dash':'Dash','touch.rocket':'Fire rocket','touch.flare':'Deploy flares','touch.fire':'Fire',
-    'manual.title':'FLIGHT MANUAL','manual.heading':'Trust your instincts.','manual.move':'MOVE','manual.arrows':'or arrow keys',
-    'manual.aim':'AIM & FIRE','manual.mouse':'Mouse · left click / space','manual.dash':'DASH','manual.invulnerable':'Brief invulnerability',
-    'manual.guidedRocket':'GUIDED ROCKET','manual.areaDamage':'Area damage · auto-reload','manual.pause':'PAUSE','manual.breathe':'Take a breath',
-    'footer.tip':'Move. Fire. Survive.','footer.signoff':'GOOD HUNTING, PILOT.',
-    'settings.kicker':'FLIGHT COMPUTER','settings.title':'FLIGHT <em>SETTINGS</em>','settings.volume':'Master volume',
-    'settings.music':'Tactical music','settings.shake':'Screen shake','settings.effects':'Visual effects',
-    'settings.note':'Settings and your high score are saved in this browser.<br>Audio starts after your first interaction.',
-    'settings.done':'DONE <span>✓</span>','settings.close':'Close settings','settings.label':'Settings','settings.fullscreen':'Fullscreen',
-    'status.ready':'STANDBY','status.playing':'ACTIVE','status.paused':'PAUSED','status.upgrade':'RESUPPLY','status.over':'SIGNAL LOST',
-    'mission.ready':'AWAITING FLIGHT CLEARANCE','mission.playing':'ENGAGEMENT CLEARED · HOLD THE LINE',
-    'mission.paused':'AUTOPILOT ENGAGED','mission.upgrade':'FIELD RESUPPLY · SELECT AN UPGRADE','mission.over':'OPERATION ENDED',
-    'flight.label':'FLIGHT','dash.ready':'READY','heat.cooling':'COOLING','hull.repairing':'CRITICAL HULL DAMAGE',
-    'supply.collect':'COLLECT SUPPLIES','supply.note':'Green supply crates repair your hull.',
-    'wave.bossTag':'COMMAND VEHICLE DETECTED','wave.enemyTag':'ENEMY FORCE ON THE MOVE','wave.bossTitle':'GOLIATH INBOUND',
-    'wave.title':'WAVE {wave}','wave.bossNote':'Prepare your rockets.','wave.firstNote':'Keep moving. Maintain your distance.','wave.note':'New targets. Same mission.',
-    'wave.cleared':'WAVE CLEARED +{score}','upgrade.note':'Wave {wave} cleared. Choose an upgrade to continue.',
-    'record.new':'NEW RECORD. The skies will remember you.','record.again':'Every flight makes you stronger. Take off again.',
-    'fullscreen.errorTitle':'FULLSCREEN UNAVAILABLE','fullscreen.errorNote':'Use your browser’s fullscreen command instead.',
-    'upgrade.damage.title':'Armor-Piercing Rounds','upgrade.damage.description':'Cannon damage increased by 25%.','upgrade.damage.detail':'+25% DAMAGE',
-    'upgrade.fireRate.title':'Rapid Feed','upgrade.fireRate.description':'Cannon fires 18% faster.','upgrade.fireRate.detail':'+18% FIRE RATE',
-    'upgrade.armor.title':'Composite Armor','upgrade.armor.description':'Maximum hull +25. Repairs 35 immediately.','upgrade.armor.detail':'+25 HULL',
-    'upgrade.engine.title':'Turbine Upgrade','upgrade.engine.description':'Movement speed +12%. Dash recharges faster.','upgrade.engine.detail':'+12% SPEED',
-    'upgrade.rockets.title':'Missile System','upgrade.rockets.description':'One extra rocket. Rockets recharge 20% faster.','upgrade.rockets.detail':'+1 ROCKET CAPACITY',
-    'upgrade.repair.title':'Field Repairs','upgrade.repair.description':'Fully repairs the hull.','upgrade.repair.detail':'FULL REPAIR',
-    'map.desert':'DESERT FRONT','map.valley':'GREEN VALLEY','map.canyon':'RED ZONE'
-  },
-  tr:{
-    'nav.online':'SİSTEM ÇEVRİMİÇİ','nav.language':'Dil','nav.soundOn':'Sesi aç','nav.soundOff':'Sesi kapat',
-    'mission.tag':'OPERASYON 001','mission.sector':'SEKTÖR 07','mission.heading':'HAVA ÜSTÜNLÜĞÜ SENDE.','mission.note':'Geri çekilmek bir seçenek değil.',
-    'frame.label':'Blackout savaş alanı','frame.live':'CANLI BAĞLANTI','frame.exit':'TAM EKRANDAN ÇIK',
-    'hud.hull':'GÖVDE DURUMU','hud.healthy':'SAĞLAM','hud.damaged':'HASARLI','hud.critical':'KRİTİK','hud.threat':'TEHDİT SEVİYESİ',
-    'hud.wave':'DALGA','hud.scanning':'BÖLGE TARANIYOR','hud.hostiles':'DÜŞMAN KALDI','hud.score':'OPERASYON PUANI','hud.best':'REKOR','hud.combo':'İMHA SERİSİ',
-    'hud.boss':'GOLIATH / AĞIR ZIRHLI KOMUTA ARACI','hud.base':'İLERİ HAREKÂT ÜSSÜ','hud.cannonHeat':'TOP ISISI','hud.dash':'KAÇIŞ','hud.rocket':'ROKET',
-    'intro.connected':'PİLOT BAĞLANTISI KURULDU','intro.title':'GECE SENİN.<br><em>GÖKYÜZÜ SENİN.</em>',
-    'intro.text':'Düşman hattının gerisindesin. Helikopterini uçur ve dalgaları durdur. Her sortide daha da güçlen.',
-    'difficulty.label':'Zorluk','difficulty.easy':'ÇAYLAK','difficulty.normal':'PİLOT','difficulty.hard':'AS',
-    'intro.start':'OPERASYONU BAŞLAT <span>↗</span>','intro.objective':'HEDEF: HAYATTA KAL / HER 5. DALGADA KOMUTAN',
-    'panel.pause.kicker':'BAĞLANTI KORUNUYOR','panel.pause.title':'BİR NEFES <em>AL.</em>','panel.pause.text':'Operasyon seni bekliyor, pilot.',
-    'panel.resume':'UÇUŞA DEVAM ET <span>→</span>','panel.restart':'YENİ SORTİ BAŞLAT',
-    'panel.over.kicker':'OPERASYON RAPORU','panel.over.title':'SONRAKİ SORTİDE<br><em>GÖRÜŞÜRÜZ.</em>',
-    'panel.score':'PUAN','panel.wave':'DALGA','panel.kills':'İMHA','panel.flightTime':'UÇUŞ SÜRESİ','panel.retry':'TEKRAR HAVALAN <span>↗</span>',
-    'panel.upgrade.kicker':'BÖLGE TEMİZLENDİ','panel.upgrade.title':'DAHA <em>GÜÇLÜ DÖN.</em>',
-    'touch.move':'HAREKET','touch.dash':'Kaçış manevrası','touch.rocket':'Roket ateşle','touch.flare':'Fişek bırak','touch.fire':'Ateş et',
-    'manual.title':'UÇUŞ KILAVUZU','manual.heading':'Reflekslerine güven.','manual.move':'MANEVRA','manual.arrows':'veya yön tuşları',
-    'manual.aim':'NİŞAN & ATEŞ','manual.mouse':'Fare · sol tık / boşluk','manual.dash':'KAÇIŞ','manual.invulnerable':'Kısa süreli dokunulmazlık',
-    'manual.guidedRocket':'GÜDÜMLÜ ROKET','manual.areaDamage':'Alan hasarı · otomatik dolum','manual.pause':'DURAKLAT','manual.breathe':'Bir nefes al',
-    'footer.tip':'Hareket et. Ateş et. Hayatta kal.','footer.signoff':'İYİ UÇUŞLAR, PİLOT.',
-    'settings.kicker':'UÇUŞ BİLGİSAYARI','settings.title':'UÇUŞ <em>AYARLARI</em>','settings.volume':'Ana ses',
-    'settings.music':'Taktik müzik','settings.shake':'Ekran sarsıntısı','settings.effects':'Yoğun efektler',
-    'settings.note':'Ayarların ve rekorun bu tarayıcıda saklanır.<br>Ses, ilk etkileşimden sonra başlar.',
-    'settings.done':'TAMAM <span>✓</span>','settings.close':'Ayarları kapat','settings.label':'Ayarlar','settings.fullscreen':'Tam ekran',
-    'status.ready':'BEKLEMEDE','status.playing':'AKTİF','status.paused':'DURAKLATILDI','status.upgrade':'İKMAL','status.over':'SİNYAL KAYIP',
-    'mission.ready':'UÇUŞ İZNİ BEKLENİYOR','mission.playing':'ANGAJMAN SERBEST · HATTI KORU',
-    'mission.paused':'OTOPİLOT DEVREDE','mission.upgrade':'SAHA İKMALİ · GELİŞTİRME SEÇ','mission.over':'OPERASYON SONLANDI',
-    'flight.label':'UÇUŞ','dash.ready':'HAZIR','heat.cooling':'SOĞUYOR','hull.repairing':'KRİTİK GÖVDE HASARI',
-    'supply.collect':'İKMAL TOPLA','supply.note':'Yeşil ikmal paketleri gövdeyi onarır.',
-    'wave.bossTag':'KOMUTA ARACI TESPİT EDİLDİ','wave.enemyTag':'DÜŞMAN HATTI HAREKETLENDİ','wave.bossTitle':'GOLIATH YAKLAŞIYOR',
-    'wave.title':'DALGA {wave}','wave.bossNote':'Roketlerini hazırla.','wave.firstNote':'Hareket et. Mesafeni koru.','wave.note':'Yeni hedefler. Aynı görev.',
-    'wave.cleared':'DALGA TAMAMLANDI +{score}','upgrade.note':'Dalga {wave} tamamlandı. Bir geliştirme seç, uçuşa devam et.',
-    'record.new':'YENİ REKOR. Bu gökyüzü seni hatırlayacak.','record.again':'Her uçuş bir tecrübe. Tekrar havalan.',
-    'fullscreen.errorTitle':'TAM EKRAN KULLANILAMIYOR','fullscreen.errorNote':'Tarayıcının tam ekran komutunu kullanabilirsin.',
-    'upgrade.damage.title':'Delici mühimmat','upgrade.damage.description':'Top hasarı %25 artar.','upgrade.damage.detail':'+%25 HASAR',
-    'upgrade.fireRate.title':'Hızlı besleme','upgrade.fireRate.description':'Top %18 daha hızlı ateş eder.','upgrade.fireRate.detail':'+%18 ATIŞ HIZI',
-    'upgrade.armor.title':'Kompozit zırh','upgrade.armor.description':'Azami gövde +25. Anında 35 onarım.','upgrade.armor.detail':'+25 GÖVDE',
-    'upgrade.engine.title':'Türbin yükseltmesi','upgrade.engine.description':'Hareket hızı %12 artar. Kaçış daha çabuk dolar.','upgrade.engine.detail':'+%12 HIZ',
-    'upgrade.rockets.title':'Füze sistemi','upgrade.rockets.description':'Bir ek roket. Roketler %20 daha çabuk dolar.','upgrade.rockets.detail':'+1 ROKET KAPASİTESİ',
-    'upgrade.repair.title':'Saha bakımı','upgrade.repair.description':'Gövdeyi tamamen onarır.','upgrade.repair.detail':'TAM ONARIM',
-    'map.desert':'ÇÖL HATTI','map.valley':'YEŞİL VADİ','map.canyon':'KIZIL BÖLGE'
-  },
-  de:{
-    'nav.online':'SYSTEM ONLINE','nav.language':'Sprache','nav.soundOn':'Ton einschalten','nav.soundOff':'Ton ausschalten',
-    'mission.tag':'OPERATION 001','mission.sector':'SEKTOR 07','mission.heading':'DIE LUFTHOHEIT GEHÖRT DIR.','mission.note':'Rückzug ist keine Option.',
-    'frame.label':'Blackout-Schlachtfeld','frame.live':'LIVE-ÜBERTRAGUNG','frame.exit':'VOLLbild VERLASSEN',
-    'hud.hull':'RUMPFSTATUS','hud.healthy':'UNVERSEHRT','hud.damaged':'BESCHÄDIGT','hud.critical':'KRITISCH','hud.threat':'BEDROHUNGSSTUFE',
-    'hud.wave':'WELLE','hud.scanning':'GEBIET WIRD GESCANNT','hud.hostiles':'FEINDE VERBLEIBEN','hud.score':'EINSATZPUNKTE','hud.best':'REKORD','hud.combo':'ABSCHUSSERIE',
-    'hud.boss':'GOLIATH / ARMIERTES KOMMANDOFAHRZEUG','hud.base':'VORGESCHOBENER STÜTZPUNKT','hud.cannonHeat':'KANONENHITZE','hud.dash':'AUSWEICHEN','hud.rocket':'RAKETE',
-    'intro.connected':'PILOTENVERBINDUNG HERGESTELLT','intro.title':'DIE NACHT GEHÖRT DIR.<br><em>DER HIMMEL GEHÖRT DIR.</em>',
-    'intro.text':'Du bist hinter den feindlichen Linien. Fliege deinen Hubschrauber und halte die Wellen auf. Werde mit jedem Einsatz stärker.',
-    'difficulty.label':'Schwierigkeit','difficulty.easy':'NEULING','difficulty.normal':'PILOT','difficulty.hard':'ASS',
-    'intro.start':'OPERATION STARTEN <span>↗</span>','intro.objective':'ZIEL: ÜBERLEBEN / KOMMANDANT ALLE 5 WELLEN',
-    'panel.pause.kicker':'VERBINDUNG GESICHERT','panel.pause.title':'ATME <em>DURCH.</em>','panel.pause.text':'Der Einsatz wartet auf dich, Pilot.',
-    'panel.resume':'FLUG FORTSETZEN <span>→</span>','panel.restart':'NEUEN EINSATZ STARTEN',
-    'panel.over.kicker':'EINSATZBERICHT','panel.over.title':'BIS ZUM<br><em>NÄCHSTEN EINSATZ.</em>',
-    'panel.score':'PUNKTE','panel.wave':'WELLE','panel.kills':'ABSCHÜSSE','panel.flightTime':'FLUGZEIT','panel.retry':'WIEDER ABHEBEN <span>↗</span>',
-    'panel.upgrade.kicker':'GEBIET GESICHERT','panel.upgrade.title':'KOMM <em>STÄRKER ZURÜCK.</em>',
-    'touch.move':'BEWEGEN','touch.dash':'Ausweichmanöver','touch.rocket':'Rakete abfeuern','touch.flare':'Täuschkörper ausstoßen','touch.fire':'Feuern',
-    'manual.title':'FLUGHANDBUCH','manual.heading':'Verlass dich auf deinen Instinkt.','manual.move':'BEWEGEN','manual.arrows':'oder Pfeiltasten',
-    'manual.aim':'ZIELEN & FEUERN','manual.mouse':'Maus · Linksklick / Leertaste','manual.dash':'AUSWEICHEN','manual.invulnerable':'Kurzzeitig unverwundbar',
-    'manual.guidedRocket':'LENKRAKETE','manual.areaDamage':'Flächenschaden · lädt automatisch nach','manual.pause':'PAUSE','manual.breathe':'Atme kurz durch',
-    'footer.tip':'Bewegen. Feuern. Überleben.','footer.signoff':'GUTEN JAGDERFOLG, PILOT.',
-    'settings.kicker':'FLUGCOMPUTER','settings.title':'FLUG-<em>EINSTELLUNGEN</em>','settings.volume':'Gesamtlautstärke',
-    'settings.music':'Taktische Musik','settings.shake':'Bildschirmwackeln','settings.effects':'Visuelle Effekte',
-    'settings.note':'Einstellungen und Bestwert werden in diesem Browser gespeichert.<br>Audio startet nach der ersten Interaktion.',
-    'settings.done':'FERTIG <span>✓</span>','settings.close':'Einstellungen schließen','settings.label':'Einstellungen','settings.fullscreen':'Vollbild',
-    'status.ready':'BEREIT','status.playing':'AKTIV','status.paused':'PAUSIERT','status.upgrade':'NACHSCHUB','status.over':'SIGNAL VERLOREN',
-    'mission.ready':'FLUGFREIGABE AUSSTEHEND','mission.playing':'EINSATZ FREIGEGEBEN · LINIE HALTEN',
-    'mission.paused':'AUTOPILOT AKTIV','mission.upgrade':'NACHSCHUB · VERBESSERUNG WÄHLEN','mission.over':'OPERATION BEENDET',
-    'flight.label':'FLUG','dash.ready':'BEREIT','heat.cooling':'KÜHLT AB','hull.repairing':'KRITISCHER RUMPF-SCHADEN',
-    'supply.collect':'NACHSCHUB SAMMELN','supply.note':'Grüne Versorgungskisten reparieren den Rumpf.',
-    'wave.bossTag':'KOMMANDOFAHRZEUG ENTDECKT','wave.enemyTag':'FEINDKRÄFTE IN BEWEGUNG','wave.bossTitle':'GOLIATH IM ANFLUG',
-    'wave.title':'WELLE {wave}','wave.bossNote':'Bereite deine Raketen vor.','wave.firstNote':'Bleib in Bewegung und auf Abstand.','wave.note':'Neue Ziele. Derselbe Auftrag.',
-    'wave.cleared':'WELLE GESCHAFFT +{score}','upgrade.note':'Welle {wave} geschafft. Wähle eine Verbesserung.',
-    'record.new':'NEUER REKORD. Der Himmel wird sich an dich erinnern.','record.again':'Jeder Flug macht dich stärker. Heb wieder ab.',
-    'fullscreen.errorTitle':'VOLLBILD NICHT VERFÜGBAR','fullscreen.errorNote':'Nutze stattdessen den Vollbildbefehl deines Browsers.',
-    'upgrade.damage.title':'Panzerbrechende Munition','upgrade.damage.description':'Kanonen-Schaden +25%.','upgrade.damage.detail':'+25% SCHADEN',
-    'upgrade.fireRate.title':'Schnellzufuhr','upgrade.fireRate.description':'Die Kanone feuert 18% schneller.','upgrade.fireRate.detail':'+18% FEUERRATE',
-    'upgrade.armor.title':'Verbundpanzerung','upgrade.armor.description':'Maximale Hülle +25. Repariert sofort 35.','upgrade.armor.detail':'+25 HÜLLE',
-    'upgrade.engine.title':'Turbinen-Upgrade','upgrade.engine.description':'Bewegungstempo +12%. Ausweichen lädt schneller.','upgrade.engine.detail':'+12% TEMPO',
-    'upgrade.rockets.title':'Raketensystem','upgrade.rockets.description':'Eine zusätzliche Rakete. 20% schnelleres Nachladen.','upgrade.rockets.detail':'+1 RAKETENKAPAZITÄT',
-    'upgrade.repair.title':'Feldreparatur','upgrade.repair.description':'Repariert die Hülle vollständig.','upgrade.repair.detail':'VOLLREPARATUR',
-    'map.desert':'WÜSTENFRONT','map.valley':'GRÜNES TAL','map.canyon':'ROTE ZONE'
-  },
-  es:{
-    'nav.online':'SISTEMA EN LÍNEA','nav.language':'Idioma','nav.soundOn':'Activar sonido','nav.soundOff':'Desactivar sonido',
-    'mission.tag':'OPERACIÓN 001','mission.sector':'SECTOR 07','mission.heading':'LA SUPERIORIDAD AÉREA ES TUYA.','mission.note':'Retirarse no es una opción.',
-    'frame.label':'Campo de batalla Blackout','frame.live':'SEÑAL EN DIRECTO','frame.exit':'SALIR DE PANTALLA COMPLETA',
-    'hud.hull':'ESTADO DEL CASCO','hud.healthy':'EN BUEN ESTADO','hud.damaged':'DAÑADO','hud.critical':'CRÍTICO','hud.threat':'NIVEL DE AMENAZA',
-    'hud.wave':'OLEADA','hud.scanning':'ESCANEANDO ZONA','hud.hostiles':'HOSTILES RESTANTES','hud.score':'PUNTUACIÓN','hud.best':'RÉCORD','hud.combo':'RACHA DE BAJAS',
-    'hud.boss':'GOLIATH / VEHÍCULO DE MANDO BLINDADO','hud.base':'BASE DE OPERACIONES AVANZADA','hud.cannonHeat':'TEMPERATURA DEL CAÑÓN','hud.dash':'EVADE','hud.rocket':'COHETE',
-    'intro.connected':'ENLACE DE PILOTO ESTABLECIDO','intro.title':'LA NOCHE ES TUYA.<br><em>EL CIELO ES TUYO.</em>',
-    'intro.text':'Estás tras las líneas enemigas. Pilota tu helicóptero y detén las oleadas. Hazte más fuerte en cada salida.',
-    'difficulty.label':'Dificultad','difficulty.easy':'NOVATO','difficulty.normal':'PILOTO','difficulty.hard':'AS',
-    'intro.start':'INICIAR OPERACIÓN <span>↗</span>','intro.objective':'OBJETIVO: SOBREVIVE / COMANDANTE CADA 5 OLEADAS',
-    'panel.pause.kicker':'ENLACE SEGURO','panel.pause.title':'TOMA UN <em>RESPIRO.</em>','panel.pause.text':'La operación te espera, piloto.',
-    'panel.resume':'REANUDAR VUELO <span>→</span>','panel.restart':'INICIAR NUEVA SALIDA',
-    'panel.over.kicker':'INFORME DE OPERACIÓN','panel.over.title':'NOS VEMOS EN LA<br><em>PRÓXIMA SALIDA.</em>',
-    'panel.score':'PUNTOS','panel.wave':'OLEADA','panel.kills':'BAJAS','panel.flightTime':'TIEMPO DE VUELO','panel.retry':'DESPEGAR DE NUEVO <span>↗</span>',
-    'panel.upgrade.kicker':'ZONA ASEGURADA','panel.upgrade.title':'VUELVE <em>MÁS FUERTE.</em>',
-    'touch.move':'MOVER','touch.dash':'Maniobra evasiva','touch.rocket':'Lanzar cohete','touch.flare':'Lanzar bengalas','touch.fire':'Disparar',
-    'manual.title':'MANUAL DE VUELO','manual.heading':'Confía en tus reflejos.','manual.move':'MOVER','manual.arrows':'o teclas de dirección',
-    'manual.aim':'APUNTAR Y DISPARAR','manual.mouse':'Ratón · clic izq. / espacio','manual.dash':'EVADE','manual.invulnerable':'Invulnerabilidad breve',
-    'manual.guidedRocket':'COHETE GUIADO','manual.areaDamage':'Daño de área · recarga automática','manual.pause':'PAUSA','manual.breathe':'Tómate un respiro',
-    'footer.tip':'Muévete. Dispara. Sobrevive.','footer.signoff':'BUENA CAZA, PILOTO.',
-    'settings.kicker':'ORDENADOR DE VUELO','settings.title':'AJUSTES DE <em>VUELO</em>','settings.volume':'Volumen general',
-    'settings.music':'Música táctica','settings.shake':'Vibración de pantalla','settings.effects':'Efectos visuales',
-    'settings.note':'Los ajustes y tu récord se guardan en este navegador.<br>El audio comienza tras la primera interacción.',
-    'settings.done':'LISTO <span>✓</span>','settings.close':'Cerrar ajustes','settings.label':'Ajustes','settings.fullscreen':'Pantalla completa',
-    'status.ready':'EN ESPERA','status.playing':'ACTIVO','status.paused':'PAUSADO','status.upgrade':'REABASTECIMIENTO','status.over':'SEÑAL PERDIDA',
-    'mission.ready':'ESPERANDO AUTORIZACIÓN DE VUELO','mission.playing':'COMBATE AUTORIZADO · MANTÉN LA LÍNEA',
-    'mission.paused':'PILOTO AUTOMÁTICO ACTIVO','mission.upgrade':'REABASTECIMIENTO · ELIGE UNA MEJORA','mission.over':'OPERACIÓN FINALIZADA',
-    'flight.label':'VUELO','dash.ready':'LISTO','heat.cooling':'ENFRIANDO','hull.repairing':'DAÑO CRÍTICO EN EL CASCO',
-    'supply.collect':'RECOGE SUMINISTROS','supply.note':'Las cajas verdes reparan el casco.',
-    'wave.bossTag':'VEHÍCULO DE MANDO DETECTADO','wave.enemyTag':'FUERZAS ENEMIGAS EN MOVIMIENTO','wave.bossTitle':'GOLIATH EN CAMINO',
-    'wave.title':'OLEADA {wave}','wave.bossNote':'Prepara tus cohetes.','wave.firstNote':'No dejes de moverte. Mantén la distancia.','wave.note':'Nuevos objetivos. La misma misión.',
-    'wave.cleared':'OLEADA COMPLETADA +{score}','upgrade.note':'Oleada {wave} completada. Elige una mejora.',
-    'record.new':'NUEVO RÉCORD. El cielo te recordará.','record.again':'Cada vuelo te hace más fuerte. Vuelve a despegar.',
-    'fullscreen.errorTitle':'PANTALLA COMPLETA NO DISPONIBLE','fullscreen.errorNote':'Usa el comando de pantalla completa de tu navegador.',
-    'upgrade.damage.title':'Munición perforante','upgrade.damage.description':'El cañón inflige un 25% más de daño.','upgrade.damage.detail':'+25% DAÑO',
-    'upgrade.fireRate.title':'Alimentación rápida','upgrade.fireRate.description':'El cañón dispara un 18% más rápido.','upgrade.fireRate.detail':'+18% CADENCIA',
-    'upgrade.armor.title':'Blindaje compuesto','upgrade.armor.description':'Casco máximo +25. Repara 35 al instante.','upgrade.armor.detail':'+25 CASCO',
-    'upgrade.engine.title':'Mejora de turbina','upgrade.engine.description':'Velocidad +12%. La evasión se recarga antes.','upgrade.engine.detail':'+12% VELOCIDAD',
-    'upgrade.rockets.title':'Sistema de misiles','upgrade.rockets.description':'Un cohete extra. Recarga un 20% más rápido.','upgrade.rockets.detail':'+1 COHETE',
-    'upgrade.repair.title':'Reparación de campo','upgrade.repair.description':'Repara el casco por completo.','upgrade.repair.detail':'REPARACIÓN TOTAL',
-    'map.desert':'FRENTE DEL DESIERTO','map.valley':'VALLE VERDE','map.canyon':'ZONA ROJA'
-  },
-  fr:{
-    'nav.online':'SYSTÈME EN LIGNE','nav.language':'Langue','nav.soundOn':'Activer le son','nav.soundOff':'Couper le son',
-    'mission.tag':'OPÉRATION 001','mission.sector':'SECTEUR 07','mission.heading':'LA SUPÉRIORITÉ AÉRIENNE EST À VOUS.','mission.note':'Se replier n’est pas une option.',
-    'frame.label':'Champ de bataille Blackout','frame.live':'LIAISON EN DIRECT','frame.exit':'QUITTER LE PLEIN ÉCRAN',
-    'hud.hull':'ÉTAT DE LA CARLINGUE','hud.healthy':'INTACTE','hud.damaged':'ENDOMMAGÉE','hud.critical':'CRITIQUE','hud.threat':'NIVEAU DE MENACE',
-    'hud.wave':'VAGUE','hud.scanning':'SCAN DE LA ZONE','hud.hostiles':'ENNEMIS RESTANTS','hud.score':'SCORE DE L’OPÉRATION','hud.best':'RECORD','hud.combo':'SÉRIE D’ÉLIMINATIONS',
-    'hud.boss':'GOLIATH / VÉHICULE DE COMMANDEMENT BLINDÉ','hud.base':'BASE AVANCÉE','hud.cannonHeat':'CHALEUR DU CANON','hud.dash':'ESQUIVE','hud.rocket':'ROQUETTE',
-    'intro.connected':'LIAISON PILOTE ÉTABLIE','intro.title':'LA NUIT EST À VOUS.<br><em>LE CIEL EST À VOUS.</em>',
-    'intro.text':'Vous êtes derrière les lignes ennemies. Pilotez votre hélicoptère et arrêtez les vagues. Renforcez-vous à chaque sortie.',
-    'difficulty.label':'Difficulté','difficulty.easy':'DÉBUTANT','difficulty.normal':'PILOTE','difficulty.hard':'AS',
-    'intro.start':'LANCER L’OPÉRATION <span>↗</span>','intro.objective':'OBJECTIF : SURVIVRE / COMMANDANT TOUS LES 5 ASSAUTS',
-    'panel.pause.kicker':'LIAISON SÉCURISÉE','panel.pause.title':'REPRENEZ <em>VOTRE SOUFFLE.</em>','panel.pause.text':'L’opération vous attend, pilote.',
-    'panel.resume':'REPRENDRE LE VOL <span>→</span>','panel.restart':'NOUVELLE SORTIE',
-    'panel.over.kicker':'RAPPORT D’OPÉRATION','panel.over.title':'À LA PROCHAINE<br><em>SORTIE.</em>',
-    'panel.score':'SCORE','panel.wave':'VAGUE','panel.kills':'ÉLIMINATIONS','panel.flightTime':'TEMPS DE VOL','panel.retry':'REDÉCOLLER <span>↗</span>',
-    'panel.upgrade.kicker':'ZONE SÉCURISÉE','panel.upgrade.title':'REVENEZ <em>PLUS FORT.</em>',
-    'touch.move':'DÉPLACER','touch.dash':'Manœuvre d’esquive','touch.rocket':'Tirer une roquette','touch.flare':'Lancer des leurres','touch.fire':'Tirer',
-    'manual.title':'MANUEL DE VOL','manual.heading':'Fiez-vous à vos réflexes.','manual.move':'DÉPLACEMENT','manual.arrows':'ou flèches directionnelles',
-    'manual.aim':'VISER ET TIRER','manual.mouse':'Souris · clic gauche / espace','manual.dash':'ESQUIVE','manual.invulnerable':'Invulnérabilité temporaire',
-    'manual.guidedRocket':'ROQUETTE GUIDÉE','manual.areaDamage':'Dégâts de zone · recharge automatique','manual.pause':'PAUSE','manual.breathe':'Reprenez votre souffle',
-    'footer.tip':'Bougez. Tirez. Survivez.','footer.signoff':'BONNE CHASSE, PILOTE.',
-    'settings.kicker':'ORDINATEUR DE VOL','settings.title':'RÉGLAGES DE <em>VOL</em>','settings.volume':'Volume principal',
-    'settings.music':'Musique tactique','settings.shake':'Secousses de l’écran','settings.effects':'Effets visuels',
-    'settings.note':'Vos réglages et votre record sont enregistrés dans ce navigateur.<br>Le son démarre après votre première interaction.',
-    'settings.done':'TERMINÉ <span>✓</span>','settings.close':'Fermer les réglages','settings.label':'Réglages','settings.fullscreen':'Plein écran',
-    'status.ready':'EN ATTENTE','status.playing':'ACTIF','status.paused':'EN PAUSE','status.upgrade':'RAVITAILLEMENT','status.over':'SIGNAL PERDU',
-    'mission.ready':'AUTORISATION DE VOL EN ATTENTE','mission.playing':'ENGAGEMENT AUTORISÉ · TENEZ LA LIGNE',
-    'mission.paused':'PILOTE AUTOMATIQUE ACTIF','mission.upgrade':'RAVITAILLEMENT · CHOISISSEZ UNE AMÉLIORATION','mission.over':'OPÉRATION TERMINÉE',
-    'flight.label':'VOL','dash.ready':'PRÊT','heat.cooling':'REFROIDISSEMENT','hull.repairing':'DÉGÂTS CRITIQUES À LA CARLINGUE',
-    'supply.collect':'RÉCUPÉREZ LE RAVITAILLEMENT','supply.note':'Les caisses vertes réparent la carlingue.',
-    'wave.bossTag':'VÉHICULE DE COMMANDEMENT REPÉRÉ','wave.enemyTag':'FORCES ENNEMIES EN MOUVEMENT','wave.bossTitle':'GOLIATH EN APPROCHE',
-    'wave.title':'VAGUE {wave}','wave.bossNote':'Préparez vos roquettes.','wave.firstNote':'Restez en mouvement et gardez vos distances.','wave.note':'De nouvelles cibles. La même mission.',
-    'wave.cleared':'VAGUE TERMINÉE +{score}','upgrade.note':'Vague {wave} terminée. Choisissez une amélioration.',
-    'record.new':'NOUVEAU RECORD. Le ciel se souviendra de vous.','record.again':'Chaque vol vous rend plus fort. Redécollez.',
-    'fullscreen.errorTitle':'PLEIN ÉCRAN INDISPONIBLE','fullscreen.errorNote':'Utilisez plutôt la commande plein écran de votre navigateur.',
-    'upgrade.damage.title':'Munitions perforantes','upgrade.damage.description':'Dégâts du canon augmentés de 25%.','upgrade.damage.detail':'+25% DÉGÂTS',
-    'upgrade.fireRate.title':'Alimentation rapide','upgrade.fireRate.description':'Le canon tire 18% plus vite.','upgrade.fireRate.detail':'+18% CADENCE',
-    'upgrade.armor.title':'Blindage composite','upgrade.armor.description':'Carlingue max. +25. Répare immédiatement 35.','upgrade.armor.detail':'+25 CARLINGUE',
-    'upgrade.engine.title':'Turbine améliorée','upgrade.engine.description':'Vitesse +12%. L’esquive se recharge plus vite.','upgrade.engine.detail':'+12% VITESSE',
-    'upgrade.rockets.title':'Système de missiles','upgrade.rockets.description':'Une roquette en plus. Recharge 20% plus rapide.','upgrade.rockets.detail':'+1 ROQUETTE',
-    'upgrade.repair.title':'Réparation de campagne','upgrade.repair.description':'Répare entièrement la carlingue.','upgrade.repair.detail':'RÉPARATION COMPLÈTE',
-    'map.desert':'FRONT DU DÉSERT','map.valley':'VALLÉE VERTE','map.canyon':'ZONE ROUGE'
-  }
+const languages = {
+    en: 'English',
+    tr: 'Türkçe',
+    de: 'Deutsch',
+    es: 'Español',
+    fr: 'Français'
 };
 
-let locale='en';
-function setLocale(next){locale=translations[next]?next:'en';}
-function t(key,values={}){
-  const text=translations[locale][key]??translations.en[key]??key;
-  return text.replace(/\{(\w+)\}/g,(_,name)=>values[name]??'');
+const translations = {
+    en: {
+        'nav.online': 'SYSTEM ONLINE',
+        'nav.language': 'Language',
+        'nav.soundOn': 'Turn sound on',
+        'nav.soundOff': 'Turn sound off',
+        'mission.tag': 'OPERATION 001',
+        'mission.sector': 'SECTOR 07',
+        'mission.heading': 'AIR SUPERIORITY IS YOURS.',
+        'mission.note': 'Retreat is not an option.',
+        'frame.label': 'Blackout battlefield',
+        'frame.live': 'LIVE FEED',
+        'frame.exit': 'EXIT FULLSCREEN',
+        'hud.hull': 'HULL STATUS',
+        'hud.healthy': 'HEALTHY',
+        'hud.damaged': 'DAMAGED',
+        'hud.critical': 'CRITICAL',
+        'hud.threat': 'THREAT LEVEL',
+        'hud.wave': 'WAVE',
+        'hud.scanning': 'SCANNING AREA',
+        'hud.hostiles': 'HOSTILES REMAIN',
+        'hud.score': 'OPERATION SCORE',
+        'hud.best': 'BEST',
+        'hud.combo': 'KILL STREAK',
+        'hud.boss': 'GOLIATH / ARMORED COMMAND VEHICLE',
+        'hud.base': 'FORWARD OPERATING BASE',
+        'hud.cannonHeat': 'CANNON HEAT',
+        'hud.dash': 'DASH',
+        'hud.rocket': 'ROCKET',
+        'intro.connected': 'PILOT LINK ESTABLISHED',
+        'intro.title': 'THE NIGHT IS YOURS.<br><em>THE SKY IS YOURS.</em>',
+        'intro.text':
+            'You are behind enemy lines. Fly your helicopter and stop the waves. Get stronger with every sortie.',
+        'difficulty.label': 'Difficulty',
+        'difficulty.easy': 'ROOKIE',
+        'difficulty.normal': 'PILOT',
+        'difficulty.hard': 'ACE',
+        'intro.start': 'START OPERATION <span>↗</span>',
+        'intro.objective': 'OBJECTIVE: SURVIVE / COMMANDER EVERY 5 WAVES',
+        'panel.pause.kicker': 'LINK SECURE',
+        'panel.pause.title': 'TAKE A <em>BREATH.</em>',
+        'panel.pause.text': 'The operation will be waiting, pilot.',
+        'panel.resume': 'RESUME FLIGHT <span>→</span>',
+        'panel.restart': 'START NEW SORTIE',
+        'panel.over.kicker': 'AFTER-ACTION REPORT',
+        'panel.over.title': 'SEE YOU ON THE<br><em>NEXT SORTIE.</em>',
+        'panel.score': 'SCORE',
+        'panel.wave': 'WAVE',
+        'panel.kills': 'KILLS',
+        'panel.flightTime': 'FLIGHT TIME',
+        'panel.retry': 'TAKE OFF AGAIN <span>↗</span>',
+        'panel.upgrade.kicker': 'AREA SECURED',
+        'panel.upgrade.title': 'COME BACK <em>STRONGER.</em>',
+        'touch.move': 'MOVE',
+        'touch.dash': 'Dash',
+        'touch.rocket': 'Fire rocket',
+        'touch.flare': 'Deploy flares',
+        'touch.fire': 'Fire',
+        'manual.title': 'FLIGHT MANUAL',
+        'manual.heading': 'Trust your instincts.',
+        'manual.move': 'MOVE',
+        'manual.arrows': 'or arrow keys',
+        'manual.aim': 'AIM & FIRE',
+        'manual.mouse': 'Mouse · left click / space',
+        'manual.dash': 'DASH',
+        'manual.invulnerable': 'Brief invulnerability',
+        'manual.guidedRocket': 'GUIDED ROCKET',
+        'manual.areaDamage': 'Area damage · auto-reload',
+        'manual.pause': 'PAUSE',
+        'manual.breathe': 'Take a breath',
+        'footer.tip': 'Move. Fire. Survive.',
+        'footer.signoff': 'GOOD HUNTING, PILOT.',
+        'settings.kicker': 'FLIGHT COMPUTER',
+        'settings.title': 'FLIGHT <em>SETTINGS</em>',
+        'settings.volume': 'Master volume',
+        'settings.music': 'Tactical music',
+        'settings.shake': 'Screen shake',
+        'settings.effects': 'Visual effects',
+        'settings.note':
+            'Settings and your high score are saved in this browser.<br>Audio starts after your first interaction.',
+        'settings.done': 'DONE <span>✓</span>',
+        'settings.close': 'Close settings',
+        'settings.label': 'Settings',
+        'settings.fullscreen': 'Fullscreen',
+        'status.ready': 'STANDBY',
+        'status.playing': 'ACTIVE',
+        'status.paused': 'PAUSED',
+        'status.upgrade': 'RESUPPLY',
+        'status.over': 'SIGNAL LOST',
+        'mission.ready': 'AWAITING FLIGHT CLEARANCE',
+        'mission.playing': 'ENGAGEMENT CLEARED · HOLD THE LINE',
+        'mission.paused': 'AUTOPILOT ENGAGED',
+        'mission.upgrade': 'FIELD RESUPPLY · SELECT AN UPGRADE',
+        'mission.over': 'OPERATION ENDED',
+        'flight.label': 'FLIGHT',
+        'dash.ready': 'READY',
+        'heat.cooling': 'COOLING',
+        'hull.repairing': 'CRITICAL HULL DAMAGE',
+        'supply.collect': 'COLLECT SUPPLIES',
+        'supply.note': 'Green supply crates repair your hull.',
+        'wave.bossTag': 'COMMAND VEHICLE DETECTED',
+        'wave.enemyTag': 'ENEMY FORCE ON THE MOVE',
+        'wave.bossTitle': 'GOLIATH INBOUND',
+        'wave.title': 'WAVE {wave}',
+        'wave.bossNote': 'Prepare your rockets.',
+        'wave.firstNote': 'Keep moving. Maintain your distance.',
+        'wave.note': 'New targets. Same mission.',
+        'wave.cleared': 'WAVE CLEARED +{score}',
+        'upgrade.note': 'Wave {wave} cleared. Choose an upgrade to continue.',
+        'record.new': 'NEW RECORD. The skies will remember you.',
+        'record.again': 'Every flight makes you stronger. Take off again.',
+        'fullscreen.errorTitle': 'FULLSCREEN UNAVAILABLE',
+        'fullscreen.errorNote': 'Use your browser’s fullscreen command instead.',
+        'upgrade.damage.title': 'Armor-Piercing Rounds',
+        'upgrade.damage.description': 'Cannon damage increased by 25%.',
+        'upgrade.damage.detail': '+25% DAMAGE',
+        'upgrade.fireRate.title': 'Rapid Feed',
+        'upgrade.fireRate.description': 'Cannon fires 18% faster.',
+        'upgrade.fireRate.detail': '+18% FIRE RATE',
+        'upgrade.armor.title': 'Composite Armor',
+        'upgrade.armor.description': 'Maximum hull +25. Repairs 35 immediately.',
+        'upgrade.armor.detail': '+25 HULL',
+        'upgrade.engine.title': 'Turbine Upgrade',
+        'upgrade.engine.description': 'Movement speed +12%. Dash recharges faster.',
+        'upgrade.engine.detail': '+12% SPEED',
+        'upgrade.rockets.title': 'Missile System',
+        'upgrade.rockets.description': 'One extra rocket. Rockets recharge 20% faster.',
+        'upgrade.rockets.detail': '+1 ROCKET CAPACITY',
+        'upgrade.repair.title': 'Field Repairs',
+        'upgrade.repair.description': 'Fully repairs the hull.',
+        'upgrade.repair.detail': 'FULL REPAIR',
+        'map.desert': 'DESERT FRONT',
+        'map.valley': 'GREEN VALLEY',
+        'map.canyon': 'RED ZONE'
+    },
+    tr: {
+        'nav.online': 'SİSTEM ÇEVRİMİÇİ',
+        'nav.language': 'Dil',
+        'nav.soundOn': 'Sesi aç',
+        'nav.soundOff': 'Sesi kapat',
+        'mission.tag': 'OPERASYON 001',
+        'mission.sector': 'SEKTÖR 07',
+        'mission.heading': 'HAVA ÜSTÜNLÜĞÜ SENDE.',
+        'mission.note': 'Geri çekilmek bir seçenek değil.',
+        'frame.label': 'Blackout savaş alanı',
+        'frame.live': 'CANLI BAĞLANTI',
+        'frame.exit': 'TAM EKRANDAN ÇIK',
+        'hud.hull': 'GÖVDE DURUMU',
+        'hud.healthy': 'SAĞLAM',
+        'hud.damaged': 'HASARLI',
+        'hud.critical': 'KRİTİK',
+        'hud.threat': 'TEHDİT SEVİYESİ',
+        'hud.wave': 'DALGA',
+        'hud.scanning': 'BÖLGE TARANIYOR',
+        'hud.hostiles': 'DÜŞMAN KALDI',
+        'hud.score': 'OPERASYON PUANI',
+        'hud.best': 'REKOR',
+        'hud.combo': 'İMHA SERİSİ',
+        'hud.boss': 'GOLIATH / AĞIR ZIRHLI KOMUTA ARACI',
+        'hud.base': 'İLERİ HAREKÂT ÜSSÜ',
+        'hud.cannonHeat': 'TOP ISISI',
+        'hud.dash': 'KAÇIŞ',
+        'hud.rocket': 'ROKET',
+        'intro.connected': 'PİLOT BAĞLANTISI KURULDU',
+        'intro.title': 'GECE SENİN.<br><em>GÖKYÜZÜ SENİN.</em>',
+        'intro.text':
+            'Düşman hattının gerisindesin. Helikopterini uçur ve dalgaları durdur. Her sortide daha da güçlen.',
+        'difficulty.label': 'Zorluk',
+        'difficulty.easy': 'ÇAYLAK',
+        'difficulty.normal': 'PİLOT',
+        'difficulty.hard': 'AS',
+        'intro.start': 'OPERASYONU BAŞLAT <span>↗</span>',
+        'intro.objective': 'HEDEF: HAYATTA KAL / HER 5. DALGADA KOMUTAN',
+        'panel.pause.kicker': 'BAĞLANTI KORUNUYOR',
+        'panel.pause.title': 'BİR NEFES <em>AL.</em>',
+        'panel.pause.text': 'Operasyon seni bekliyor, pilot.',
+        'panel.resume': 'UÇUŞA DEVAM ET <span>→</span>',
+        'panel.restart': 'YENİ SORTİ BAŞLAT',
+        'panel.over.kicker': 'OPERASYON RAPORU',
+        'panel.over.title': 'SONRAKİ SORTİDE<br><em>GÖRÜŞÜRÜZ.</em>',
+        'panel.score': 'PUAN',
+        'panel.wave': 'DALGA',
+        'panel.kills': 'İMHA',
+        'panel.flightTime': 'UÇUŞ SÜRESİ',
+        'panel.retry': 'TEKRAR HAVALAN <span>↗</span>',
+        'panel.upgrade.kicker': 'BÖLGE TEMİZLENDİ',
+        'panel.upgrade.title': 'DAHA <em>GÜÇLÜ DÖN.</em>',
+        'touch.move': 'HAREKET',
+        'touch.dash': 'Kaçış manevrası',
+        'touch.rocket': 'Roket ateşle',
+        'touch.flare': 'Fişek bırak',
+        'touch.fire': 'Ateş et',
+        'manual.title': 'UÇUŞ KILAVUZU',
+        'manual.heading': 'Reflekslerine güven.',
+        'manual.move': 'MANEVRA',
+        'manual.arrows': 'veya yön tuşları',
+        'manual.aim': 'NİŞAN & ATEŞ',
+        'manual.mouse': 'Fare · sol tık / boşluk',
+        'manual.dash': 'KAÇIŞ',
+        'manual.invulnerable': 'Kısa süreli dokunulmazlık',
+        'manual.guidedRocket': 'GÜDÜMLÜ ROKET',
+        'manual.areaDamage': 'Alan hasarı · otomatik dolum',
+        'manual.pause': 'DURAKLAT',
+        'manual.breathe': 'Bir nefes al',
+        'footer.tip': 'Hareket et. Ateş et. Hayatta kal.',
+        'footer.signoff': 'İYİ UÇUŞLAR, PİLOT.',
+        'settings.kicker': 'UÇUŞ BİLGİSAYARI',
+        'settings.title': 'UÇUŞ <em>AYARLARI</em>',
+        'settings.volume': 'Ana ses',
+        'settings.music': 'Taktik müzik',
+        'settings.shake': 'Ekran sarsıntısı',
+        'settings.effects': 'Yoğun efektler',
+        'settings.note':
+            'Ayarların ve rekorun bu tarayıcıda saklanır.<br>Ses, ilk etkileşimden sonra başlar.',
+        'settings.done': 'TAMAM <span>✓</span>',
+        'settings.close': 'Ayarları kapat',
+        'settings.label': 'Ayarlar',
+        'settings.fullscreen': 'Tam ekran',
+        'status.ready': 'BEKLEMEDE',
+        'status.playing': 'AKTİF',
+        'status.paused': 'DURAKLATILDI',
+        'status.upgrade': 'İKMAL',
+        'status.over': 'SİNYAL KAYIP',
+        'mission.ready': 'UÇUŞ İZNİ BEKLENİYOR',
+        'mission.playing': 'ANGAJMAN SERBEST · HATTI KORU',
+        'mission.paused': 'OTOPİLOT DEVREDE',
+        'mission.upgrade': 'SAHA İKMALİ · GELİŞTİRME SEÇ',
+        'mission.over': 'OPERASYON SONLANDI',
+        'flight.label': 'UÇUŞ',
+        'dash.ready': 'HAZIR',
+        'heat.cooling': 'SOĞUYOR',
+        'hull.repairing': 'KRİTİK GÖVDE HASARI',
+        'supply.collect': 'İKMAL TOPLA',
+        'supply.note': 'Yeşil ikmal paketleri gövdeyi onarır.',
+        'wave.bossTag': 'KOMUTA ARACI TESPİT EDİLDİ',
+        'wave.enemyTag': 'DÜŞMAN HATTI HAREKETLENDİ',
+        'wave.bossTitle': 'GOLIATH YAKLAŞIYOR',
+        'wave.title': 'DALGA {wave}',
+        'wave.bossNote': 'Roketlerini hazırla.',
+        'wave.firstNote': 'Hareket et. Mesafeni koru.',
+        'wave.note': 'Yeni hedefler. Aynı görev.',
+        'wave.cleared': 'DALGA TAMAMLANDI +{score}',
+        'upgrade.note': 'Dalga {wave} tamamlandı. Bir geliştirme seç, uçuşa devam et.',
+        'record.new': 'YENİ REKOR. Bu gökyüzü seni hatırlayacak.',
+        'record.again': 'Her uçuş bir tecrübe. Tekrar havalan.',
+        'fullscreen.errorTitle': 'TAM EKRAN KULLANILAMIYOR',
+        'fullscreen.errorNote': 'Tarayıcının tam ekran komutunu kullanabilirsin.',
+        'upgrade.damage.title': 'Delici mühimmat',
+        'upgrade.damage.description': 'Top hasarı %25 artar.',
+        'upgrade.damage.detail': '+%25 HASAR',
+        'upgrade.fireRate.title': 'Hızlı besleme',
+        'upgrade.fireRate.description': 'Top %18 daha hızlı ateş eder.',
+        'upgrade.fireRate.detail': '+%18 ATIŞ HIZI',
+        'upgrade.armor.title': 'Kompozit zırh',
+        'upgrade.armor.description': 'Azami gövde +25. Anında 35 onarım.',
+        'upgrade.armor.detail': '+25 GÖVDE',
+        'upgrade.engine.title': 'Türbin yükseltmesi',
+        'upgrade.engine.description': 'Hareket hızı %12 artar. Kaçış daha çabuk dolar.',
+        'upgrade.engine.detail': '+%12 HIZ',
+        'upgrade.rockets.title': 'Füze sistemi',
+        'upgrade.rockets.description': 'Bir ek roket. Roketler %20 daha çabuk dolar.',
+        'upgrade.rockets.detail': '+1 ROKET KAPASİTESİ',
+        'upgrade.repair.title': 'Saha bakımı',
+        'upgrade.repair.description': 'Gövdeyi tamamen onarır.',
+        'upgrade.repair.detail': 'TAM ONARIM',
+        'map.desert': 'ÇÖL HATTI',
+        'map.valley': 'YEŞİL VADİ',
+        'map.canyon': 'KIZIL BÖLGE'
+    },
+    de: {
+        'nav.online': 'SYSTEM ONLINE',
+        'nav.language': 'Sprache',
+        'nav.soundOn': 'Ton einschalten',
+        'nav.soundOff': 'Ton ausschalten',
+        'mission.tag': 'OPERATION 001',
+        'mission.sector': 'SEKTOR 07',
+        'mission.heading': 'DIE LUFTHOHEIT GEHÖRT DIR.',
+        'mission.note': 'Rückzug ist keine Option.',
+        'frame.label': 'Blackout-Schlachtfeld',
+        'frame.live': 'LIVE-ÜBERTRAGUNG',
+        'frame.exit': 'VOLLbild VERLASSEN',
+        'hud.hull': 'RUMPFSTATUS',
+        'hud.healthy': 'UNVERSEHRT',
+        'hud.damaged': 'BESCHÄDIGT',
+        'hud.critical': 'KRITISCH',
+        'hud.threat': 'BEDROHUNGSSTUFE',
+        'hud.wave': 'WELLE',
+        'hud.scanning': 'GEBIET WIRD GESCANNT',
+        'hud.hostiles': 'FEINDE VERBLEIBEN',
+        'hud.score': 'EINSATZPUNKTE',
+        'hud.best': 'REKORD',
+        'hud.combo': 'ABSCHUSSERIE',
+        'hud.boss': 'GOLIATH / ARMIERTES KOMMANDOFAHRZEUG',
+        'hud.base': 'VORGESCHOBENER STÜTZPUNKT',
+        'hud.cannonHeat': 'KANONENHITZE',
+        'hud.dash': 'AUSWEICHEN',
+        'hud.rocket': 'RAKETE',
+        'intro.connected': 'PILOTENVERBINDUNG HERGESTELLT',
+        'intro.title': 'DIE NACHT GEHÖRT DIR.<br><em>DER HIMMEL GEHÖRT DIR.</em>',
+        'intro.text':
+            'Du bist hinter den feindlichen Linien. Fliege deinen Hubschrauber und halte die Wellen auf. Werde mit jedem Einsatz stärker.',
+        'difficulty.label': 'Schwierigkeit',
+        'difficulty.easy': 'NEULING',
+        'difficulty.normal': 'PILOT',
+        'difficulty.hard': 'ASS',
+        'intro.start': 'OPERATION STARTEN <span>↗</span>',
+        'intro.objective': 'ZIEL: ÜBERLEBEN / KOMMANDANT ALLE 5 WELLEN',
+        'panel.pause.kicker': 'VERBINDUNG GESICHERT',
+        'panel.pause.title': 'ATME <em>DURCH.</em>',
+        'panel.pause.text': 'Der Einsatz wartet auf dich, Pilot.',
+        'panel.resume': 'FLUG FORTSETZEN <span>→</span>',
+        'panel.restart': 'NEUEN EINSATZ STARTEN',
+        'panel.over.kicker': 'EINSATZBERICHT',
+        'panel.over.title': 'BIS ZUM<br><em>NÄCHSTEN EINSATZ.</em>',
+        'panel.score': 'PUNKTE',
+        'panel.wave': 'WELLE',
+        'panel.kills': 'ABSCHÜSSE',
+        'panel.flightTime': 'FLUGZEIT',
+        'panel.retry': 'WIEDER ABHEBEN <span>↗</span>',
+        'panel.upgrade.kicker': 'GEBIET GESICHERT',
+        'panel.upgrade.title': 'KOMM <em>STÄRKER ZURÜCK.</em>',
+        'touch.move': 'BEWEGEN',
+        'touch.dash': 'Ausweichmanöver',
+        'touch.rocket': 'Rakete abfeuern',
+        'touch.flare': 'Täuschkörper ausstoßen',
+        'touch.fire': 'Feuern',
+        'manual.title': 'FLUGHANDBUCH',
+        'manual.heading': 'Verlass dich auf deinen Instinkt.',
+        'manual.move': 'BEWEGEN',
+        'manual.arrows': 'oder Pfeiltasten',
+        'manual.aim': 'ZIELEN & FEUERN',
+        'manual.mouse': 'Maus · Linksklick / Leertaste',
+        'manual.dash': 'AUSWEICHEN',
+        'manual.invulnerable': 'Kurzzeitig unverwundbar',
+        'manual.guidedRocket': 'LENKRAKETE',
+        'manual.areaDamage': 'Flächenschaden · lädt automatisch nach',
+        'manual.pause': 'PAUSE',
+        'manual.breathe': 'Atme kurz durch',
+        'footer.tip': 'Bewegen. Feuern. Überleben.',
+        'footer.signoff': 'GUTEN JAGDERFOLG, PILOT.',
+        'settings.kicker': 'FLUGCOMPUTER',
+        'settings.title': 'FLUG-<em>EINSTELLUNGEN</em>',
+        'settings.volume': 'Gesamtlautstärke',
+        'settings.music': 'Taktische Musik',
+        'settings.shake': 'Bildschirmwackeln',
+        'settings.effects': 'Visuelle Effekte',
+        'settings.note':
+            'Einstellungen und Bestwert werden in diesem Browser gespeichert.<br>Audio startet nach der ersten Interaktion.',
+        'settings.done': 'FERTIG <span>✓</span>',
+        'settings.close': 'Einstellungen schließen',
+        'settings.label': 'Einstellungen',
+        'settings.fullscreen': 'Vollbild',
+        'status.ready': 'BEREIT',
+        'status.playing': 'AKTIV',
+        'status.paused': 'PAUSIERT',
+        'status.upgrade': 'NACHSCHUB',
+        'status.over': 'SIGNAL VERLOREN',
+        'mission.ready': 'FLUGFREIGABE AUSSTEHEND',
+        'mission.playing': 'EINSATZ FREIGEGEBEN · LINIE HALTEN',
+        'mission.paused': 'AUTOPILOT AKTIV',
+        'mission.upgrade': 'NACHSCHUB · VERBESSERUNG WÄHLEN',
+        'mission.over': 'OPERATION BEENDET',
+        'flight.label': 'FLUG',
+        'dash.ready': 'BEREIT',
+        'heat.cooling': 'KÜHLT AB',
+        'hull.repairing': 'KRITISCHER RUMPF-SCHADEN',
+        'supply.collect': 'NACHSCHUB SAMMELN',
+        'supply.note': 'Grüne Versorgungskisten reparieren den Rumpf.',
+        'wave.bossTag': 'KOMMANDOFAHRZEUG ENTDECKT',
+        'wave.enemyTag': 'FEINDKRÄFTE IN BEWEGUNG',
+        'wave.bossTitle': 'GOLIATH IM ANFLUG',
+        'wave.title': 'WELLE {wave}',
+        'wave.bossNote': 'Bereite deine Raketen vor.',
+        'wave.firstNote': 'Bleib in Bewegung und auf Abstand.',
+        'wave.note': 'Neue Ziele. Derselbe Auftrag.',
+        'wave.cleared': 'WELLE GESCHAFFT +{score}',
+        'upgrade.note': 'Welle {wave} geschafft. Wähle eine Verbesserung.',
+        'record.new': 'NEUER REKORD. Der Himmel wird sich an dich erinnern.',
+        'record.again': 'Jeder Flug macht dich stärker. Heb wieder ab.',
+        'fullscreen.errorTitle': 'VOLLBILD NICHT VERFÜGBAR',
+        'fullscreen.errorNote': 'Nutze stattdessen den Vollbildbefehl deines Browsers.',
+        'upgrade.damage.title': 'Panzerbrechende Munition',
+        'upgrade.damage.description': 'Kanonen-Schaden +25%.',
+        'upgrade.damage.detail': '+25% SCHADEN',
+        'upgrade.fireRate.title': 'Schnellzufuhr',
+        'upgrade.fireRate.description': 'Die Kanone feuert 18% schneller.',
+        'upgrade.fireRate.detail': '+18% FEUERRATE',
+        'upgrade.armor.title': 'Verbundpanzerung',
+        'upgrade.armor.description': 'Maximale Hülle +25. Repariert sofort 35.',
+        'upgrade.armor.detail': '+25 HÜLLE',
+        'upgrade.engine.title': 'Turbinen-Upgrade',
+        'upgrade.engine.description': 'Bewegungstempo +12%. Ausweichen lädt schneller.',
+        'upgrade.engine.detail': '+12% TEMPO',
+        'upgrade.rockets.title': 'Raketensystem',
+        'upgrade.rockets.description': 'Eine zusätzliche Rakete. 20% schnelleres Nachladen.',
+        'upgrade.rockets.detail': '+1 RAKETENKAPAZITÄT',
+        'upgrade.repair.title': 'Feldreparatur',
+        'upgrade.repair.description': 'Repariert die Hülle vollständig.',
+        'upgrade.repair.detail': 'VOLLREPARATUR',
+        'map.desert': 'WÜSTENFRONT',
+        'map.valley': 'GRÜNES TAL',
+        'map.canyon': 'ROTE ZONE'
+    },
+    es: {
+        'nav.online': 'SISTEMA EN LÍNEA',
+        'nav.language': 'Idioma',
+        'nav.soundOn': 'Activar sonido',
+        'nav.soundOff': 'Desactivar sonido',
+        'mission.tag': 'OPERACIÓN 001',
+        'mission.sector': 'SECTOR 07',
+        'mission.heading': 'LA SUPERIORIDAD AÉREA ES TUYA.',
+        'mission.note': 'Retirarse no es una opción.',
+        'frame.label': 'Campo de batalla Blackout',
+        'frame.live': 'SEÑAL EN DIRECTO',
+        'frame.exit': 'SALIR DE PANTALLA COMPLETA',
+        'hud.hull': 'ESTADO DEL CASCO',
+        'hud.healthy': 'EN BUEN ESTADO',
+        'hud.damaged': 'DAÑADO',
+        'hud.critical': 'CRÍTICO',
+        'hud.threat': 'NIVEL DE AMENAZA',
+        'hud.wave': 'OLEADA',
+        'hud.scanning': 'ESCANEANDO ZONA',
+        'hud.hostiles': 'HOSTILES RESTANTES',
+        'hud.score': 'PUNTUACIÓN',
+        'hud.best': 'RÉCORD',
+        'hud.combo': 'RACHA DE BAJAS',
+        'hud.boss': 'GOLIATH / VEHÍCULO DE MANDO BLINDADO',
+        'hud.base': 'BASE DE OPERACIONES AVANZADA',
+        'hud.cannonHeat': 'TEMPERATURA DEL CAÑÓN',
+        'hud.dash': 'EVADE',
+        'hud.rocket': 'COHETE',
+        'intro.connected': 'ENLACE DE PILOTO ESTABLECIDO',
+        'intro.title': 'LA NOCHE ES TUYA.<br><em>EL CIELO ES TUYO.</em>',
+        'intro.text':
+            'Estás tras las líneas enemigas. Pilota tu helicóptero y detén las oleadas. Hazte más fuerte en cada salida.',
+        'difficulty.label': 'Dificultad',
+        'difficulty.easy': 'NOVATO',
+        'difficulty.normal': 'PILOTO',
+        'difficulty.hard': 'AS',
+        'intro.start': 'INICIAR OPERACIÓN <span>↗</span>',
+        'intro.objective': 'OBJETIVO: SOBREVIVE / COMANDANTE CADA 5 OLEADAS',
+        'panel.pause.kicker': 'ENLACE SEGURO',
+        'panel.pause.title': 'TOMA UN <em>RESPIRO.</em>',
+        'panel.pause.text': 'La operación te espera, piloto.',
+        'panel.resume': 'REANUDAR VUELO <span>→</span>',
+        'panel.restart': 'INICIAR NUEVA SALIDA',
+        'panel.over.kicker': 'INFORME DE OPERACIÓN',
+        'panel.over.title': 'NOS VEMOS EN LA<br><em>PRÓXIMA SALIDA.</em>',
+        'panel.score': 'PUNTOS',
+        'panel.wave': 'OLEADA',
+        'panel.kills': 'BAJAS',
+        'panel.flightTime': 'TIEMPO DE VUELO',
+        'panel.retry': 'DESPEGAR DE NUEVO <span>↗</span>',
+        'panel.upgrade.kicker': 'ZONA ASEGURADA',
+        'panel.upgrade.title': 'VUELVE <em>MÁS FUERTE.</em>',
+        'touch.move': 'MOVER',
+        'touch.dash': 'Maniobra evasiva',
+        'touch.rocket': 'Lanzar cohete',
+        'touch.flare': 'Lanzar bengalas',
+        'touch.fire': 'Disparar',
+        'manual.title': 'MANUAL DE VUELO',
+        'manual.heading': 'Confía en tus reflejos.',
+        'manual.move': 'MOVER',
+        'manual.arrows': 'o teclas de dirección',
+        'manual.aim': 'APUNTAR Y DISPARAR',
+        'manual.mouse': 'Ratón · clic izq. / espacio',
+        'manual.dash': 'EVADE',
+        'manual.invulnerable': 'Invulnerabilidad breve',
+        'manual.guidedRocket': 'COHETE GUIADO',
+        'manual.areaDamage': 'Daño de área · recarga automática',
+        'manual.pause': 'PAUSA',
+        'manual.breathe': 'Tómate un respiro',
+        'footer.tip': 'Muévete. Dispara. Sobrevive.',
+        'footer.signoff': 'BUENA CAZA, PILOTO.',
+        'settings.kicker': 'ORDENADOR DE VUELO',
+        'settings.title': 'AJUSTES DE <em>VUELO</em>',
+        'settings.volume': 'Volumen general',
+        'settings.music': 'Música táctica',
+        'settings.shake': 'Vibración de pantalla',
+        'settings.effects': 'Efectos visuales',
+        'settings.note':
+            'Los ajustes y tu récord se guardan en este navegador.<br>El audio comienza tras la primera interacción.',
+        'settings.done': 'LISTO <span>✓</span>',
+        'settings.close': 'Cerrar ajustes',
+        'settings.label': 'Ajustes',
+        'settings.fullscreen': 'Pantalla completa',
+        'status.ready': 'EN ESPERA',
+        'status.playing': 'ACTIVO',
+        'status.paused': 'PAUSADO',
+        'status.upgrade': 'REABASTECIMIENTO',
+        'status.over': 'SEÑAL PERDIDA',
+        'mission.ready': 'ESPERANDO AUTORIZACIÓN DE VUELO',
+        'mission.playing': 'COMBATE AUTORIZADO · MANTÉN LA LÍNEA',
+        'mission.paused': 'PILOTO AUTOMÁTICO ACTIVO',
+        'mission.upgrade': 'REABASTECIMIENTO · ELIGE UNA MEJORA',
+        'mission.over': 'OPERACIÓN FINALIZADA',
+        'flight.label': 'VUELO',
+        'dash.ready': 'LISTO',
+        'heat.cooling': 'ENFRIANDO',
+        'hull.repairing': 'DAÑO CRÍTICO EN EL CASCO',
+        'supply.collect': 'RECOGE SUMINISTROS',
+        'supply.note': 'Las cajas verdes reparan el casco.',
+        'wave.bossTag': 'VEHÍCULO DE MANDO DETECTADO',
+        'wave.enemyTag': 'FUERZAS ENEMIGAS EN MOVIMIENTO',
+        'wave.bossTitle': 'GOLIATH EN CAMINO',
+        'wave.title': 'OLEADA {wave}',
+        'wave.bossNote': 'Prepara tus cohetes.',
+        'wave.firstNote': 'No dejes de moverte. Mantén la distancia.',
+        'wave.note': 'Nuevos objetivos. La misma misión.',
+        'wave.cleared': 'OLEADA COMPLETADA +{score}',
+        'upgrade.note': 'Oleada {wave} completada. Elige una mejora.',
+        'record.new': 'NUEVO RÉCORD. El cielo te recordará.',
+        'record.again': 'Cada vuelo te hace más fuerte. Vuelve a despegar.',
+        'fullscreen.errorTitle': 'PANTALLA COMPLETA NO DISPONIBLE',
+        'fullscreen.errorNote': 'Usa el comando de pantalla completa de tu navegador.',
+        'upgrade.damage.title': 'Munición perforante',
+        'upgrade.damage.description': 'El cañón inflige un 25% más de daño.',
+        'upgrade.damage.detail': '+25% DAÑO',
+        'upgrade.fireRate.title': 'Alimentación rápida',
+        'upgrade.fireRate.description': 'El cañón dispara un 18% más rápido.',
+        'upgrade.fireRate.detail': '+18% CADENCIA',
+        'upgrade.armor.title': 'Blindaje compuesto',
+        'upgrade.armor.description': 'Casco máximo +25. Repara 35 al instante.',
+        'upgrade.armor.detail': '+25 CASCO',
+        'upgrade.engine.title': 'Mejora de turbina',
+        'upgrade.engine.description': 'Velocidad +12%. La evasión se recarga antes.',
+        'upgrade.engine.detail': '+12% VELOCIDAD',
+        'upgrade.rockets.title': 'Sistema de misiles',
+        'upgrade.rockets.description': 'Un cohete extra. Recarga un 20% más rápido.',
+        'upgrade.rockets.detail': '+1 COHETE',
+        'upgrade.repair.title': 'Reparación de campo',
+        'upgrade.repair.description': 'Repara el casco por completo.',
+        'upgrade.repair.detail': 'REPARACIÓN TOTAL',
+        'map.desert': 'FRENTE DEL DESIERTO',
+        'map.valley': 'VALLE VERDE',
+        'map.canyon': 'ZONA ROJA'
+    },
+    fr: {
+        'nav.online': 'SYSTÈME EN LIGNE',
+        'nav.language': 'Langue',
+        'nav.soundOn': 'Activer le son',
+        'nav.soundOff': 'Couper le son',
+        'mission.tag': 'OPÉRATION 001',
+        'mission.sector': 'SECTEUR 07',
+        'mission.heading': 'LA SUPÉRIORITÉ AÉRIENNE EST À VOUS.',
+        'mission.note': 'Se replier n’est pas une option.',
+        'frame.label': 'Champ de bataille Blackout',
+        'frame.live': 'LIAISON EN DIRECT',
+        'frame.exit': 'QUITTER LE PLEIN ÉCRAN',
+        'hud.hull': 'ÉTAT DE LA CARLINGUE',
+        'hud.healthy': 'INTACTE',
+        'hud.damaged': 'ENDOMMAGÉE',
+        'hud.critical': 'CRITIQUE',
+        'hud.threat': 'NIVEAU DE MENACE',
+        'hud.wave': 'VAGUE',
+        'hud.scanning': 'SCAN DE LA ZONE',
+        'hud.hostiles': 'ENNEMIS RESTANTS',
+        'hud.score': 'SCORE DE L’OPÉRATION',
+        'hud.best': 'RECORD',
+        'hud.combo': 'SÉRIE D’ÉLIMINATIONS',
+        'hud.boss': 'GOLIATH / VÉHICULE DE COMMANDEMENT BLINDÉ',
+        'hud.base': 'BASE AVANCÉE',
+        'hud.cannonHeat': 'CHALEUR DU CANON',
+        'hud.dash': 'ESQUIVE',
+        'hud.rocket': 'ROQUETTE',
+        'intro.connected': 'LIAISON PILOTE ÉTABLIE',
+        'intro.title': 'LA NUIT EST À VOUS.<br><em>LE CIEL EST À VOUS.</em>',
+        'intro.text':
+            'Vous êtes derrière les lignes ennemies. Pilotez votre hélicoptère et arrêtez les vagues. Renforcez-vous à chaque sortie.',
+        'difficulty.label': 'Difficulté',
+        'difficulty.easy': 'DÉBUTANT',
+        'difficulty.normal': 'PILOTE',
+        'difficulty.hard': 'AS',
+        'intro.start': 'LANCER L’OPÉRATION <span>↗</span>',
+        'intro.objective': 'OBJECTIF : SURVIVRE / COMMANDANT TOUS LES 5 ASSAUTS',
+        'panel.pause.kicker': 'LIAISON SÉCURISÉE',
+        'panel.pause.title': 'REPRENEZ <em>VOTRE SOUFFLE.</em>',
+        'panel.pause.text': 'L’opération vous attend, pilote.',
+        'panel.resume': 'REPRENDRE LE VOL <span>→</span>',
+        'panel.restart': 'NOUVELLE SORTIE',
+        'panel.over.kicker': 'RAPPORT D’OPÉRATION',
+        'panel.over.title': 'À LA PROCHAINE<br><em>SORTIE.</em>',
+        'panel.score': 'SCORE',
+        'panel.wave': 'VAGUE',
+        'panel.kills': 'ÉLIMINATIONS',
+        'panel.flightTime': 'TEMPS DE VOL',
+        'panel.retry': 'REDÉCOLLER <span>↗</span>',
+        'panel.upgrade.kicker': 'ZONE SÉCURISÉE',
+        'panel.upgrade.title': 'REVENEZ <em>PLUS FORT.</em>',
+        'touch.move': 'DÉPLACER',
+        'touch.dash': 'Manœuvre d’esquive',
+        'touch.rocket': 'Tirer une roquette',
+        'touch.flare': 'Lancer des leurres',
+        'touch.fire': 'Tirer',
+        'manual.title': 'MANUEL DE VOL',
+        'manual.heading': 'Fiez-vous à vos réflexes.',
+        'manual.move': 'DÉPLACEMENT',
+        'manual.arrows': 'ou flèches directionnelles',
+        'manual.aim': 'VISER ET TIRER',
+        'manual.mouse': 'Souris · clic gauche / espace',
+        'manual.dash': 'ESQUIVE',
+        'manual.invulnerable': 'Invulnérabilité temporaire',
+        'manual.guidedRocket': 'ROQUETTE GUIDÉE',
+        'manual.areaDamage': 'Dégâts de zone · recharge automatique',
+        'manual.pause': 'PAUSE',
+        'manual.breathe': 'Reprenez votre souffle',
+        'footer.tip': 'Bougez. Tirez. Survivez.',
+        'footer.signoff': 'BONNE CHASSE, PILOTE.',
+        'settings.kicker': 'ORDINATEUR DE VOL',
+        'settings.title': 'RÉGLAGES DE <em>VOL</em>',
+        'settings.volume': 'Volume principal',
+        'settings.music': 'Musique tactique',
+        'settings.shake': 'Secousses de l’écran',
+        'settings.effects': 'Effets visuels',
+        'settings.note':
+            'Vos réglages et votre record sont enregistrés dans ce navigateur.<br>Le son démarre après votre première interaction.',
+        'settings.done': 'TERMINÉ <span>✓</span>',
+        'settings.close': 'Fermer les réglages',
+        'settings.label': 'Réglages',
+        'settings.fullscreen': 'Plein écran',
+        'status.ready': 'EN ATTENTE',
+        'status.playing': 'ACTIF',
+        'status.paused': 'EN PAUSE',
+        'status.upgrade': 'RAVITAILLEMENT',
+        'status.over': 'SIGNAL PERDU',
+        'mission.ready': 'AUTORISATION DE VOL EN ATTENTE',
+        'mission.playing': 'ENGAGEMENT AUTORISÉ · TENEZ LA LIGNE',
+        'mission.paused': 'PILOTE AUTOMATIQUE ACTIF',
+        'mission.upgrade': 'RAVITAILLEMENT · CHOISISSEZ UNE AMÉLIORATION',
+        'mission.over': 'OPÉRATION TERMINÉE',
+        'flight.label': 'VOL',
+        'dash.ready': 'PRÊT',
+        'heat.cooling': 'REFROIDISSEMENT',
+        'hull.repairing': 'DÉGÂTS CRITIQUES À LA CARLINGUE',
+        'supply.collect': 'RÉCUPÉREZ LE RAVITAILLEMENT',
+        'supply.note': 'Les caisses vertes réparent la carlingue.',
+        'wave.bossTag': 'VÉHICULE DE COMMANDEMENT REPÉRÉ',
+        'wave.enemyTag': 'FORCES ENNEMIES EN MOUVEMENT',
+        'wave.bossTitle': 'GOLIATH EN APPROCHE',
+        'wave.title': 'VAGUE {wave}',
+        'wave.bossNote': 'Préparez vos roquettes.',
+        'wave.firstNote': 'Restez en mouvement et gardez vos distances.',
+        'wave.note': 'De nouvelles cibles. La même mission.',
+        'wave.cleared': 'VAGUE TERMINÉE +{score}',
+        'upgrade.note': 'Vague {wave} terminée. Choisissez une amélioration.',
+        'record.new': 'NOUVEAU RECORD. Le ciel se souviendra de vous.',
+        'record.again': 'Chaque vol vous rend plus fort. Redécollez.',
+        'fullscreen.errorTitle': 'PLEIN ÉCRAN INDISPONIBLE',
+        'fullscreen.errorNote': 'Utilisez plutôt la commande plein écran de votre navigateur.',
+        'upgrade.damage.title': 'Munitions perforantes',
+        'upgrade.damage.description': 'Dégâts du canon augmentés de 25%.',
+        'upgrade.damage.detail': '+25% DÉGÂTS',
+        'upgrade.fireRate.title': 'Alimentation rapide',
+        'upgrade.fireRate.description': 'Le canon tire 18% plus vite.',
+        'upgrade.fireRate.detail': '+18% CADENCE',
+        'upgrade.armor.title': 'Blindage composite',
+        'upgrade.armor.description': 'Carlingue max. +25. Répare immédiatement 35.',
+        'upgrade.armor.detail': '+25 CARLINGUE',
+        'upgrade.engine.title': 'Turbine améliorée',
+        'upgrade.engine.description': 'Vitesse +12%. L’esquive se recharge plus vite.',
+        'upgrade.engine.detail': '+12% VITESSE',
+        'upgrade.rockets.title': 'Système de missiles',
+        'upgrade.rockets.description': 'Une roquette en plus. Recharge 20% plus rapide.',
+        'upgrade.rockets.detail': '+1 ROQUETTE',
+        'upgrade.repair.title': 'Réparation de campagne',
+        'upgrade.repair.description': 'Répare entièrement la carlingue.',
+        'upgrade.repair.detail': 'RÉPARATION COMPLÈTE',
+        'map.desert': 'FRONT DU DÉSERT',
+        'map.valley': 'VALLÉE VERTE',
+        'map.canyon': 'ZONE ROUGE'
+    }
+};
+
+let locale = 'en';
+function setLocale(next) {
+    locale = translations[next] ? next : 'en';
+}
+function t(key, values = {}) {
+    const text = translations[locale][key] ?? translations.en[key] ?? key;
+    return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? '');
 }
 
 // core.js
 const ENEMIES = ENEMY_DATA;
 const MAPS = LEVEL_DATA;
 const WEAPONS = WEAPON_DATA;
-const ROCKET_IGNITION_DELAY = .3;
+const ROCKET_IGNITION_DELAY = 0.3;
 const TAU = Math.PI * 2;
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const lerp = (a, b, t) => a + (b - a) * t;
 function turn(current, target, rate) {
-  const delta = Math.atan2(Math.sin(target - current), Math.cos(target - current));
-  return current + delta * clamp(rate, 0, 1);
+    const delta = Math.atan2(Math.sin(target - current), Math.cos(target - current));
+    return current + delta * clamp(rate, 0, 1);
 }
 function segmentHitsCircle(ax, ay, bx, by, cx, cy, radius) {
-  const dx = bx - ax, dy = by - ay;
-  const t = clamp(((cx - ax) * dx + (cy - ay) * dy) / (dx * dx + dy * dy || 1), 0, 1);
-  return Math.hypot(ax + dx * t - cx, ay + dy * t - cy) <= radius;
+    const dx = bx - ax,
+        dy = by - ay;
+    const t = clamp(((cx - ax) * dx + (cy - ay) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+    return Math.hypot(ax + dx * t - cx, ay + dy * t - cy) <= radius;
 }
 function wavePlan(wave, difficulty = 'normal') {
-  const factor = { easy: 0.8, normal: 1, hard: 1.2 }[difficulty] || 1;
-  const boss = wave % 5 === 0;
-  return { count: boss ? 5 + Math.floor(wave / 2) : Math.round((4 + wave * 2) * factor),
-    interval: Math.max(0.4, 1.6 - wave * 0.065), boss,
-    health: 1 + Math.floor((wave - 1) / 5) * 0.18,
-    damage: { easy: 0.7, normal: 1, hard: 1.3 }[difficulty] || 1 };
+    const factor = { easy: 0.8, normal: 1, hard: 1.2 }[difficulty] || 1;
+    const boss = wave % 5 === 0;
+    return {
+        count: boss ? 5 + Math.floor(wave / 2) : Math.round((4 + wave * 2) * factor),
+        interval: Math.max(0.4, 1.6 - wave * 0.065),
+        boss,
+        health: 1 + Math.floor((wave - 1) / 5) * 0.18,
+        damage: { easy: 0.7, normal: 1, hard: 1.3 }[difficulty] || 1
+    };
 }
 function enemyType(wave, index) {
-  for (const type of ['rocketSemi','aa','kamikaze','artillery','drone']) {
-    const stats=ENEMIES[type];
-    if (stats.spawnModulo && wave >= stats.spawnWave && index % stats.spawnModulo === stats.spawnRemainder) return type;
-  }
-  return 'tank';
+    for (const type of ['rocketSemi', 'aa', 'kamikaze', 'artillery', 'drone']) {
+        const stats = ENEMIES[type];
+        if (
+            stats.spawnModulo &&
+            wave >= stats.spawnWave &&
+            index % stats.spawnModulo === stats.spawnRemainder
+        )
+            return type;
+    }
+    return 'tank';
 }
 function seededRandom(seed = 73) {
-  return () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
+    return () => {
+        seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+        return seed / 4294967296;
+    };
 }
 function mapForWave(wave) {
-  return MAPS[(Math.max(1, wave)-1)%MAPS.length];
+    return MAPS[(Math.max(1, wave) - 1) % MAPS.length];
 }
 const UPGRADES = [
-  { id: 'damage', icon: '✳', title: 'Armor-Piercing Rounds', description: 'Cannon damage increased by 25%.', detail: '+25% DAMAGE', max: 4 },
-  { id: 'fireRate', icon: '≋', title: 'Rapid Feed', description: 'Cannon fires 18% faster.', detail: '+18% FIRE RATE', max: 4 },
-  { id: 'armor', icon: '⬡', title: 'Composite Armor', description: 'Maximum hull +25. Repairs 35 immediately.', detail: '+25 HULL', max: 4 },
-  { id: 'engine', icon: '↗', title: 'Turbine Upgrade', description: 'Movement speed +12%. Dash recharges faster.', detail: '+12% SPEED', max: 3 },
-  { id: 'rockets', icon: '⌁', title: 'Missile System', description: 'One extra rocket. Rockets recharge 20% faster.', detail: '+1 ROCKET CAPACITY', max: 3 },
-  { id: 'repair', icon: '+', title: 'Field Repairs', description: 'Fully repairs the hull.', detail: 'FULL REPAIR', max: Infinity },
+    {
+        id: 'damage',
+        icon: '✳',
+        title: 'Armor-Piercing Rounds',
+        description: 'Cannon damage increased by 25%.',
+        detail: '+25% DAMAGE',
+        max: 4
+    },
+    {
+        id: 'fireRate',
+        icon: '≋',
+        title: 'Rapid Feed',
+        description: 'Cannon fires 18% faster.',
+        detail: '+18% FIRE RATE',
+        max: 4
+    },
+    {
+        id: 'armor',
+        icon: '⬡',
+        title: 'Composite Armor',
+        description: 'Maximum hull +25. Repairs 35 immediately.',
+        detail: '+25 HULL',
+        max: 4
+    },
+    {
+        id: 'engine',
+        icon: '↗',
+        title: 'Turbine Upgrade',
+        description: 'Movement speed +12%. Dash recharges faster.',
+        detail: '+12% SPEED',
+        max: 3
+    },
+    {
+        id: 'rockets',
+        icon: '⌁',
+        title: 'Missile System',
+        description: 'One extra rocket. Rockets recharge 20% faster.',
+        detail: '+1 ROCKET CAPACITY',
+        max: 3
+    },
+    {
+        id: 'repair',
+        icon: '+',
+        title: 'Field Repairs',
+        description: 'Fully repairs the hull.',
+        detail: 'FULL REPAIR',
+        max: Infinity
+    }
 ];
 
 // audio.js
@@ -669,8 +1186,13 @@ const UPGRADES = [
 // Music uses local soundtrack files, with synthesized scores as an offline fallback.
 class SoundEngine {
     constructor(settings) {
-        this.settings = settings; this.active = false; this.step = 0; this.nextBeat = 0;
-        this.musicScene = 'menu'; this.musicTrack = null; this.trackStates = new Map();
+        this.settings = settings;
+        this.active = false;
+        this.step = 0;
+        this.nextBeat = 0;
+        this.musicScene = 'menu';
+        this.musicTrack = null;
+        this.trackStates = new Map();
     }
 
     async init() {
@@ -681,37 +1203,79 @@ class SoundEngine {
                 this.ctx = new AudioContext();
                 this.master = this.ctx.createGain();
                 const limiter = this.ctx.createDynamicsCompressor();
-                limiter.threshold.value = -16; limiter.ratio.value = 8;
-                this.master.connect(limiter); limiter.connect(this.ctx.destination);
-                this.fx = this.ctx.createGain(); this.music = this.ctx.createGain(); this.rotor = this.ctx.createGain();
-                this.fx.connect(this.master); this.music.connect(this.master); this.rotor.connect(this.fx);
+                limiter.threshold.value = -16;
+                limiter.ratio.value = 8;
+                this.master.connect(limiter);
+                limiter.connect(this.ctx.destination);
+                this.fx = this.ctx.createGain();
+                this.music = this.ctx.createGain();
+                this.rotor = this.ctx.createGain();
+                this.fx.connect(this.master);
+                this.music.connect(this.master);
+                this.rotor.connect(this.fx);
                 this.noise = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate);
                 const data = this.noise.getChannelData(0);
                 for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-                const noise = this.ctx.createBufferSource(); noise.buffer = this.noise; noise.loop = true;
-                const filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 240;
-                const rotorNoise = this.ctx.createGain(); rotorNoise.gain.value = 0.62;
-                const bladePulse = this.ctx.createOscillator(), bladePulseGain = this.ctx.createGain();
-                const bladeAir = this.ctx.createBiquadFilter(), bladeAirGain = this.ctx.createGain(), bladeAirPulseGain = this.ctx.createGain();
-                bladePulse.type = 'square'; bladePulse.frequency.value = 18; bladePulseGain.gain.value = 0.2;
-                bladeAir.type = 'bandpass'; bladeAir.frequency.value = 1550; bladeAir.Q.value = 1.2; bladeAirGain.gain.value = 0.09; bladeAirPulseGain.gain.value = 0.075;
-                noise.connect(filter); filter.connect(rotorNoise); rotorNoise.connect(this.rotor);
-                noise.connect(bladeAir); bladeAir.connect(bladeAirGain); bladeAirGain.connect(this.rotor);
-                bladePulse.connect(bladePulseGain); bladePulseGain.connect(rotorNoise.gain); noise.start(); bladePulse.start();
-                bladePulse.connect(bladeAirPulseGain); bladeAirPulseGain.connect(bladeAirGain.gain);
-                this.bladePulse = bladePulse; this.bladeAir = bladeAir;
-                const engine = this.ctx.createOscillator(); engine.type = 'triangle'; engine.frequency.value = 43;
-                const engineGain = this.ctx.createGain(); engineGain.gain.value = 0.12;
-                engine.connect(engineGain); engineGain.connect(this.rotor); engine.start();
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = this.noise;
+                noise.loop = true;
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 240;
+                const rotorNoise = this.ctx.createGain();
+                rotorNoise.gain.value = 0.62;
+                const bladePulse = this.ctx.createOscillator(),
+                    bladePulseGain = this.ctx.createGain();
+                const bladeAir = this.ctx.createBiquadFilter(),
+                    bladeAirGain = this.ctx.createGain(),
+                    bladeAirPulseGain = this.ctx.createGain();
+                bladePulse.type = 'square';
+                bladePulse.frequency.value = 18;
+                bladePulseGain.gain.value = 0.2;
+                bladeAir.type = 'bandpass';
+                bladeAir.frequency.value = 1550;
+                bladeAir.Q.value = 1.2;
+                bladeAirGain.gain.value = 0.09;
+                bladeAirPulseGain.gain.value = 0.075;
+                noise.connect(filter);
+                filter.connect(rotorNoise);
+                rotorNoise.connect(this.rotor);
+                noise.connect(bladeAir);
+                bladeAir.connect(bladeAirGain);
+                bladeAirGain.connect(this.rotor);
+                bladePulse.connect(bladePulseGain);
+                bladePulseGain.connect(rotorNoise.gain);
+                noise.start();
+                bladePulse.start();
+                bladePulse.connect(bladeAirPulseGain);
+                bladeAirPulseGain.connect(bladeAirGain.gain);
+                this.bladePulse = bladePulse;
+                this.bladeAir = bladeAir;
+                const engine = this.ctx.createOscillator();
+                engine.type = 'triangle';
+                engine.frequency.value = 43;
+                const engineGain = this.ctx.createGain();
+                engineGain.gain.value = 0.12;
+                engine.connect(engineGain);
+                engineGain.connect(this.rotor);
+                engine.start();
                 this.rotor.gain.value = 0;
             }
-            await this.ctx.resume(); this.configure(); this.playMusicTrack(this.musicScene);
-        } catch { /* The game remains playable when audio is unavailable. */ }
+            await this.ctx.resume();
+            this.configure();
+            this.playMusicTrack(this.musicScene);
+        } catch {
+            /* The game remains playable when audio is unavailable. */
+        }
     }
 
     configure() {
         if (!this.ctx) return;
-        this.master.gain.setTargetAtTime(this.settings.muted ? 0 : this.settings.volume, this.ctx.currentTime, 0.03);
+        this.master.gain.setTargetAtTime(
+            this.settings.muted ? 0 : this.settings.volume,
+            this.ctx.currentTime,
+            0.03
+        );
         this.music.gain.setTargetAtTime(this.settings.music ? 0.25 : 0, this.ctx.currentTime, 0.1);
     }
 
@@ -729,7 +1293,9 @@ class SoundEngine {
             this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
             const previous = this.musicTrack;
             this.musicTrack = null;
-            setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
+            setTimeout(() => {
+                if (this.musicTrack !== previous) previous.audio.pause();
+            }, 350);
         }
         this.playMusicTrack(scene);
     }
@@ -751,9 +1317,13 @@ class SoundEngine {
         if (!path || typeof Audio === 'undefined') return;
         try {
             const audio = new Audio(path);
-            audio.loop = true; audio.preload = 'auto';
-            const source = this.ctx.createMediaElementSource(audio), gain = this.ctx.createGain();
-            gain.gain.value = 0; source.connect(gain); gain.connect(this.music);
+            audio.loop = true;
+            audio.preload = 'auto';
+            const source = this.ctx.createMediaElementSource(audio),
+                gain = this.ctx.createGain();
+            gain.gain.value = 0;
+            source.connect(gain);
+            gain.connect(this.music);
             const track = { audio, gain, scene };
             this.trackStates.set(scene, { status: 'loading', track });
             this.startMusicTrack(track);
@@ -764,71 +1334,210 @@ class SoundEngine {
     }
 
     startMusicTrack(track) {
-        if (this.musicScene !== track.scene) { track.audio.pause(); return; }
+        if (this.musicScene !== track.scene) {
+            track.audio.pause();
+            return;
+        }
         if (this.musicTrack && this.musicTrack !== track) {
             this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
             const previous = this.musicTrack;
-            setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
+            setTimeout(() => {
+                if (this.musicTrack !== previous) previous.audio.pause();
+            }, 350);
         }
         this.musicTrack = track;
-        try { track.audio.currentTime = 0; } catch { /* Metadata may not be ready yet. */ }
-        track.audio.play().then(() => {
-            this.trackStates.set(track.scene, { status: 'ready', track });
-            if (this.musicTrack !== track) { track.audio.pause(); return; }
-            track.gain.gain.setTargetAtTime(1, this.ctx.currentTime, 0.35);
-        }).catch(error => {
-            // Switching scenes pauses a pending play(); that is not a load failure.
-            if (error?.name === 'AbortError') { this.trackStates.set(track.scene, { status: 'ready', track }); return; }
-            this.trackStates.set(track.scene, { status: 'failed' });
-            if (this.musicTrack === track) this.musicTrack = null;
-            track.audio.pause();
-            const path = {
-                menu: 'sound/Blackout Protocol - Main Menu.mp3',
-                waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
-                boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
-            }[track.scene];
-            console.warn(`Could not play music track: ${path}; using synthesized music.`);
-        });
+        try {
+            track.audio.currentTime = 0;
+        } catch {
+            /* Metadata may not be ready yet. */
+        }
+        track.audio
+            .play()
+            .then(() => {
+                this.trackStates.set(track.scene, { status: 'ready', track });
+                if (this.musicTrack !== track) {
+                    track.audio.pause();
+                    return;
+                }
+                track.gain.gain.setTargetAtTime(1, this.ctx.currentTime, 0.35);
+            })
+            .catch((error) => {
+                // Switching scenes pauses a pending play(); that is not a load failure.
+                if (error?.name === 'AbortError') {
+                    this.trackStates.set(track.scene, { status: 'ready', track });
+                    return;
+                }
+                this.trackStates.set(track.scene, { status: 'failed' });
+                if (this.musicTrack === track) this.musicTrack = null;
+                track.audio.pause();
+                const path = {
+                    menu: 'sound/Blackout Protocol - Main Menu.mp3',
+                    waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
+                    boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
+                }[track.scene];
+                console.warn(`Could not play music track: ${path}; using synthesized music.`);
+            });
     }
 
-    tone(freq, end, duration, volume = 0.1, type = 'sine', bus = this.fx, time = this.ctx?.currentTime) {
+    tone(
+        freq,
+        end,
+        duration,
+        volume = 0.1,
+        type = 'sine',
+        bus = this.fx,
+        time = this.ctx?.currentTime
+    ) {
         if (!this.ctx || this.ctx.state !== 'running') return;
-        const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-        osc.type = type; osc.frequency.setValueAtTime(freq, time); osc.frequency.exponentialRampToValueAtTime(Math.max(10, end), time + duration);
-        gain.gain.setValueAtTime(0, time); gain.gain.linearRampToValueAtTime(volume, time + 0.006); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc.connect(gain); gain.connect(bus); osc.start(time); osc.stop(time + duration + 0.03);
+        const osc = this.ctx.createOscillator(),
+            gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, time);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(10, end), time + duration);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(volume, time + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        osc.connect(gain);
+        gain.connect(bus);
+        osc.start(time);
+        osc.stop(time + duration + 0.03);
     }
 
     hiss(duration, volume, frequency, pan = 0, time = this.ctx?.currentTime) {
         if (!this.ctx || this.ctx.state !== 'running') return;
-        const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
-        source.buffer = this.noise; filter.type = 'lowpass'; filter.frequency.value = frequency;
-        gain.gain.setValueAtTime(volume, time); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        source.connect(filter); filter.connect(gain);
-        if (this.ctx.createStereoPanner) { const panner = this.ctx.createStereoPanner(); panner.pan.value = Math.max(-1, Math.min(1, pan)); gain.connect(panner); panner.connect(this.fx); }
-        else gain.connect(this.fx);
-        source.start(time, Math.random()); source.stop(time + duration);
+        const source = this.ctx.createBufferSource(),
+            filter = this.ctx.createBiquadFilter(),
+            gain = this.ctx.createGain();
+        source.buffer = this.noise;
+        filter.type = 'lowpass';
+        filter.frequency.value = frequency;
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        if (this.ctx.createStereoPanner) {
+            const panner = this.ctx.createStereoPanner();
+            panner.pan.value = Math.max(-1, Math.min(1, pan));
+            gain.connect(panner);
+            panner.connect(this.fx);
+        } else gain.connect(this.fx);
+        source.start(time, Math.random());
+        source.stop(time + duration);
     }
 
     play(name, pan = 0, gain = 1) {
         if (!this.ctx || this.settings.muted) return;
-        const level = volume => volume * gain;
+        const level = (volume) => volume * gain;
         const random = (value, spread = 0.1) => value * (1 + (Math.random() * 2 - 1) * spread);
-        if (name === 'shot') { this.hiss(0.09, level(0.24), 4200, pan); this.hiss(0.04, level(0.12), 7200, pan); this.tone(180, 65, 0.06, level(0.07), 'sine'); }
-        if (name === 'enemy') { this.hiss(0.05, level(0.07), 1900, pan); this.tone(120, 45, 0.12, level(0.045), 'sawtooth'); }
-        if (name === 'aa') { this.hiss(0.035, level(0.018), 850, pan); this.tone(78, 48, 0.04, level(0.035), 'sine'); }
-        if (name === 'hit') { const pitch = random(1, 0.08), decay = random(1, 0.12), heavy = Math.random() < 1 / 20; this.hiss(0.01 * decay, level(0.07), 7200 * pitch, pan); this.hiss(0.028 * decay, level(0.17), 2800 * pitch, pan); this.hiss(0.045 * decay, level(0.1), 800 * pitch, pan); this.tone(85 * pitch, 28 * pitch, 0.055 * decay, level(0.14), 'sine'); this.tone(1050 * pitch, 680 * pitch, 0.025 * decay, level(0.016), 'sine'); if (heavy) { this.hiss(0.05 * decay, level(0.12), 1200 * pitch, pan); this.tone(58 * pitch, 22 * pitch, 0.07 * decay, level(0.13), 'sine'); this.tone(700 * pitch, 420 * pitch, 0.04 * decay, level(0.024), 'sine'); } }
-        if (name === 'explode') { const pitch = random(1, 0.16), decay = random(1, 0.14), crack = random(1, 0.2), debris = Math.random() < 0.45; this.hiss(0.055 * decay, level(0.24), 2400 * pitch * crack, pan); this.tone(82 * pitch, 26 * pitch, 0.16 * decay, level(0.28), 'sine'); this.tone(165 * pitch, 72 * pitch, 0.095 * decay, level(0.23), 'sine'); this.tone(310 * pitch, 130 * pitch, 0.04 * decay, level(0.1), 'sine'); this.hiss(0.82 * decay, level(0.48), 1000 * pitch, pan); this.tone(100 * pitch, 22 * pitch, 0.78 * decay, level(0.32)); this.hiss(0.22 * decay, level(0.2), 4200 * pitch * crack, pan); this.hiss(0.09 * decay, level(0.11), 6200 * pitch * crack, pan); if (debris) this.hiss(0.055 * decay, level(0.06), 7600 * pitch * crack, pan); }
-        if (name === 'rocket') { const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY, pitch = random(1, 0.08), duration = random(1, 0.1); this.hiss(0.06, level(0.24), 4200 * pitch, pan); this.tone(125 * pitch, 45 * pitch, 0.08, level(0.1), 'sine'); this.hiss(1.05 * duration, level(0.72), 1700 * pitch, pan, whooshAt); this.hiss(0.9 * duration, level(0.24), 650 * pitch, pan, whooshAt); }
-        if (name === 'missile') { const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY, pitch = random(1, 0.08), duration = random(1, 0.1); this.hiss(0.05, level(0.18), 4000 * pitch, pan); this.tone(115 * pitch, 40 * pitch, 0.07, level(0.08), 'sine'); this.hiss(1.15 * duration, level(0.68), 1500 * pitch, pan, whooshAt); this.hiss(0.95 * duration, level(0.28), 650 * pitch, pan, whooshAt); }
-        if (name === 'flare') { const pitch = random(1, 0.1); this.hiss(0.025, level(0.13), 4000 * pitch, pan); this.tone(110 * pitch, 42 * pitch, 0.045, level(0.06), 'sine'); this.hiss(0.24, level(0.25), 1600 * pitch, pan); this.hiss(0.18, level(0.1), 650 * pitch, pan); }
-        if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
-        if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
-        if (name === 'lowHealth') { const at = this.ctx.currentTime;[0, 0.62].forEach(offset => { this.hiss(0.42, level(0.12), 2400, 0, at + offset); this.tone(240, 110, 0.42, level(0.2), 'sawtooth', this.fx, at + offset); this.tone(420, 190, 0.35, level(0.08), 'square', this.fx, at + offset); }); }
-        if (name === 'missileAlert') { const at = this.ctx.currentTime;[0, 0.1, 0.2].forEach(offset => this.tone(980, 820, 0.05, level(0.16), 'sine', this.fx, at + offset)); }
-        if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
-        if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, level(0.1), 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
-        if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
+        if (name === 'shot') {
+            this.hiss(0.09, level(0.24), 4200, pan);
+            this.hiss(0.04, level(0.12), 7200, pan);
+            this.tone(180, 65, 0.06, level(0.07), 'sine');
+        }
+        if (name === 'enemy') {
+            this.hiss(0.05, level(0.07), 1900, pan);
+            this.tone(120, 45, 0.12, level(0.045), 'sawtooth');
+        }
+        if (name === 'aa') {
+            this.hiss(0.035, level(0.018), 850, pan);
+            this.tone(78, 48, 0.04, level(0.035), 'sine');
+        }
+        if (name === 'hit') {
+            const pitch = random(1, 0.08),
+                decay = random(1, 0.12),
+                heavy = Math.random() < 1 / 20;
+            this.hiss(0.01 * decay, level(0.07), 7200 * pitch, pan);
+            this.hiss(0.028 * decay, level(0.17), 2800 * pitch, pan);
+            this.hiss(0.045 * decay, level(0.1), 800 * pitch, pan);
+            this.tone(85 * pitch, 28 * pitch, 0.055 * decay, level(0.14), 'sine');
+            this.tone(1050 * pitch, 680 * pitch, 0.025 * decay, level(0.016), 'sine');
+            if (heavy) {
+                this.hiss(0.05 * decay, level(0.12), 1200 * pitch, pan);
+                this.tone(58 * pitch, 22 * pitch, 0.07 * decay, level(0.13), 'sine');
+                this.tone(700 * pitch, 420 * pitch, 0.04 * decay, level(0.024), 'sine');
+            }
+        }
+        if (name === 'explode') {
+            const pitch = random(1, 0.16),
+                decay = random(1, 0.14),
+                crack = random(1, 0.2),
+                debris = Math.random() < 0.45;
+            this.hiss(0.055 * decay, level(0.24), 2400 * pitch * crack, pan);
+            this.tone(82 * pitch, 26 * pitch, 0.16 * decay, level(0.28), 'sine');
+            this.tone(165 * pitch, 72 * pitch, 0.095 * decay, level(0.23), 'sine');
+            this.tone(310 * pitch, 130 * pitch, 0.04 * decay, level(0.1), 'sine');
+            this.hiss(0.82 * decay, level(0.48), 1000 * pitch, pan);
+            this.tone(100 * pitch, 22 * pitch, 0.78 * decay, level(0.32));
+            this.hiss(0.22 * decay, level(0.2), 4200 * pitch * crack, pan);
+            this.hiss(0.09 * decay, level(0.11), 6200 * pitch * crack, pan);
+            if (debris) this.hiss(0.055 * decay, level(0.06), 7600 * pitch * crack, pan);
+        }
+        if (name === 'rocket') {
+            const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY,
+                pitch = random(1, 0.08),
+                duration = random(1, 0.1);
+            this.hiss(0.06, level(0.24), 4200 * pitch, pan);
+            this.tone(125 * pitch, 45 * pitch, 0.08, level(0.1), 'sine');
+            this.hiss(1.05 * duration, level(0.72), 1700 * pitch, pan, whooshAt);
+            this.hiss(0.9 * duration, level(0.24), 650 * pitch, pan, whooshAt);
+        }
+        if (name === 'missile') {
+            const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY,
+                pitch = random(1, 0.08),
+                duration = random(1, 0.1);
+            this.hiss(0.05, level(0.18), 4000 * pitch, pan);
+            this.tone(115 * pitch, 40 * pitch, 0.07, level(0.08), 'sine');
+            this.hiss(1.15 * duration, level(0.68), 1500 * pitch, pan, whooshAt);
+            this.hiss(0.95 * duration, level(0.28), 650 * pitch, pan, whooshAt);
+        }
+        if (name === 'flare') {
+            const pitch = random(1, 0.1);
+            this.hiss(0.025, level(0.13), 4000 * pitch, pan);
+            this.tone(110 * pitch, 42 * pitch, 0.045, level(0.06), 'sine');
+            this.hiss(0.24, level(0.25), 1600 * pitch, pan);
+            this.hiss(0.18, level(0.1), 650 * pitch, pan);
+        }
+        if (name === 'dash') {
+            this.hiss(0.28, level(0.2), 1400);
+            this.tone(150, 60, 0.3, level(0.1));
+        }
+        if (name === 'damage') {
+            this.hiss(0.22, level(0.3), 700);
+            this.tone(160, 50, 0.25, level(0.16), 'sawtooth');
+        }
+        if (name === 'lowHealth') {
+            const at = this.ctx.currentTime;
+            [0, 0.62].forEach((offset) => {
+                this.hiss(0.42, level(0.12), 2400, 0, at + offset);
+                this.tone(240, 110, 0.42, level(0.2), 'sawtooth', this.fx, at + offset);
+                this.tone(420, 190, 0.35, level(0.08), 'square', this.fx, at + offset);
+            });
+        }
+        if (name === 'missileAlert') {
+            const at = this.ctx.currentTime;
+            [0, 0.1, 0.2].forEach((offset) =>
+                this.tone(980, 820, 0.05, level(0.16), 'sine', this.fx, at + offset)
+            );
+        }
+        if (name === 'pickup' || name === 'upgrade')
+            [440, 554, 659].forEach((f, i) =>
+                this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08)
+            );
+        if (name === 'wave')
+            [330, 440, 660].forEach((f, i) =>
+                this.tone(
+                    f,
+                    f,
+                    0.2,
+                    level(0.1),
+                    'triangle',
+                    this.fx,
+                    this.ctx.currentTime + i * 0.13
+                )
+            );
+        if (name === 'alert') {
+            this.tone(440, 330, 0.25, level(0.1), 'square');
+        }
         if (name === 'ui') this.tone(700, 1000, 0.08, level(0.06));
     }
 
@@ -837,324 +1546,1249 @@ class SoundEngine {
         const t = this.ctx.currentTime;
         this.bladePulse?.frequency.setTargetAtTime(18 * Math.pow(1.12, rotorUpgrade), t, 0.06);
         this.bladeAir?.frequency.setTargetAtTime(1550 * Math.pow(1.13, rotorUpgrade), t, 0.08);
-        if (this.active) this.rotor.gain.setTargetAtTime((0.24 + Math.sin(t * 42) * 0.045) + speed * 0.045, t, 0.015);
+        if (this.active)
+            this.rotor.gain.setTargetAtTime(
+                0.24 + Math.sin(t * 42) * 0.045 + speed * 0.045,
+                t,
+                0.015
+            );
         if (!this.settings.music || this.musicTrack || t < this.nextBeat) return;
         const scores = {
-            menu: { tempo: 0.72, notes: [55, 65.41, 73.42, 49, 55, 82.41, 65.41, 49], type: 'sine' },
-            waves: { tempo: 0.32, notes: [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49], type: 'triangle' },
-            boss: { tempo: 0.24, notes: [49, 49, 73.42, 55, 46.25, 55, 65.41, 46.25], type: 'sawtooth' }
+            menu: {
+                tempo: 0.72,
+                notes: [55, 65.41, 73.42, 49, 55, 82.41, 65.41, 49],
+                type: 'sine'
+            },
+            waves: {
+                tempo: 0.32,
+                notes: [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49],
+                type: 'triangle'
+            },
+            boss: {
+                tempo: 0.24,
+                notes: [49, 49, 73.42, 55, 46.25, 55, 65.41, 46.25],
+                type: 'sawtooth'
+            }
         };
         const score = scores[this.musicScene] || scores.menu;
-        const beat = this.step % 16, root = score.notes[Math.floor(this.step / 4) % score.notes.length];
-        if (beat % 4 === 0) this.tone(root, root * 0.98, score.tempo * 1.8, this.musicScene === 'boss' ? 0.22 : 0.16, score.type, this.music);
+        const beat = this.step % 16,
+            root = score.notes[Math.floor(this.step / 4) % score.notes.length];
+        if (beat % 4 === 0)
+            this.tone(
+                root,
+                root * 0.98,
+                score.tempo * 1.8,
+                this.musicScene === 'boss' ? 0.22 : 0.16,
+                score.type,
+                this.music
+            );
         if (beat % 2 === 0) {
-            const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2)]);
-            this.tone(melody, melody, score.tempo * 0.8, this.musicScene === 'menu' ? 0.035 : 0.07, 'triangle', this.music);
+            const melody = root * [1, 1.5, 2, 1.5][Math.floor(beat / 2)];
+            this.tone(
+                melody,
+                melody,
+                score.tempo * 0.8,
+                this.musicScene === 'menu' ? 0.035 : 0.07,
+                'triangle',
+                this.music
+            );
         }
-        if (beat === 0 && this.musicScene !== 'menu') this.tone(this.musicScene === 'boss' ? 38 : 45, 28, 0.16, 0.22, 'sine', this.music);
-        this.step++; this.nextBeat = t + score.tempo;
+        if (beat === 0 && this.musicScene !== 'menu')
+            this.tone(this.musicScene === 'boss' ? 38 : 45, 28, 0.16, 0.22, 'sine', this.music);
+        this.step++;
+        this.nextBeat = t + score.tempo;
     }
 }
 
 // renderer.js
 
 const path = (c, points, fill, stroke) => {
-  c.beginPath(); points.forEach(([x,y], i) => i ? c.lineTo(x,y) : c.moveTo(x,y)); c.closePath();
-  if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.stroke(); }
+    c.beginPath();
+    points.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
+    c.closePath();
+    if (fill) {
+        c.fillStyle = fill;
+        c.fill();
+    }
+    if (stroke) {
+        c.strokeStyle = stroke;
+        c.stroke();
+    }
 };
-function ellipse(c,x,y,rx,ry,color) { c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);c.fill(); }
+function ellipse(c, x, y, rx, ry, color) {
+    c.fillStyle = color;
+    c.beginPath();
+    c.ellipse(x, y, rx, ry, 0, 0, TAU);
+    c.fill();
+}
 
 class Renderer {
-  constructor(canvas, settings) { this.canvas=canvas; this.ctx=canvas.getContext('2d',{alpha:false}); this.settings=settings; }
-  resize(world, rect, map) {
-    this.world=world;
-    const dpr=Math.min(window.devicePixelRatio||1,this.settings.effects?2:1.3);
-    this.canvas.width=Math.round(rect.width*dpr);this.canvas.height=Math.round(rect.height*dpr);
-    this.scale=this.canvas.width/world.width;
-    this.terrain=document.createElement('canvas');this.terrain.width=Math.ceil(world.width);this.terrain.height=Math.ceil(world.height);
-    this.setMap(map);
-  }
-  setMap(map) { this.map=map;this.makeTerrain(); }
-  makeTerrain() {
-    const c=this.terrain.getContext('2d'),W=this.world.width,H=this.world.height,r=seededRandom(this.map.seed);
-    const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,this.map.colors[0]);g.addColorStop(.5,this.map.colors[1]);g.addColorStop(1,this.map.colors[2]);c.fillStyle=g;c.fillRect(0,0,W,H);
-    // Grain is baked into the terrain once rather than regenerated each frame.
-    for(let i=0;i<W*H/80;i++){c.fillStyle=r()>.5?'#c6bd8a0b':'#17291c0b';c.fillRect(r()*W,r()*H,r()*4+1,r()*2+1);}
-    for(let i=0;i<38;i++){
-      let x=r()*W,y=r()*H;c.strokeStyle=i%2?'#a4a57b0e':'#263b2915';c.lineWidth=10+r()*45;
-      c.beginPath();c.moveTo(x-130,y+80);c.bezierCurveTo(x-90,y-40,x+50,y+80,x+190,y-70);c.stroke();
+    constructor(canvas, settings) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d', { alpha: false });
+        this.settings = settings;
     }
-    // Broad colored landforms distinguish each sector without obscuring combat.
-    for(let i=0;i<16;i++){
-      const x=r()*W,y=r()*H,rx=35+r()*140,ry=15+r()*65;
-      c.globalAlpha=.12;ellipse(c,x,y,rx,ry,this.map.accent);c.globalAlpha=1;
+    resize(world, rect, map) {
+        this.world = world;
+        const dpr = Math.min(window.devicePixelRatio || 1, this.settings.effects ? 2 : 1.3);
+        this.canvas.width = Math.round(rect.width * dpr);
+        this.canvas.height = Math.round(rect.height * dpr);
+        this.scale = this.canvas.width / world.width;
+        this.terrain = document.createElement('canvas');
+        this.terrain.width = Math.ceil(world.width);
+        this.terrain.height = Math.ceil(world.height);
+        this.setMap(map);
     }
-    // Fine, broken contour rings add a surveyed topographic-map texture.
-    for(let i=0;i<25;i++){
-      const x=r()*W,y=r()*H,rx=18+r()*55,ry=12+r()*32,rotation=r()*Math.PI;
-      c.save();c.translate(x,y);c.rotate(rotation);
-      for(let ring=0;ring<4;ring++){
-        c.beginPath();c.ellipse(0,0,rx+ring*12,ry+ring*8,0,0,TAU);
-        c.strokeStyle=ring===0?'#d9d4ad20':'#d9d4ad12';c.lineWidth=ring===0?1.4:1;c.stroke();
-      }
-      c.restore();
+    setMap(map) {
+        this.map = map;
+        this.makeTerrain();
     }
-    if(this.map.layout==='valley'){
-      c.beginPath();c.moveTo(W*.1,-60);c.bezierCurveTo(W*.3,H*.2,W*.06,H*.54,W*.32,H+60);
-      c.strokeStyle='#356b7b';c.lineWidth=105;c.stroke();c.strokeStyle='#75b5b566';c.lineWidth=70;c.stroke();
-      c.strokeStyle='#c2dfc655';c.lineWidth=2;c.setLineDash([25,35]);c.stroke();c.setLineDash([]);
-    }else if(this.map.layout==='canyon'){
-      for(let i=0;i<7;i++){
-        const x=W*(.06+i*.15);c.beginPath();c.moveTo(x,-30);c.bezierCurveTo(x+100,H*.25,x-100,H*.6,x+50,H+30);
-        c.strokeStyle=i%2?'#563d4b44':'#e5a07844';c.lineWidth=25+i*5;c.stroke();
-      }
-    }
-    // Old supply road, tyre tracks, and dusty shoulders.
-    c.beginPath();
-    if(this.map.layout==='valley'){c.moveTo(-80,H*.25);c.bezierCurveTo(W*.3,H*.15,W*.45,H*.65,W*.72,H*.5);c.bezierCurveTo(W*.9,H*.4,W*.85,H*.75,W+100,H*.8);}
-    else if(this.map.layout==='canyon'){c.moveTo(W*.2,-80);c.bezierCurveTo(W*.6,H*.15,W*.28,H*.42,W*.52,H*.65);c.bezierCurveTo(W*.7,H*.85,W*.83,H*.65,W*.91,H+100);}
-    else{c.moveTo(-80,H*.68);c.bezierCurveTo(W*.24,H*.43,W*.43,H*.9,W*.65,H*.61);c.bezierCurveTo(W*.84,H*.36,W*.91,H*.56,W+100,H*.24);}
-    c.strokeStyle='#9a96754a';c.lineWidth=105;c.stroke();c.strokeStyle='#343f3288';c.lineWidth=76;c.stroke();
-    c.strokeStyle='#b4ac7733';c.lineWidth=2;c.setLineDash([18,24]);c.stroke();c.setLineDash([]);
-    // Secondary access road.
-    c.beginPath();c.moveTo(W*.72,-30);c.lineTo(W*.72,H*.4);c.lineTo(W*.84,H*.48);c.lineWidth=39;c.strokeStyle='#424c3855';c.stroke();
-    // Sparse scrub and rocks, kept low contrast so projectiles read clearly.
-    for(let i=0;i<210;i++){
-      const x=r()*W,y=r()*H,size=2+r()*11;
-      if(r()>.44){ellipse(c,x+3,y+4,size*1.2,size*.65,'#24322630');ellipse(c,x,y,size,size*.63,'#46523a');ellipse(c,x-2,y-2,size*.62,size*.4,'#7e8461');}
-      else {for(let j=0;j<3;j++)ellipse(c,x+r()*9,y+r()*9,size*.5,size*.35,'#35463250');}
-    }
-    // Concrete landing area.
-    const landing=this.map.layout==='valley'?[.68,.22]:this.map.layout==='canyon'?[.24,.68]:[.35,.37];
-    c.save();c.translate(W*landing[0],H*landing[1]);c.rotate(-.13);c.fillStyle='#1b281c22';c.fillRect(-92,-83,200,186);c.fillStyle='#85867244';c.fillRect(-99,-94,188,176);
-    c.strokeStyle='#d2d1a44d';c.lineWidth=2;c.strokeRect(-87,-82,164,152);c.beginPath();c.arc(-5,-6,57,0,TAU);c.stroke();
-    c.fillStyle='#d1d0a45c';c.font='bold 63px Arial';c.textAlign='center';c.fillText('H',-5,16);
-    c.font='8px monospace';c.fillStyle='#c4c69a77';c.fillText('NIGHTHAWK / 07',-5,63);c.restore();
-    if(this.map.layout==='valley'){
-      this.compound(c,W*.78,H*.76,.84);this.compound(c,W*.38,H*.24,.72);
-      this.compound(c,W*.17,H*.7,.5);this.compound(c,W*.57,H*.52,.48);
-    }else if(this.map.layout==='canyon'){
-      this.compound(c,W*.72,H*.25,.84);this.compound(c,W*.53,H*.82,.72);
-      this.compound(c,W*.17,H*.32,.5);this.compound(c,W*.84,H*.65,.48);
-    }else{
-      this.compound(c,W*.8,H*.2,.84);this.compound(c,W*.14,H*.8,.72);
-      this.compound(c,W*.52,H*.3,.5);this.compound(c,W*.68,H*.68,.48);
-    }
-    // Sector grid and survey marks.
-    c.strokeStyle='#e4edb009';c.lineWidth=1;
-    for(let x=0;x<W;x+=100){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
-    for(let y=0;y<H;y+=100){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
-    c.font='8px monospace';c.fillStyle='#d3d6b533';c.textAlign='left';
-    for(let x=90;x<W;x+=260)for(let y=150;y<H-100;y+=250){c.fillText('+',x,y);c.fillText(`${Math.round(x/10)}.${Math.round(y/10)}`,x+10,y+2);}
-    c.save();c.translate(W*.69,H*.85);c.rotate(-.2);c.font='bold 45px Arial';c.fillStyle='#d7d8b620';c.fillText(this.mapLabel||this.map.name,0,0);c.restore();
-  }
-  compound(c,x,y,s) {
-    c.save();c.translate(x,y);c.scale(s,s);c.rotate(.08);
-    c.fillStyle='#28352233';c.fillRect(-110,-95,240,200);
-    c.strokeStyle='#a6a78b55';c.lineWidth=1;c.strokeRect(-125,-112,263,232);
-    for(let i=-120;i<130;i+=17){c.fillStyle='#c3c1a45c';c.fillRect(i,-115,2,6);c.fillRect(i,117,2,6);}
-    const building=(bx,by,w,h)=>{
-      c.fillStyle='#18241e55';c.fillRect(bx+9,by+12,w,h);
-      c.fillStyle='#3d493c';c.fillRect(bx,by,w,h);c.fillStyle='#78816b';c.fillRect(bx+3,by+3,w-6,h-8);
-      c.fillStyle='#858e76';c.fillRect(bx+3,by+3,w-6,4);c.fillStyle='#434f42';c.fillRect(bx+8,by+h-8,w-16,5);
-      c.strokeStyle='#46533f';c.lineWidth=2;for(let xx=bx+12;xx<bx+w-8;xx+=12){c.beginPath();c.moveTo(xx,by+8);c.lineTo(xx,by+h-13);c.stroke();}
-      c.fillStyle='#4b5747';c.fillRect(bx+w*.4,by+8,15,13);c.fillStyle='#a1aa83';c.fillRect(bx+w*.4,by+8,15,3);
-    };
-    building(-98,-80,104,58);building(27,-78,80,112);building(-98,2,58,78);
-    for(let i=0;i<3;i++){c.fillStyle=i===1?'#7c7954':'#596b4e';c.fillRect(-19+i*34,62,28,48);c.strokeStyle='#25382266';for(let j=0;j<5;j++)c.strokeRect(-16+i*34,65+j*8,22,4);}
-    for(const [lx,ly] of [[-120,-107],[130,113]]){ellipse(c,lx,ly,7,7,'#d6d8951a');ellipse(c,lx,ly,2,2,'#e2da9b');}
-    c.restore();
-  }
-  helicopter(c,p,t,ghost=false) {
-    c.save();c.translate(p.x,p.y);
-    if(!ghost){
-      c.save();c.translate(13,19);c.rotate(p.angle);c.scale(1.12,.72);
-      path(c,[[-14,-6],[-63,-3],[-72,0],[-62,4],[-14,6]],'#0b170c4d');
-      path(c,[[-25,-9],[-17,-15],[12,-14],[30,-7],[35,0],[28,9],[11,14],[-18,13],[-26,6]],'#0b170c4d');
-      c.save();c.translate(-5,0);c.rotate(t*49);c.fillStyle='#0b170c24';c.fillRect(-48,-2,96,4);c.restore();
-      c.restore();
-    }
-    const bank=p.bank||0,pitch=p.pitch||0;
-    c.rotate(p.angle);
-    c.translate(pitch*30,bank*30);
-    c.rotate(bank*.45);
-    c.scale(1-Math.abs(pitch)*.3,1-Math.abs(bank)*.5);
-    if(ghost)c.globalAlpha=.3;
-    // Tail boom, horizontal stabilizers, pods and skids.
-    path(c,[[-14,-6],[-63,-3],[-72,0],[-62,4],[-14,6]],'#728471','#c2cba755');
-    path(c,[[-52,-3],[-61,-18],[-66,-18],[-63,0],[-62,17],[-55,17]],'#81947b');
-    c.save();c.translate(20,0);c.rotate((p.cannonAngle??p.angle)-p.angle);c.scale(.5,.5);c.fillStyle='#4c5940';c.fillRect(-4,-5,26,10);c.fillStyle='#b5ac7b';c.fillRect(17,-2,25,4);c.fillStyle='#303d32';c.fillRect(-7,-3,8,6);c.fillStyle='#e0e5b9';c.fillRect(39,-1,3,2);if(p.muzzle>0&&!ghost)path(c,[[42,-10],[88,0],[42,10],[56,0]],'#fff2a8');c.restore();
-    c.fillStyle='#283d33';c.fillRect(-16,-19,36,4);c.fillRect(-16,15,36,4);c.fillStyle='#475f4c';c.fillRect(-10,-23,22,7);c.fillRect(-10,16,22,7);
-    c.fillStyle='#9aa484';c.fillRect(4,-22,19,3);c.fillRect(4,19,19,3);
-    path(c,[[-25,-9],[-17,-15],[12,-14],[30,-7],[35,0],[28,9],[11,14],[-18,13],[-26,6]],'#8b9a78','#c1cba460');
-    path(c,[[-21,-8],[-11,-11],[4,-10],[4,10],[-13,11],[-21,5]],'#657b61');
-    path(c,[[9,-11],[26,-6],[30,-1],[11,-1]],'#263e35','#bbd9b144');
-    path(c,[[11,2],[29,2],[25,7],[9,11]],'#2e4c3d','#bbd9b144');
-    c.fillStyle='#b5c096';c.fillRect(-8,-10,3,20);c.fillStyle='#3c503f';c.fillRect(-14,-7,5,14);
-    c.save();c.translate(-62,0);const rotorPhase=Math.abs(Math.sin(t*42));ellipse(c,0,0,15+4*rotorPhase,2+rotorPhase,'#d8dfb699');c.save();c.rotate(Math.sin(t*42)*.12);ellipse(c,0,0,13+3*rotorPhase,1,'#aebd9a88');c.restore();c.fillStyle='#455240';c.fillRect(-3,-2,6,4);c.restore();
-    c.save();c.translate(-5,0);c.rotate(t*49);
-    c.strokeStyle='#e7eed92c';c.lineWidth=2;c.beginPath();c.arc(0,0,45,0,TAU);c.stroke();
-    for(let i=0;i<4;i++){c.rotate(Math.PI/2);path(c,[[0,-2],[46,-3],[44,0],[0,2]],'#e2e7cc99');}
-    ellipse(c,0,0,5,5,'#374e3e');ellipse(c,-1,-1,2,2,'#c3caa9');c.restore();
-    if(Math.sin(t*5)>0)ellipse(c,-51,0,2,2,'#f7a26d');ellipse(c,1,-19,1.5,1.5,'#c1ed95');
-    if(!ghost&&t%2<.12){ellipse(c,18,-18,3,3,'#ffffff');ellipse(c,18,18,3,3,'#ff5d52');}
-    if(!ghost&&t%1.5<.12)ellipse(c,-72,0,2.5,2.5,'#ffb35c');
-    c.restore();
-  }
-  enemy(c,e,t) {
-    c.save();c.translate(e.x,e.y);c.rotate(e.angle);
-    const boss=e.type==='boss';c.scale(ENEMIES[e.type].scale,ENEMIES[e.type].scale);
-    if(e.type==='drone'||e.type==='kamikaze'){
-      ellipse(c,7,12,23,13,'#10231633');
-      c.strokeStyle='#545d4a';c.lineWidth=5;c.beginPath();c.moveTo(-13,-13);c.lineTo(13,13);c.moveTo(-13,13);c.lineTo(13,-13);c.stroke();
-      for(const x of [-14,14])for(const y of [-14,14]){ellipse(c,x,y,9,9,'#283b2e88');c.save();c.translate(x,y);c.rotate(t*52);c.fillStyle='#c3c8a366';c.fillRect(-10,-1,20,2);c.restore();}
-      path(c,[[-10,-7],[7,-8],[15,0],[7,8],[-10,7]],e.type==='kamikaze'?'#d96f50':'#a19c76','#d1ba9366');ellipse(c,8,0,3,3,'#e9a173');
-    }else if(e.type==='rocketSemi'){
-      c.fillStyle='#182a1e77';c.fillRect(-34,-15,70,37);
-      c.fillStyle='#29392d';for(const x of [-25,-7,21]){ellipse(c,x,-16,6,5,'#29392d');ellipse(c,x,16,6,5,'#29392d');}
-      c.fillStyle='#6c7857';c.fillRect(-34,-13,46,26);c.fillStyle='#a1a582';c.fillRect(12,-14,22,28);
-      c.fillStyle='#485849';c.fillRect(23,-10,7,20);
-      c.save();c.rotate((e.turret??e.angle)-e.angle);c.fillStyle='#4b5c45';c.fillRect(-21,-10,38,20);c.fillStyle='#c0b98b';for(const y of [-6,0,6])c.fillRect(-14,y-2,30,4);c.restore();
-    }else{
-      c.fillStyle='#14231655';c.fillRect(-22+6,-21+7,47,46);
-      const trackLeft=boss?-30:-23,trackRight=boss?27:20,trackOuter=boss?27:22,trackInner=boss?13:11,trackHeight=trackOuter-trackInner;
-      c.fillStyle='#27352a';c.fillRect(trackLeft,-trackOuter,trackRight-trackLeft,trackHeight);c.fillRect(trackLeft,trackInner,trackRight-trackLeft,trackHeight);
-      c.fillStyle='#a1a582';
-      const drawTrack=(phase,y)=>{
-        phase=(phase%6+6)%6;
-        for(let x=trackLeft-4+phase;x<trackRight;x+=6){
-          const left=Math.max(x,trackLeft),right=Math.min(x+3,trackRight);
-          if(right>left)c.fillRect(left,y,right-left,trackHeight-2);
+    makeTerrain() {
+        const c = this.terrain.getContext('2d'),
+            W = this.world.width,
+            H = this.world.height,
+            r = seededRandom(this.map.seed);
+        const g = c.createLinearGradient(0, 0, W, H);
+        g.addColorStop(0, this.map.colors[0]);
+        g.addColorStop(0.5, this.map.colors[1]);
+        g.addColorStop(1, this.map.colors[2]);
+        c.fillStyle = g;
+        c.fillRect(0, 0, W, H);
+        // Grain is baked into the terrain once rather than regenerated each frame.
+        for (let i = 0; i < (W * H) / 80; i++) {
+            c.fillStyle = r() > 0.5 ? '#c6bd8a0b' : '#17291c0b';
+            c.fillRect(r() * W, r() * H, r() * 4 + 1, r() * 2 + 1);
         }
-      };
-      drawTrack(e.leftTrackPhase??e.trackPhase??0,-trackOuter+1);
-      drawTrack(e.rightTrackPhase??e.trackPhase??0,trackInner+1);
-      path(c,[[-25,-11],[-15,-16],[17,-16],[25,-8],[25,8],[15,16],[-20,16]],boss?'#727356':'#8c8e69','#b4b38a55');
-      c.fillStyle='#a3a078';c.fillRect(-16,-12,29,3);c.fillStyle='#535f45';c.fillRect(-20,-7,8,14);
-      c.save();c.rotate((e.turret??e.angle)-e.angle);
-      path(c,[[-9,-10],[9,-10],[16,-5],[16,5],[8,10],[-9,10],[-13,4],[-13,-4]],'#a49f75','#c5b68966');
-      c.fillStyle='#b5ac7b';c.fillRect(5,-3,e.type==='artillery'?37:27,6);c.fillStyle='#4c5940';c.fillRect(e.type==='artillery'?35:27,-4,5,8);
-      if(e.type==='aa'){c.fillStyle='#b5ac7b';c.fillRect(5,-10,27,4);c.fillRect(5,6,27,4);}
-      ellipse(c,-1,-1,5,5,'#5b674a');c.fillStyle='#dc9a6c';c.fillRect(-4,-2,6,2);c.restore();
-      c.strokeStyle='#c5b78866';c.lineWidth=1;c.beginPath();c.moveTo(-14,-12);c.lineTo(-18,-32);c.stroke();
+        for (let i = 0; i < 38; i++) {
+            let x = r() * W,
+                y = r() * H;
+            c.strokeStyle = i % 2 ? '#a4a57b0e' : '#263b2915';
+            c.lineWidth = 10 + r() * 45;
+            c.beginPath();
+            c.moveTo(x - 130, y + 80);
+            c.bezierCurveTo(x - 90, y - 40, x + 50, y + 80, x + 190, y - 70);
+            c.stroke();
+        }
+        // Broad colored landforms distinguish each sector without obscuring combat.
+        for (let i = 0; i < 16; i++) {
+            const x = r() * W,
+                y = r() * H,
+                rx = 35 + r() * 140,
+                ry = 15 + r() * 65;
+            c.globalAlpha = 0.12;
+            ellipse(c, x, y, rx, ry, this.map.accent);
+            c.globalAlpha = 1;
+        }
+        // Fine, broken contour rings add a surveyed topographic-map texture.
+        for (let i = 0; i < 25; i++) {
+            const x = r() * W,
+                y = r() * H,
+                rx = 18 + r() * 55,
+                ry = 12 + r() * 32,
+                rotation = r() * Math.PI;
+            c.save();
+            c.translate(x, y);
+            c.rotate(rotation);
+            for (let ring = 0; ring < 4; ring++) {
+                c.beginPath();
+                c.ellipse(0, 0, rx + ring * 12, ry + ring * 8, 0, 0, TAU);
+                c.strokeStyle = ring === 0 ? '#d9d4ad20' : '#d9d4ad12';
+                c.lineWidth = ring === 0 ? 1.4 : 1;
+                c.stroke();
+            }
+            c.restore();
+        }
+        if (this.map.layout === 'valley') {
+            c.beginPath();
+            c.moveTo(W * 0.1, -60);
+            c.bezierCurveTo(W * 0.3, H * 0.2, W * 0.06, H * 0.54, W * 0.32, H + 60);
+            c.strokeStyle = '#356b7b';
+            c.lineWidth = 105;
+            c.stroke();
+            c.strokeStyle = '#75b5b566';
+            c.lineWidth = 70;
+            c.stroke();
+            c.strokeStyle = '#c2dfc655';
+            c.lineWidth = 2;
+            c.setLineDash([25, 35]);
+            c.stroke();
+            c.setLineDash([]);
+        } else if (this.map.layout === 'canyon') {
+            for (let i = 0; i < 7; i++) {
+                const x = W * (0.06 + i * 0.15);
+                c.beginPath();
+                c.moveTo(x, -30);
+                c.bezierCurveTo(x + 100, H * 0.25, x - 100, H * 0.6, x + 50, H + 30);
+                c.strokeStyle = i % 2 ? '#563d4b44' : '#e5a07844';
+                c.lineWidth = 25 + i * 5;
+                c.stroke();
+            }
+        }
+        // Old supply road, tyre tracks, and dusty shoulders.
+        c.beginPath();
+        if (this.map.layout === 'valley') {
+            c.moveTo(-80, H * 0.25);
+            c.bezierCurveTo(W * 0.3, H * 0.15, W * 0.45, H * 0.65, W * 0.72, H * 0.5);
+            c.bezierCurveTo(W * 0.9, H * 0.4, W * 0.85, H * 0.75, W + 100, H * 0.8);
+        } else if (this.map.layout === 'canyon') {
+            c.moveTo(W * 0.2, -80);
+            c.bezierCurveTo(W * 0.6, H * 0.15, W * 0.28, H * 0.42, W * 0.52, H * 0.65);
+            c.bezierCurveTo(W * 0.7, H * 0.85, W * 0.83, H * 0.65, W * 0.91, H + 100);
+        } else {
+            c.moveTo(-80, H * 0.68);
+            c.bezierCurveTo(W * 0.24, H * 0.43, W * 0.43, H * 0.9, W * 0.65, H * 0.61);
+            c.bezierCurveTo(W * 0.84, H * 0.36, W * 0.91, H * 0.56, W + 100, H * 0.24);
+        }
+        c.strokeStyle = '#9a96754a';
+        c.lineWidth = 105;
+        c.stroke();
+        c.strokeStyle = '#343f3288';
+        c.lineWidth = 76;
+        c.stroke();
+        c.strokeStyle = '#b4ac7733';
+        c.lineWidth = 2;
+        c.setLineDash([18, 24]);
+        c.stroke();
+        c.setLineDash([]);
+        // Secondary access road.
+        c.beginPath();
+        c.moveTo(W * 0.72, -30);
+        c.lineTo(W * 0.72, H * 0.4);
+        c.lineTo(W * 0.84, H * 0.48);
+        c.lineWidth = 39;
+        c.strokeStyle = '#424c3855';
+        c.stroke();
+        // Sparse scrub and rocks, kept low contrast so projectiles read clearly.
+        for (let i = 0; i < 210; i++) {
+            const x = r() * W,
+                y = r() * H,
+                size = 2 + r() * 11;
+            if (r() > 0.44) {
+                ellipse(c, x + 3, y + 4, size * 1.2, size * 0.65, '#24322630');
+                ellipse(c, x, y, size, size * 0.63, '#46523a');
+                ellipse(c, x - 2, y - 2, size * 0.62, size * 0.4, '#7e8461');
+            } else {
+                for (let j = 0; j < 3; j++)
+                    ellipse(c, x + r() * 9, y + r() * 9, size * 0.5, size * 0.35, '#35463250');
+            }
+        }
+        // Concrete landing area.
+        const landing =
+            this.map.layout === 'valley'
+                ? [0.68, 0.22]
+                : this.map.layout === 'canyon'
+                  ? [0.24, 0.68]
+                  : [0.35, 0.37];
+        c.save();
+        c.translate(W * landing[0], H * landing[1]);
+        c.rotate(-0.13);
+        c.fillStyle = '#1b281c22';
+        c.fillRect(-92, -83, 200, 186);
+        c.fillStyle = '#85867244';
+        c.fillRect(-99, -94, 188, 176);
+        c.strokeStyle = '#d2d1a44d';
+        c.lineWidth = 2;
+        c.strokeRect(-87, -82, 164, 152);
+        c.beginPath();
+        c.arc(-5, -6, 57, 0, TAU);
+        c.stroke();
+        c.fillStyle = '#d1d0a45c';
+        c.font = 'bold 63px Arial';
+        c.textAlign = 'center';
+        c.fillText('H', -5, 16);
+        c.font = '8px monospace';
+        c.fillStyle = '#c4c69a77';
+        c.fillText('NIGHTHAWK / 07', -5, 63);
+        c.restore();
+        if (this.map.layout === 'valley') {
+            this.compound(c, W * 0.78, H * 0.76, 0.84);
+            this.compound(c, W * 0.38, H * 0.24, 0.72);
+            this.compound(c, W * 0.17, H * 0.7, 0.5);
+            this.compound(c, W * 0.57, H * 0.52, 0.48);
+        } else if (this.map.layout === 'canyon') {
+            this.compound(c, W * 0.72, H * 0.25, 0.84);
+            this.compound(c, W * 0.53, H * 0.82, 0.72);
+            this.compound(c, W * 0.17, H * 0.32, 0.5);
+            this.compound(c, W * 0.84, H * 0.65, 0.48);
+        } else {
+            this.compound(c, W * 0.8, H * 0.2, 0.84);
+            this.compound(c, W * 0.14, H * 0.8, 0.72);
+            this.compound(c, W * 0.52, H * 0.3, 0.5);
+            this.compound(c, W * 0.68, H * 0.68, 0.48);
+        }
+        // Sector grid and survey marks.
+        c.strokeStyle = '#e4edb009';
+        c.lineWidth = 1;
+        for (let x = 0; x < W; x += 100) {
+            c.beginPath();
+            c.moveTo(x, 0);
+            c.lineTo(x, H);
+            c.stroke();
+        }
+        for (let y = 0; y < H; y += 100) {
+            c.beginPath();
+            c.moveTo(0, y);
+            c.lineTo(W, y);
+            c.stroke();
+        }
+        c.font = '8px monospace';
+        c.fillStyle = '#d3d6b533';
+        c.textAlign = 'left';
+        for (let x = 90; x < W; x += 260)
+            for (let y = 150; y < H - 100; y += 250) {
+                c.fillText('+', x, y);
+                c.fillText(`${Math.round(x / 10)}.${Math.round(y / 10)}`, x + 10, y + 2);
+            }
+        c.save();
+        c.translate(W * 0.69, H * 0.85);
+        c.rotate(-0.2);
+        c.font = 'bold 45px Arial';
+        c.fillStyle = '#d7d8b620';
+        c.fillText(this.mapLabel || this.map.name, 0, 0);
+        c.restore();
     }
-    if(e.hit>0){c.globalAlpha=clamp(e.hit*5,0,.65);ellipse(c,0,0,22,17,'#fff6c4');c.globalAlpha=1;}
-    if(e.charge>.4){c.strokeStyle=`rgba(243,151,94,${e.charge*.6})`;c.lineWidth=1;c.beginPath();c.arc(0,0,31,0,TAU*e.charge);c.stroke();}
-    c.restore();
-    if(e.health<e.maxHealth&&e.type!=='boss'){c.fillStyle='#0f1b0eaa';c.fillRect(e.x-17,e.y-35,34,3);c.fillStyle='#e7b181';c.fillRect(e.x-17,e.y-35,34*e.health/e.maxHealth,3);}
-  }
-  draw(g,dt) {
-    const c=this.ctx,W=g.world.width,H=g.world.height,t=g.visualTime,camera=g.camera,zoom=camera.zoom;
-    c.setTransform(this.scale,0,0,this.scale,0,0);c.clearRect(0,0,W,H);
-    c.setTransform(this.scale*zoom,0,0,this.scale*zoom,-camera.x*this.scale*zoom,-camera.y*this.scale*zoom);
-    c.save();if(this.settings.shake&&g.shake>0){c.translate((Math.random()-.5)*g.shake,(Math.random()-.5)*g.shake);}
-    c.drawImage(this.terrain,0,0,W,H);
-    for(const mark of g.treadMarks||[]){
-      c.save();c.translate(mark.x,mark.y);c.rotate(mark.angle);c.globalAlpha=clamp(mark.life/mark.maxLife,0,1)*.45;
-      const length=mark.trackLength||16,width=mark.trackWidth||6,offset=mark.trackOffset||18;
-      c.fillStyle='#111812';c.fillRect(-length/2,-offset-width/2,length,width);c.fillRect(-length/2,offset-width/2,length,width);c.restore();
+    compound(c, x, y, s) {
+        c.save();
+        c.translate(x, y);
+        c.scale(s, s);
+        c.rotate(0.08);
+        c.fillStyle = '#28352233';
+        c.fillRect(-110, -95, 240, 200);
+        c.strokeStyle = '#a6a78b55';
+        c.lineWidth = 1;
+        c.strokeRect(-125, -112, 263, 232);
+        for (let i = -120; i < 130; i += 17) {
+            c.fillStyle = '#c3c1a45c';
+            c.fillRect(i, -115, 2, 6);
+            c.fillRect(i, 117, 2, 6);
+        }
+        const building = (bx, by, w, h) => {
+            c.fillStyle = '#18241e55';
+            c.fillRect(bx + 9, by + 12, w, h);
+            c.fillStyle = '#3d493c';
+            c.fillRect(bx, by, w, h);
+            c.fillStyle = '#78816b';
+            c.fillRect(bx + 3, by + 3, w - 6, h - 8);
+            c.fillStyle = '#858e76';
+            c.fillRect(bx + 3, by + 3, w - 6, 4);
+            c.fillStyle = '#434f42';
+            c.fillRect(bx + 8, by + h - 8, w - 16, 5);
+            c.strokeStyle = '#46533f';
+            c.lineWidth = 2;
+            for (let xx = bx + 12; xx < bx + w - 8; xx += 12) {
+                c.beginPath();
+                c.moveTo(xx, by + 8);
+                c.lineTo(xx, by + h - 13);
+                c.stroke();
+            }
+            c.fillStyle = '#4b5747';
+            c.fillRect(bx + w * 0.4, by + 8, 15, 13);
+            c.fillStyle = '#a1aa83';
+            c.fillRect(bx + w * 0.4, by + 8, 15, 3);
+        };
+        building(-98, -80, 104, 58);
+        building(27, -78, 80, 112);
+        building(-98, 2, 58, 78);
+        for (let i = 0; i < 3; i++) {
+            c.fillStyle = i === 1 ? '#7c7954' : '#596b4e';
+            c.fillRect(-19 + i * 34, 62, 28, 48);
+            c.strokeStyle = '#25382266';
+            for (let j = 0; j < 5; j++) c.strokeRect(-16 + i * 34, 65 + j * 8, 22, 4);
+        }
+        for (const [lx, ly] of [
+            [-120, -107],
+            [130, 113]
+        ]) {
+            ellipse(c, lx, ly, 7, 7, '#d6d8951a');
+            ellipse(c, lx, ly, 2, 2, '#e2da9b');
+        }
+        c.restore();
     }
-    for(const d of g.decals){c.save();c.translate(d.x,d.y);c.rotate(d.angle);
-      if(d.wreck){
-        c.scale(d.scale||1,d.scale||1);
-        c.fillStyle='#111812';c.fillRect(-27,-22,47,10);c.fillRect(-27,12,47,10);
-        c.fillStyle='#353b31';c.fillRect(-24,-20,42,6);c.fillRect(-24,14,42,6);
-        path(c,[[-24,-10],[-15,-15],[18,-13],[25,-6],[22,9],[12,14],[-20,12]],'#3d4436','#141b14');
-        c.fillStyle='#171d17';c.fillRect(-14,-10,28,20);c.save();c.rotate((d.turretAngle??.2)+.18);path(c,[[-9,-9],[10,-8],[16,-4],[14,6],[7,9],[-10,7],[-13,2],[-12,-5]],'#4b503d','#171b16');c.fillStyle='#252a22';c.fillRect(4,-2,18,4);c.restore();
-        ellipse(c,-4,-1,12,7,'#0b100dcc');ellipse(c,12,5,7,4,'#0b100daa');
-        if(d.burnTime>0&&Math.sin(t*18+d.x)>0)ellipse(c,-2,-7,4,7,'#e47b3d88');
-      }else{ellipse(c,0,0,d.size,d.size*.66,'#1c211c88');ellipse(c,0,0,d.size*.65,d.size*.42,'#0c150d66');c.fillStyle='#4a4b37';c.fillRect(-11,-6,21,12);}
-      c.restore();}
-    // A very slow cloud shadow drifts over the map.
-    if(this.settings.effects){c.save();c.translate(camera.x*.3,camera.y*.3);const x=(t*12)%(W+600)-300,cloud=c.createRadialGradient(x,H*.35,30,x,H*.35,380);cloud.addColorStop(0,'#14231524');cloud.addColorStop(1,'#14231500');c.fillStyle=cloud;c.fillRect(-W,-H,W*3,H*3);c.restore();}
-    for(const p of g.pickups){
-      const bob=Math.sin(t*3+p.x)*2;c.strokeStyle='#d7ed9c44';c.lineWidth=1;c.beginPath();c.arc(p.x,p.y,23+Math.sin(t*3)*3,0,TAU);c.stroke();
-      c.save();c.translate(p.x,p.y+bob);c.rotate(Math.PI/4);c.fillStyle='#1c321d';c.fillRect(-12,-12,24,24);c.strokeStyle='#d4e89a';c.strokeRect(-12,-12,24,24);c.rotate(-Math.PI/4);
-      c.fillStyle='#dbea9b';c.fillRect(-3,-8,6,16);c.fillRect(-8,-3,16,6);c.restore();
+    helicopter(c, p, t, ghost = false) {
+        c.save();
+        c.translate(p.x, p.y);
+        if (!ghost) {
+            c.save();
+            c.translate(13, 19);
+            c.rotate(p.angle);
+            c.scale(1.12, 0.72);
+            path(
+                c,
+                [
+                    [-14, -6],
+                    [-63, -3],
+                    [-72, 0],
+                    [-62, 4],
+                    [-14, 6]
+                ],
+                '#0b170c4d'
+            );
+            path(
+                c,
+                [
+                    [-25, -9],
+                    [-17, -15],
+                    [12, -14],
+                    [30, -7],
+                    [35, 0],
+                    [28, 9],
+                    [11, 14],
+                    [-18, 13],
+                    [-26, 6]
+                ],
+                '#0b170c4d'
+            );
+            c.save();
+            c.translate(-5, 0);
+            c.rotate(t * 49);
+            c.fillStyle = '#0b170c24';
+            c.fillRect(-48, -2, 96, 4);
+            c.restore();
+            c.restore();
+        }
+        const bank = p.bank || 0,
+            pitch = p.pitch || 0;
+        c.rotate(p.angle);
+        c.translate(pitch * 30, bank * 30);
+        c.rotate(bank * 0.45);
+        c.scale(1 - Math.abs(pitch) * 0.3, 1 - Math.abs(bank) * 0.5);
+        if (ghost) c.globalAlpha = 0.3;
+        // Tail boom, horizontal stabilizers, pods and skids.
+        path(
+            c,
+            [
+                [-14, -6],
+                [-63, -3],
+                [-72, 0],
+                [-62, 4],
+                [-14, 6]
+            ],
+            '#728471',
+            '#c2cba755'
+        );
+        path(
+            c,
+            [
+                [-52, -3],
+                [-61, -18],
+                [-66, -18],
+                [-63, 0],
+                [-62, 17],
+                [-55, 17]
+            ],
+            '#81947b'
+        );
+        c.save();
+        c.translate(20, 0);
+        c.rotate((p.cannonAngle ?? p.angle) - p.angle);
+        c.scale(0.5, 0.5);
+        c.fillStyle = '#4c5940';
+        c.fillRect(-4, -5, 26, 10);
+        c.fillStyle = '#b5ac7b';
+        c.fillRect(17, -2, 25, 4);
+        c.fillStyle = '#303d32';
+        c.fillRect(-7, -3, 8, 6);
+        c.fillStyle = '#e0e5b9';
+        c.fillRect(39, -1, 3, 2);
+        if (p.muzzle > 0 && !ghost)
+            path(
+                c,
+                [
+                    [42, -10],
+                    [88, 0],
+                    [42, 10],
+                    [56, 0]
+                ],
+                '#fff2a8'
+            );
+        c.restore();
+        c.fillStyle = '#283d33';
+        c.fillRect(-16, -19, 36, 4);
+        c.fillRect(-16, 15, 36, 4);
+        c.fillStyle = '#475f4c';
+        c.fillRect(-10, -23, 22, 7);
+        c.fillRect(-10, 16, 22, 7);
+        c.fillStyle = '#9aa484';
+        c.fillRect(4, -22, 19, 3);
+        c.fillRect(4, 19, 19, 3);
+        path(
+            c,
+            [
+                [-25, -9],
+                [-17, -15],
+                [12, -14],
+                [30, -7],
+                [35, 0],
+                [28, 9],
+                [11, 14],
+                [-18, 13],
+                [-26, 6]
+            ],
+            '#8b9a78',
+            '#c1cba460'
+        );
+        path(
+            c,
+            [
+                [-21, -8],
+                [-11, -11],
+                [4, -10],
+                [4, 10],
+                [-13, 11],
+                [-21, 5]
+            ],
+            '#657b61'
+        );
+        path(
+            c,
+            [
+                [9, -11],
+                [26, -6],
+                [30, -1],
+                [11, -1]
+            ],
+            '#263e35',
+            '#bbd9b144'
+        );
+        path(
+            c,
+            [
+                [11, 2],
+                [29, 2],
+                [25, 7],
+                [9, 11]
+            ],
+            '#2e4c3d',
+            '#bbd9b144'
+        );
+        c.fillStyle = '#b5c096';
+        c.fillRect(-8, -10, 3, 20);
+        c.fillStyle = '#3c503f';
+        c.fillRect(-14, -7, 5, 14);
+        c.save();
+        c.translate(-62, 0);
+        const rotorPhase = Math.abs(Math.sin(t * 42));
+        ellipse(c, 0, 0, 15 + 4 * rotorPhase, 2 + rotorPhase, '#d8dfb699');
+        c.save();
+        c.rotate(Math.sin(t * 42) * 0.12);
+        ellipse(c, 0, 0, 13 + 3 * rotorPhase, 1, '#aebd9a88');
+        c.restore();
+        c.fillStyle = '#455240';
+        c.fillRect(-3, -2, 6, 4);
+        c.restore();
+        c.save();
+        c.translate(-5, 0);
+        c.rotate(t * 49);
+        c.strokeStyle = '#e7eed92c';
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(0, 0, 45, 0, TAU);
+        c.stroke();
+        for (let i = 0; i < 4; i++) {
+            c.rotate(Math.PI / 2);
+            path(
+                c,
+                [
+                    [0, -2],
+                    [46, -3],
+                    [44, 0],
+                    [0, 2]
+                ],
+                '#e2e7cc99'
+            );
+        }
+        ellipse(c, 0, 0, 5, 5, '#374e3e');
+        ellipse(c, -1, -1, 2, 2, '#c3caa9');
+        c.restore();
+        if (Math.sin(t * 5) > 0) ellipse(c, -51, 0, 2, 2, '#f7a26d');
+        ellipse(c, 1, -19, 1.5, 1.5, '#c1ed95');
+        if (!ghost && t % 2 < 0.12) {
+            ellipse(c, 18, -18, 3, 3, '#ffffff');
+            ellipse(c, 18, 18, 3, 3, '#ff5d52');
+        }
+        if (!ghost && t % 1.5 < 0.12) ellipse(c, -72, 0, 2.5, 2.5, '#ffb35c');
+        c.restore();
     }
-    for(const e of g.enemies)this.enemy(c,e,t);
-    if(g.state==='ready'){this.enemy(c,{x:W*.7,y:H*.73,angle:-2.2,type:'tank',health:3,maxHealth:3},t);this.enemy(c,{x:W*.87,y:H*.57,angle:-2.5,type:'tank',health:3,maxHealth:3},t);}
-    for(const b of g.bullets){
-      if(b.kind==='rocket'||b.kind==='enemyRocket'){c.save();c.translate(b.x,b.y);c.rotate(Math.atan2(b.vy,b.vx));c.fillStyle=b.friendly?'#e4dfb2':'#ee9875';c.fillRect(-9,-2,15,4);c.fillStyle='#ffcc79';c.fillRect(-19,-2,10,4);c.restore();}
-      else {c.strokeStyle=b.friendly?'#f4f1ab':'#ffac77';c.lineWidth=b.friendly?2:3;c.lineCap='round';c.beginPath();const len=b.friendly?20:13,sp=Math.hypot(b.vx,b.vy)||1;c.moveTo(b.x-b.vx/sp*len,b.y-b.vy/sp*len);c.lineTo(b.x,b.y);c.stroke();if(!b.friendly)ellipse(c,b.x,b.y,3,3,'#ffd2a5');}
+    enemy(c, e, t) {
+        c.save();
+        c.translate(e.x, e.y);
+        c.rotate(e.angle);
+        const boss = e.type === 'boss';
+        c.scale(ENEMIES[e.type].scale, ENEMIES[e.type].scale);
+        if (e.type === 'drone' || e.type === 'kamikaze') {
+            ellipse(c, 7, 12, 23, 13, '#10231633');
+            c.strokeStyle = '#545d4a';
+            c.lineWidth = 5;
+            c.beginPath();
+            c.moveTo(-13, -13);
+            c.lineTo(13, 13);
+            c.moveTo(-13, 13);
+            c.lineTo(13, -13);
+            c.stroke();
+            for (const x of [-14, 14])
+                for (const y of [-14, 14]) {
+                    ellipse(c, x, y, 9, 9, '#283b2e88');
+                    c.save();
+                    c.translate(x, y);
+                    c.rotate(t * 52);
+                    c.fillStyle = '#c3c8a366';
+                    c.fillRect(-10, -1, 20, 2);
+                    c.restore();
+                }
+            path(
+                c,
+                [
+                    [-10, -7],
+                    [7, -8],
+                    [15, 0],
+                    [7, 8],
+                    [-10, 7]
+                ],
+                e.type === 'kamikaze' ? '#d96f50' : '#a19c76',
+                '#d1ba9366'
+            );
+            ellipse(c, 8, 0, 3, 3, '#e9a173');
+        } else if (e.type === 'rocketSemi') {
+            c.fillStyle = '#182a1e77';
+            c.fillRect(-34, -15, 70, 37);
+            c.fillStyle = '#29392d';
+            for (const x of [-25, -7, 21]) {
+                ellipse(c, x, -16, 6, 5, '#29392d');
+                ellipse(c, x, 16, 6, 5, '#29392d');
+            }
+            c.fillStyle = '#6c7857';
+            c.fillRect(-34, -13, 46, 26);
+            c.fillStyle = '#a1a582';
+            c.fillRect(12, -14, 22, 28);
+            c.fillStyle = '#485849';
+            c.fillRect(23, -10, 7, 20);
+            c.save();
+            c.rotate((e.turret ?? e.angle) - e.angle);
+            c.fillStyle = '#4b5c45';
+            c.fillRect(-21, -10, 38, 20);
+            c.fillStyle = '#c0b98b';
+            for (const y of [-6, 0, 6]) c.fillRect(-14, y - 2, 30, 4);
+            c.restore();
+        } else {
+            c.fillStyle = '#14231655';
+            c.fillRect(-22 + 6, -21 + 7, 47, 46);
+            const trackLeft = boss ? -30 : -23,
+                trackRight = boss ? 27 : 20,
+                trackOuter = boss ? 27 : 22,
+                trackInner = boss ? 13 : 11,
+                trackHeight = trackOuter - trackInner;
+            c.fillStyle = '#27352a';
+            c.fillRect(trackLeft, -trackOuter, trackRight - trackLeft, trackHeight);
+            c.fillRect(trackLeft, trackInner, trackRight - trackLeft, trackHeight);
+            c.fillStyle = '#a1a582';
+            const drawTrack = (phase, y) => {
+                phase = ((phase % 6) + 6) % 6;
+                for (let x = trackLeft - 4 + phase; x < trackRight; x += 6) {
+                    const left = Math.max(x, trackLeft),
+                        right = Math.min(x + 3, trackRight);
+                    if (right > left) c.fillRect(left, y, right - left, trackHeight - 2);
+                }
+            };
+            drawTrack(e.leftTrackPhase ?? e.trackPhase ?? 0, -trackOuter + 1);
+            drawTrack(e.rightTrackPhase ?? e.trackPhase ?? 0, trackInner + 1);
+            path(
+                c,
+                [
+                    [-25, -11],
+                    [-15, -16],
+                    [17, -16],
+                    [25, -8],
+                    [25, 8],
+                    [15, 16],
+                    [-20, 16]
+                ],
+                boss ? '#727356' : '#8c8e69',
+                '#b4b38a55'
+            );
+            c.fillStyle = '#a3a078';
+            c.fillRect(-16, -12, 29, 3);
+            c.fillStyle = '#535f45';
+            c.fillRect(-20, -7, 8, 14);
+            c.save();
+            c.rotate((e.turret ?? e.angle) - e.angle);
+            path(
+                c,
+                [
+                    [-9, -10],
+                    [9, -10],
+                    [16, -5],
+                    [16, 5],
+                    [8, 10],
+                    [-9, 10],
+                    [-13, 4],
+                    [-13, -4]
+                ],
+                '#a49f75',
+                '#c5b68966'
+            );
+            c.fillStyle = '#b5ac7b';
+            c.fillRect(5, -3, e.type === 'artillery' ? 37 : 27, 6);
+            c.fillStyle = '#4c5940';
+            c.fillRect(e.type === 'artillery' ? 35 : 27, -4, 5, 8);
+            if (e.type === 'aa') {
+                c.fillStyle = '#b5ac7b';
+                c.fillRect(5, -10, 27, 4);
+                c.fillRect(5, 6, 27, 4);
+            }
+            ellipse(c, -1, -1, 5, 5, '#5b674a');
+            c.fillStyle = '#dc9a6c';
+            c.fillRect(-4, -2, 6, 2);
+            c.restore();
+            c.strokeStyle = '#c5b78866';
+            c.lineWidth = 1;
+            c.beginPath();
+            c.moveTo(-14, -12);
+            c.lineTo(-18, -32);
+            c.stroke();
+        }
+        if (e.hit > 0) {
+            c.globalAlpha = clamp(e.hit * 5, 0, 0.65);
+            ellipse(c, 0, 0, 22, 17, '#fff6c4');
+            c.globalAlpha = 1;
+        }
+        if (e.charge > 0.4) {
+            c.strokeStyle = `rgba(243,151,94,${e.charge * 0.6})`;
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(0, 0, 31, 0, TAU * e.charge);
+            c.stroke();
+        }
+        c.restore();
+        if (e.health < e.maxHealth && e.type !== 'boss') {
+            c.fillStyle = '#0f1b0eaa';
+            c.fillRect(e.x - 17, e.y - 35, 34, 3);
+            c.fillStyle = '#e7b181';
+            c.fillRect(e.x - 17, e.y - 35, (34 * e.health) / e.maxHealth, 3);
+        }
     }
-    for(const warning of g.warnings||[]){
-      c.save();c.globalAlpha=.5+.5*Math.abs(Math.sin(t*9));c.strokeStyle='#ffb46f';c.lineWidth=2;c.beginPath();c.arc(warning.x,warning.y,warning.radius,0,TAU);c.stroke();
-      c.beginPath();c.moveTo(warning.x-8,warning.y);c.lineTo(warning.x+8,warning.y);c.moveTo(warning.x,warning.y-8);c.lineTo(warning.x,warning.y+8);c.stroke();c.restore();
+    draw(g, dt) {
+        const c = this.ctx,
+            W = g.world.width,
+            H = g.world.height,
+            t = g.visualTime,
+            camera = g.camera,
+            zoom = camera.zoom;
+        c.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+        c.clearRect(0, 0, W, H);
+        c.setTransform(
+            this.scale * zoom,
+            0,
+            0,
+            this.scale * zoom,
+            -camera.x * this.scale * zoom,
+            -camera.y * this.scale * zoom
+        );
+        c.save();
+        if (this.settings.shake && g.shake > 0) {
+            c.translate((Math.random() - 0.5) * g.shake, (Math.random() - 0.5) * g.shake);
+        }
+        c.drawImage(this.terrain, 0, 0, W, H);
+        for (const mark of g.treadMarks || []) {
+            c.save();
+            c.translate(mark.x, mark.y);
+            c.rotate(mark.angle);
+            c.globalAlpha = clamp(mark.life / mark.maxLife, 0, 1) * 0.45;
+            const length = mark.trackLength || 16,
+                width = mark.trackWidth || 6,
+                offset = mark.trackOffset || 18;
+            c.fillStyle = '#111812';
+            c.fillRect(-length / 2, -offset - width / 2, length, width);
+            c.fillRect(-length / 2, offset - width / 2, length, width);
+            c.restore();
+        }
+        for (const d of g.decals) {
+            c.save();
+            c.translate(d.x, d.y);
+            c.rotate(d.angle);
+            if (d.wreck) {
+                c.scale(d.scale || 1, d.scale || 1);
+                c.fillStyle = '#111812';
+                c.fillRect(-27, -22, 47, 10);
+                c.fillRect(-27, 12, 47, 10);
+                c.fillStyle = '#353b31';
+                c.fillRect(-24, -20, 42, 6);
+                c.fillRect(-24, 14, 42, 6);
+                path(
+                    c,
+                    [
+                        [-24, -10],
+                        [-15, -15],
+                        [18, -13],
+                        [25, -6],
+                        [22, 9],
+                        [12, 14],
+                        [-20, 12]
+                    ],
+                    '#3d4436',
+                    '#141b14'
+                );
+                c.fillStyle = '#171d17';
+                c.fillRect(-14, -10, 28, 20);
+                c.save();
+                c.rotate((d.turretAngle ?? 0.2) + 0.18);
+                path(
+                    c,
+                    [
+                        [-9, -9],
+                        [10, -8],
+                        [16, -4],
+                        [14, 6],
+                        [7, 9],
+                        [-10, 7],
+                        [-13, 2],
+                        [-12, -5]
+                    ],
+                    '#4b503d',
+                    '#171b16'
+                );
+                c.fillStyle = '#252a22';
+                c.fillRect(4, -2, 18, 4);
+                c.restore();
+                ellipse(c, -4, -1, 12, 7, '#0b100dcc');
+                ellipse(c, 12, 5, 7, 4, '#0b100daa');
+                if (d.burnTime > 0 && Math.sin(t * 18 + d.x) > 0)
+                    ellipse(c, -2, -7, 4, 7, '#e47b3d88');
+            } else {
+                ellipse(c, 0, 0, d.size, d.size * 0.66, '#1c211c88');
+                ellipse(c, 0, 0, d.size * 0.65, d.size * 0.42, '#0c150d66');
+                c.fillStyle = '#4a4b37';
+                c.fillRect(-11, -6, 21, 12);
+            }
+            c.restore();
+        }
+        // A very slow cloud shadow drifts over the map.
+        if (this.settings.effects) {
+            c.save();
+            c.translate(camera.x * 0.3, camera.y * 0.3);
+            const x = ((t * 12) % (W + 600)) - 300,
+                cloud = c.createRadialGradient(x, H * 0.35, 30, x, H * 0.35, 380);
+            cloud.addColorStop(0, '#14231524');
+            cloud.addColorStop(1, '#14231500');
+            c.fillStyle = cloud;
+            c.fillRect(-W, -H, W * 3, H * 3);
+            c.restore();
+        }
+        for (const p of g.pickups) {
+            const bob = Math.sin(t * 3 + p.x) * 2;
+            c.strokeStyle = '#d7ed9c44';
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(p.x, p.y, 23 + Math.sin(t * 3) * 3, 0, TAU);
+            c.stroke();
+            c.save();
+            c.translate(p.x, p.y + bob);
+            c.rotate(Math.PI / 4);
+            c.fillStyle = '#1c321d';
+            c.fillRect(-12, -12, 24, 24);
+            c.strokeStyle = '#d4e89a';
+            c.strokeRect(-12, -12, 24, 24);
+            c.rotate(-Math.PI / 4);
+            c.fillStyle = '#dbea9b';
+            c.fillRect(-3, -8, 6, 16);
+            c.fillRect(-8, -3, 16, 6);
+            c.restore();
+        }
+        for (const e of g.enemies) this.enemy(c, e, t);
+        if (g.state === 'ready') {
+            this.enemy(
+                c,
+                { x: W * 0.7, y: H * 0.73, angle: -2.2, type: 'tank', health: 3, maxHealth: 3 },
+                t
+            );
+            this.enemy(
+                c,
+                { x: W * 0.87, y: H * 0.57, angle: -2.5, type: 'tank', health: 3, maxHealth: 3 },
+                t
+            );
+        }
+        for (const b of g.bullets) {
+            if (b.kind === 'rocket' || b.kind === 'enemyRocket') {
+                c.save();
+                c.translate(b.x, b.y);
+                c.rotate(Math.atan2(b.vy, b.vx));
+                c.fillStyle = b.friendly ? '#e4dfb2' : '#ee9875';
+                c.fillRect(-9, -2, 15, 4);
+                c.fillStyle = '#ffcc79';
+                c.fillRect(-19, -2, 10, 4);
+                c.restore();
+            } else {
+                c.strokeStyle = b.friendly ? '#f4f1ab' : '#ffac77';
+                c.lineWidth = b.friendly ? 2 : 3;
+                c.lineCap = 'round';
+                c.beginPath();
+                const len = b.friendly ? 20 : 13,
+                    sp = Math.hypot(b.vx, b.vy) || 1;
+                c.moveTo(b.x - (b.vx / sp) * len, b.y - (b.vy / sp) * len);
+                c.lineTo(b.x, b.y);
+                c.stroke();
+                if (!b.friendly) ellipse(c, b.x, b.y, 3, 3, '#ffd2a5');
+            }
+        }
+        for (const warning of g.warnings || []) {
+            c.save();
+            c.globalAlpha = 0.5 + 0.5 * Math.abs(Math.sin(t * 9));
+            c.strokeStyle = '#ffb46f';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.arc(warning.x, warning.y, warning.radius, 0, TAU);
+            c.stroke();
+            c.beginPath();
+            c.moveTo(warning.x - 8, warning.y);
+            c.lineTo(warning.x + 8, warning.y);
+            c.moveTo(warning.x, warning.y - 8);
+            c.lineTo(warning.x, warning.y + 8);
+            c.stroke();
+            c.restore();
+        }
+        if (g.player.health > 0) {
+            if (g.player.dashTime > 0) {
+                for (let i = 1; i < 4; i++)
+                    this.helicopter(
+                        c,
+                        {
+                            ...g.player,
+                            x: g.player.x - g.player.vx * 0.026 * i,
+                            y: g.player.y - g.player.vy * 0.026 * i
+                        },
+                        t,
+                        true
+                    );
+            }
+            c.globalAlpha = g.player.invulnerable > 0 && Math.floor(t * 18) % 2 === 0 ? 0.55 : 1;
+            this.helicopter(c, g.player, t);
+            c.globalAlpha = 1;
+            if (g.player.invulnerable > 0) {
+                c.strokeStyle = '#dbea9b40';
+                c.lineWidth = 1;
+                c.beginPath();
+                c.arc(g.player.x, g.player.y, 43, 0, TAU);
+                c.stroke();
+            }
+        }
+        for (const p of g.particles) {
+            c.globalAlpha = clamp(p.life / p.maxLife, 0, 1);
+            if (p.smoke) {
+                ellipse(c, p.x, p.y, p.size * (1 + (1 - p.life / p.maxLife) * 2), p.size, p.color);
+            } else {
+                c.strokeStyle = p.color;
+                c.lineWidth = p.size;
+                c.beginPath();
+                c.moveTo(p.x, p.y);
+                c.lineTo(p.x - p.vx * 0.025, p.y - p.vy * 0.025);
+                c.stroke();
+                if (p.flare) {
+                    ellipse(c, p.x, p.y, p.size * 3.4, p.size * 3.4, '#ff9b59aa');
+                    ellipse(c, p.x, p.y, p.size * 1.8, p.size * 1.8, '#fff6c4');
+                }
+            }
+        }
+        c.globalAlpha = 1;
+        for (const e of g.explosions) {
+            const progress = 1 - e.life / e.maxLife;
+            c.globalAlpha = (1 - progress) * 0.75;
+            c.strokeStyle = '#ffcf8b';
+            c.lineWidth = 3 * (1 - progress);
+            c.beginPath();
+            c.arc(e.x, e.y, e.size * progress, 0, TAU);
+            c.stroke();
+            if (progress < 0.4) {
+                const flash = c.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.size * 0.6);
+                flash.addColorStop(0, '#fff6c9aa');
+                flash.addColorStop(1, '#ffc06b00');
+                c.fillStyle = flash;
+                c.fillRect(e.x - e.size, e.y - e.size, e.size * 2, e.size * 2);
+            }
+        }
+        c.globalAlpha = 1;
+        for (const f of g.floaters) {
+            c.globalAlpha = clamp(f.life, 0, 1);
+            c.font = `bold ${f.big ? 19 : 12}px monospace`;
+            c.fillStyle = f.color;
+            c.textAlign = 'center';
+            c.fillText(f.text, f.x, f.y);
+        }
+        c.globalAlpha = 1;
+        // Enemy arrival indicators give the pilot time to react.
+        if (g.state === 'playing')
+            for (const e of g.enemies) {
+                const left = camera.x,
+                    right = left + W / zoom,
+                    top = camera.y,
+                    bottom = top + H / zoom;
+                if (e.x < left + 15 || e.x > right - 15 || e.y < top + 15 || e.y > bottom - 15) {
+                    const x = clamp(e.x, left + 18, right - 18),
+                        y = clamp(e.y, top + 100 / zoom, bottom - 70 / zoom);
+                    c.save();
+                    c.translate(x, y);
+                    c.rotate(
+                        Math.atan2(e.y - (top + H / (2 * zoom)), e.x - (left + W / (2 * zoom)))
+                    );
+                    path(
+                        c,
+                        [
+                            [6, 0],
+                            [-5, -5],
+                            [-5, 5]
+                        ],
+                        '#efaa76'
+                    );
+                    c.restore();
+                }
+            }
+        c.restore();
+        c.setTransform(this.scale, 0, 0, this.scale, 0, 0);
+        if (g.state === 'playing' && !g.touch) {
+            const x = (g.pointer.x - camera.x) * zoom,
+                y = (g.pointer.y - camera.y) * zoom;
+            c.save();
+            c.translate(x, y);
+            c.strokeStyle = '#f1f6c3bb';
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(0, 0, 12, 0, TAU);
+            c.moveTo(-21, 0);
+            c.lineTo(-7, 0);
+            c.moveTo(7, 0);
+            c.lineTo(21, 0);
+            c.moveTo(0, -21);
+            c.lineTo(0, -7);
+            c.moveTo(0, 7);
+            c.lineTo(0, 21);
+            c.stroke();
+            ellipse(c, 0, 0, 1.5, 1.5, '#f6f7c5');
+            c.restore();
+        }
+        // Target tracking radar, with a faint scanning line.
+        if (g.state === 'playing' && W > 1000) {
+            const x = 95,
+                y = H - 100,
+                r = 44;
+            c.save();
+            c.translate(x, y);
+            ellipse(c, 0, 0, r, r, '#111f12aa');
+            c.strokeStyle = '#c9df8a38';
+            c.lineWidth = 1;
+            for (const rr of [r * 0.5, r]) {
+                c.beginPath();
+                c.arc(0, 0, rr, 0, TAU);
+                c.stroke();
+            }
+            c.beginPath();
+            c.moveTo(-r, 0);
+            c.lineTo(r, 0);
+            c.moveTo(0, -r);
+            c.lineTo(0, r);
+            c.stroke();
+            c.strokeStyle = '#dbea9b77';
+            c.beginPath();
+            c.moveTo(0, 0);
+            c.lineTo(Math.cos(t * 1.3) * r, Math.sin(t * 1.3) * r);
+            c.stroke();
+            for (const e of g.enemies)
+                ellipse(c, (e.x / W - 0.5) * r * 1.7, (e.y / H - 0.5) * r * 1.7, 2, 2, '#efae7c');
+            ellipse(
+                c,
+                (g.player.x / W - 0.5) * r * 1.7,
+                (g.player.y / H - 0.5) * r * 1.7,
+                2.5,
+                2.5,
+                '#def2a1'
+            );
+            c.restore();
+        }
     }
-    if(g.player.health>0){
-      if(g.player.dashTime>0){for(let i=1;i<4;i++)this.helicopter(c,{...g.player,x:g.player.x-g.player.vx*.026*i,y:g.player.y-g.player.vy*.026*i},t,true);}
-      c.globalAlpha=g.player.invulnerable>0&&Math.floor(t*18)%2===0?.55:1;this.helicopter(c,g.player,t);c.globalAlpha=1;
-      if(g.player.invulnerable>0){c.strokeStyle='#dbea9b40';c.lineWidth=1;c.beginPath();c.arc(g.player.x,g.player.y,43,0,TAU);c.stroke();}
-    }
-    for(const p of g.particles){c.globalAlpha=clamp(p.life/p.maxLife,0,1);if(p.smoke){ellipse(c,p.x,p.y,p.size*(1+(1-p.life/p.maxLife)*2),p.size,p.color);}else{c.strokeStyle=p.color;c.lineWidth=p.size;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);c.stroke();if(p.flare){ellipse(c,p.x,p.y,p.size*3.4,p.size*3.4,'#ff9b59aa');ellipse(c,p.x,p.y,p.size*1.8,p.size*1.8,'#fff6c4');}}}c.globalAlpha=1;
-    for(const e of g.explosions){const progress=1-e.life/e.maxLife;c.globalAlpha=(1-progress)*.75;c.strokeStyle='#ffcf8b';c.lineWidth=3*(1-progress);c.beginPath();c.arc(e.x,e.y,e.size*progress,0,TAU);c.stroke();if(progress<.4){const flash=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.size*.6);flash.addColorStop(0,'#fff6c9aa');flash.addColorStop(1,'#ffc06b00');c.fillStyle=flash;c.fillRect(e.x-e.size,e.y-e.size,e.size*2,e.size*2);}}c.globalAlpha=1;
-    for(const f of g.floaters){c.globalAlpha=clamp(f.life,0,1);c.font=`bold ${f.big?19:12}px monospace`;c.fillStyle=f.color;c.textAlign='center';c.fillText(f.text,f.x,f.y);}c.globalAlpha=1;
-    // Enemy arrival indicators give the pilot time to react.
-    if(g.state==='playing')for(const e of g.enemies){const left=camera.x,right=left+W/zoom,top=camera.y,bottom=top+H/zoom;if(e.x<left+15||e.x>right-15||e.y<top+15||e.y>bottom-15){const x=clamp(e.x,left+18,right-18),y=clamp(e.y,top+100/zoom,bottom-70/zoom);c.save();c.translate(x,y);c.rotate(Math.atan2(e.y-(top+H/(2*zoom)),e.x-(left+W/(2*zoom))));path(c,[[6,0],[-5,-5],[-5,5]],'#efaa76');c.restore();}}
-    c.restore();
-    c.setTransform(this.scale,0,0,this.scale,0,0);
-    if(g.state==='playing'&&!g.touch){
-      const x=(g.pointer.x-camera.x)*zoom,y=(g.pointer.y-camera.y)*zoom;c.save();c.translate(x,y);c.strokeStyle='#f1f6c3bb';c.lineWidth=1;c.beginPath();c.arc(0,0,12,0,TAU);c.moveTo(-21,0);c.lineTo(-7,0);c.moveTo(7,0);c.lineTo(21,0);c.moveTo(0,-21);c.lineTo(0,-7);c.moveTo(0,7);c.lineTo(0,21);c.stroke();ellipse(c,0,0,1.5,1.5,'#f6f7c5');c.restore();
-    }
-    // Target tracking radar, with a faint scanning line.
-    if(g.state==='playing'&&W>1000){const x=95,y=H-100,r=44;c.save();c.translate(x,y);ellipse(c,0,0,r,r,'#111f12aa');c.strokeStyle='#c9df8a38';c.lineWidth=1;for(const rr of [r*.5,r]){c.beginPath();c.arc(0,0,rr,0,TAU);c.stroke();}c.beginPath();c.moveTo(-r,0);c.lineTo(r,0);c.moveTo(0,-r);c.lineTo(0,r);c.stroke();c.strokeStyle='#dbea9b77';c.beginPath();c.moveTo(0,0);c.lineTo(Math.cos(t*1.3)*r,Math.sin(t*1.3)*r);c.stroke();for(const e of g.enemies)ellipse(c,(e.x/W-.5)*r*1.7,(e.y/H-.5)*r*1.7,2,2,'#efae7c');ellipse(c,(g.player.x/W-.5)*r*1.7,(g.player.y/H-.5)*r*1.7,2.5,2.5,'#def2a1');c.restore();}
-  }
 }
 
 // game/constants.js
-const TREAD_MARK_LIFETIME=20,TREAD_MARK_SPACING=14,TREAD_MARK_LIMIT=160;
-const PLAYER_ACCELERATION=3.5,PLAYER_DECELERATION=2.8,PLAYER_TURN_RATE=4,PLAYER_TOUCH_TURN_RATE=5,PLAYER_CANNON_TURN_RATE=16,PLAYER_BANK_RESPONSE=3;
-const FLARE_RANGE=260,FLARE_COOLDOWN=2.2,FLARE_DEFLECTION_CHANCE=.32;
-const LOW_HEALTH_ALARM_INTERVAL=1.4,MISSILE_ALARM_INTERVAL=1.2;
-const ROCKET_RAIL_FORWARD=28,ROCKET_RAIL_OFFSET=15;
-const TANK_TRACK_HALF_WIDTH=16.5,GOLIATH_TRACK_HALF_WIDTH=36;
+const TREAD_MARK_LIFETIME = 20,
+    TREAD_MARK_SPACING = 14,
+    TREAD_MARK_LIMIT = 160;
+const PLAYER_ACCELERATION = 3.5,
+    PLAYER_DECELERATION = 2.8,
+    PLAYER_TURN_RATE = 4,
+    PLAYER_TOUCH_TURN_RATE = 5,
+    PLAYER_CANNON_TURN_RATE = 16,
+    PLAYER_BANK_RESPONSE = 3;
+const FLARE_RANGE = 260,
+    FLARE_COOLDOWN = 2.2,
+    FLARE_DEFLECTION_CHANCE = 0.32;
+const LOW_HEALTH_ALARM_INTERVAL = 1.4,
+    MISSILE_ALARM_INTERVAL = 1.2;
+const ROCKET_RAIL_FORWARD = 28,
+    ROCKET_RAIL_OFFSET = 15;
+const TANK_TRACK_HALF_WIDTH = 16.5,
+    GOLIATH_TRACK_HALF_WIDTH = 36;
 
 // game/state.js
 
 function createState() {
-    const $ = id => document.getElementById(id);
-    const canvas = $('game'), arena = $('arena'), overlay = $('overlay'), dialog = $('settings-dialog');
+    const $ = (id) => document.getElementById(id);
+    const canvas = $('game'),
+        arena = $('arena'),
+        overlay = $('overlay'),
+        dialog = $('settings-dialog');
     const panels = ['intro-panel', 'pause-panel', 'over-panel', 'upgrade-panel'];
-    const defaults = { volume: .6, muted: false, music: true, shake: !matchMedia('(prefers-reduced-motion: reduce)').matches, effects: true, difficulty: 'normal', language: 'en' };
+    const defaults = {
+        volume: 0.6,
+        muted: false,
+        music: true,
+        shake: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+        effects: true,
+        difficulty: 'normal',
+        language: 'en'
+    };
     const read = (key, fallback) => {
         try {
             return JSON.parse(localStorage.getItem(key)) ?? fallback;
-
         } catch {
             return fallback;
-
         }
     };
 
-    const stored = read('blackout.settings', {}), settings = { ...defaults };
+    const stored = read('blackout.settings', {}),
+        settings = { ...defaults };
 
-    for (const key of ['muted', 'music', 'shake', 'effects']) if (typeof stored?.[key] === 'boolean') settings[key] = stored[key];
+    for (const key of ['muted', 'music', 'shake', 'effects'])
+        if (typeof stored?.[key] === 'boolean') settings[key] = stored[key];
     if (typeof stored?.volume === 'number') settings.volume = clamp(stored.volume, 0, 1);
-    if (['easy', 'normal', 'hard'].includes(stored?.difficulty)) settings.difficulty = stored.difficulty;
+    if (['easy', 'normal', 'hard'].includes(stored?.difficulty))
+        settings.difficulty = stored.difficulty;
     if (languages[stored?.language]) settings.language = stored.language;
 
     setLocale(settings.language);
     const write = (key, value) => {
         try {
             localStorage.setItem(key, JSON.stringify(value));
-
-        } catch {/* Private mode can disable storage. */ }
+        } catch {
+            /* Private mode can disable storage. */
+        }
     };
 
-    const sound = new SoundEngine(settings), renderer = new Renderer(canvas, settings), keys = new Set();
+    const sound = new SoundEngine(settings),
+        renderer = new Renderer(canvas, settings),
+        keys = new Set();
     const pointer = { x: 600, y: 230, screenX: null, screenY: null, down: false };
     const bestValue = read('blackout.best', 0);
-    const g = { world: { width: 1600, height: 900 }, state: 'ready', pointer, touch: matchMedia('(pointer:coarse)').matches, enemies: [], bullets: [], particles: [], pickups: [], explosions: [], deathBursts: [], warnings: [], floaters: [], decals: [], treadMarks: [], wreckSmoke: [], time: 0, visualTime: 0, shake: 0, wave: 1, score: 0, kills: 0, best: typeof bestValue === 'number' && Number.isFinite(bestValue) ? Math.max(0, bestValue) : 0, combo: 0, comboTimer: 0, spawnRemaining: 0, spawnTimer: 0, waveWait: -1, bannerTime: 0, hudTimer: 0, testRange: null, camera: { x: 0, y: 0, zoom: 1 }, map: mapForWave(1) };
-    const runtime = { $, canvas, arena, overlay, dialog, panels, settings, read, write, saveSettings: () => write('blackout.settings', settings), sound, renderer, keys, pointer, g, pad: (n, length = 6) => String(Math.floor(n)).padStart(length, '0'), clock: value => `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(Math.floor(value % 60)).padStart(2, '0')}`, t, upgrades: {}, choices: [], joystick: { x: 0, y: 0, id: null }, firePointer: null, gamePointer: null, lastTime: 0, settingsPaused: false, starting: false };
+    const g = {
+        world: { width: 1600, height: 900 },
+        state: 'ready',
+        pointer,
+        touch: matchMedia('(pointer:coarse)').matches,
+        enemies: [],
+        bullets: [],
+        particles: [],
+        pickups: [],
+        explosions: [],
+        deathBursts: [],
+        warnings: [],
+        floaters: [],
+        decals: [],
+        treadMarks: [],
+        wreckSmoke: [],
+        time: 0,
+        visualTime: 0,
+        shake: 0,
+        wave: 1,
+        score: 0,
+        kills: 0,
+        best:
+            typeof bestValue === 'number' && Number.isFinite(bestValue)
+                ? Math.max(0, bestValue)
+                : 0,
+        combo: 0,
+        comboTimer: 0,
+        spawnRemaining: 0,
+        spawnTimer: 0,
+        waveWait: -1,
+        bannerTime: 0,
+        hudTimer: 0,
+        testRange: null,
+        camera: { x: 0, y: 0, zoom: 1 },
+        map: mapForWave(1)
+    };
+    const runtime = {
+        $,
+        canvas,
+        arena,
+        overlay,
+        dialog,
+        panels,
+        settings,
+        read,
+        write,
+        saveSettings: () => write('blackout.settings', settings),
+        sound,
+        renderer,
+        keys,
+        pointer,
+        g,
+        pad: (n, length = 6) => String(Math.floor(n)).padStart(length, '0'),
+        clock: (value) =>
+            `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(Math.floor(value % 60)).padStart(2, '0')}`,
+        t,
+        upgrades: {},
+        choices: [],
+        joystick: { x: 0, y: 0, id: null },
+        firePointer: null,
+        gamePointer: null,
+        lastTime: 0,
+        settingsPaused: false,
+        starting: false
+    };
     function newPlayer() {
-        return { x: g.world.width * .43, y: g.world.height * .52, vx: 0, vy: 0, angle: -Math.PI / 2, cannonAngle: -Math.PI / 2, bank: 0, pitch: 0, health: 100, maxHealth: 100, cooldown: 0, heat: 0, overheated: false, invulnerable: 0, dashTime: 0, dashCooldown: 0, flareCooldown: 0, lowHealthAlarm: 0, missileAlarm: 0, rockets: 3, maxRockets: 3, rocketTimer: 0, rocketCooldown: 0, rocketSide: -1, muzzle: 0 };
+        return {
+            x: g.world.width * 0.43,
+            y: g.world.height * 0.52,
+            vx: 0,
+            vy: 0,
+            angle: -Math.PI / 2,
+            cannonAngle: -Math.PI / 2,
+            bank: 0,
+            pitch: 0,
+            health: 100,
+            maxHealth: 100,
+            cooldown: 0,
+            heat: 0,
+            overheated: false,
+            invulnerable: 0,
+            dashTime: 0,
+            dashCooldown: 0,
+            flareCooldown: 0,
+            lowHealthAlarm: 0,
+            missileAlarm: 0,
+            rockets: 3,
+            maxRockets: 3,
+            rocketTimer: 0,
+            rocketCooldown: 0,
+            rocketSide: -1,
+            muzzle: 0
+        };
     }
 
     function readTestRange() {
-        const enemy = $('test-enemy').value, validEnemy = Object.hasOwn(ENEMIES, enemy) ? enemy : 'tank';
-        const number = (id, fallback, min, max) => clamp(Number($(`test-${id}`).value) || fallback, min, max);
-        return { enemy: validEnemy, interval: number('interval', 1, .2, 5), maxActive: number('max-active', 3, 1, 20), health: number('health', 1, .25, 5), distance: number('distance', 350, 120, 700), upgrades: { damage: number('damage', 0, 0, 4), fireRate: number('fire-rate', 0, 0, 4), armor: number('armor', 0, 0, 4), engine: number('engine', 0, 0, 3), rockets: number('rockets', 0, 0, 3) } };
+        const enemy = $('test-enemy').value,
+            validEnemy = Object.hasOwn(ENEMIES, enemy) ? enemy : 'tank';
+        const number = (id, fallback, min, max) =>
+            clamp(Number($(`test-${id}`).value) || fallback, min, max);
+        return {
+            enemy: validEnemy,
+            interval: number('interval', 1, 0.2, 5),
+            maxActive: number('max-active', 3, 1, 20),
+            health: number('health', 1, 0.25, 5),
+            distance: number('distance', 350, 120, 700),
+            upgrades: {
+                damage: number('damage', 0, 0, 4),
+                fireRate: number('fire-rate', 0, 0, 4),
+                armor: number('armor', 0, 0, 4),
+                engine: number('engine', 0, 0, 3),
+                rockets: number('rockets', 0, 0, 3)
+            }
+        };
     }
 
     function applyStartingUpgrades() {
@@ -1163,28 +2797,41 @@ function createState() {
         p.health = p.maxHealth;
         p.maxRockets += runtime.upgrades.rockets || 0;
         p.rockets = p.maxRockets;
-
     }
     g.player = newPlayer();
 
     function resize() {
-        const rect = arena.getBoundingClientRect(), old = { ...g.world };
+        const rect = arena.getBoundingClientRect(),
+            old = { ...g.world };
         g.touch = matchMedia('(pointer:coarse), (max-width:600px)').matches;
         g.world.width = clamp(rect.width * 1.3, 680, 1700);
-        g.world.height = g.world.width * rect.height / rect.width;
+        g.world.height = (g.world.width * rect.height) / rect.width;
         if (old.width && old.height) {
-            for (const obj of [g.player, ...g.enemies, ...g.pickups, ...g.decals, ...g.treadMarks, ...g.bullets, ...g.particles, ...g.floaters, ...g.explosions, ...g.deathBursts, ...g.warnings, ...g.wreckSmoke]) {
-                obj.x = obj.x / old.width * g.world.width;
-                obj.y = obj.y / old.height * g.world.height;
-
-            } pointer.x = pointer.x / old.width * g.world.width;
-            pointer.y = pointer.y / old.height * g.world.height;
-            if (pointer.screenX !== null) {
-                pointer.screenX = pointer.screenX / old.width * g.world.width;
-                pointer.screenY = pointer.screenY / old.height * g.world.height;
-
+            for (const obj of [
+                g.player,
+                ...g.enemies,
+                ...g.pickups,
+                ...g.decals,
+                ...g.treadMarks,
+                ...g.bullets,
+                ...g.particles,
+                ...g.floaters,
+                ...g.explosions,
+                ...g.deathBursts,
+                ...g.warnings,
+                ...g.wreckSmoke
+            ]) {
+                obj.x = (obj.x / old.width) * g.world.width;
+                obj.y = (obj.y / old.height) * g.world.height;
             }
-        } renderer.resize(g.world, rect, g.map);
+            pointer.x = (pointer.x / old.width) * g.world.width;
+            pointer.y = (pointer.y / old.height) * g.world.height;
+            if (pointer.screenX !== null) {
+                pointer.screenX = (pointer.screenX / old.width) * g.world.width;
+                pointer.screenY = (pointer.screenY / old.height) * g.world.height;
+            }
+        }
+        renderer.resize(g.world, rect, g.map);
         runtime.updateCamera(0, true);
     }
 
@@ -1206,7 +2853,7 @@ function createState() {
         g.state = state;
         clearInput();
         overlay.hidden = !panel;
-        panels.forEach(id => $(id).hidden = id !== panel);
+        panels.forEach((id) => ($(id).hidden = id !== panel));
         $('pause').hidden = state !== 'playing';
         $('touch-controls').hidden = state !== 'playing';
         $('bottom-hud').hidden = !['playing', 'ready'].includes(state);
@@ -1214,7 +2861,6 @@ function createState() {
         sound.setActive(state === 'playing');
         updateStateText();
         if (state === 'ready' || state === 'over') sound.setMusicScene('menu');
-
     }
 
     function focusPanel(id) {
@@ -1227,12 +2873,10 @@ function createState() {
         $('announcement-note').textContent = note;
         g.bannerTime = duration;
         $('announcement').classList.add('visible');
-
     }
 
     function activateMenuMusic() {
         if (g.state === 'ready' || g.state === 'over') void sound.init();
-
     }
 
     async function start(mode = 'operation') {
@@ -1243,7 +2887,20 @@ function createState() {
         g.player = newPlayer();
         runtime.upgrades = g.testRange ? { ...g.testRange.upgrades } : {};
         applyStartingUpgrades();
-        for (const key of ['enemies', 'bullets', 'particles', 'pickups', 'explosions', 'deathBursts', 'warnings', 'floaters', 'decals', 'treadMarks', 'wreckSmoke']) g[key] = [];
+        for (const key of [
+            'enemies',
+            'bullets',
+            'particles',
+            'pickups',
+            'explosions',
+            'deathBursts',
+            'warnings',
+            'floaters',
+            'decals',
+            'treadMarks',
+            'wreckSmoke'
+        ])
+            g[key] = [];
         g.time = 0;
         g.wave = 0;
         g.score = 0;
@@ -1278,12 +2935,13 @@ function createState() {
     function applyLanguage() {
         setLocale(settings.language);
         document.documentElement.lang = settings.language;
-        document.querySelectorAll('[data-i18n]').forEach(element => {
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
             element.innerHTML = t(element.dataset.i18n);
-
         });
-        document.querySelectorAll('[data-i18n-aria]').forEach(element => element.setAttribute('aria-label', t(element.dataset.i18nAria)));
-        document.querySelectorAll('[data-difficulty]').forEach(button => {
+        document
+            .querySelectorAll('[data-i18n-aria]')
+            .forEach((element) => element.setAttribute('aria-label', t(element.dataset.i18nAria)));
+        document.querySelectorAll('[data-difficulty]').forEach((button) => {
             button.textContent = t(`difficulty.${button.dataset.difficulty}`);
         });
         $('language').value = settings.language;
@@ -1306,11 +2964,23 @@ function createState() {
         resize();
         applyLanguage();
         requestAnimationFrame(runtime.frame);
-
     }
 
-    return Object.assign(runtime, { newPlayer, readTestRange, applyStartingUpgrades, resize, clearInput, updateStateText, setState, focusPanel, announce, activateMenuMusic, start, applyLanguage, initialize });
-
+    return Object.assign(runtime, {
+        newPlayer,
+        readTestRange,
+        applyStartingUpgrades,
+        resize,
+        clearInput,
+        updateStateText,
+        setState,
+        focusPanel,
+        announce,
+        activateMenuMusic,
+        start,
+        applyLanguage,
+        initialize
+    });
 }
 
 // game/entities.js
@@ -1319,40 +2989,59 @@ function createEntities(runtime) {
     const { g, settings, sound } = runtime;
 
     function burst(x, y, color, count = 10, force = 1, smoke = false) {
-        const limit = settings.effects ? 650 : 180, amount = settings.effects ? count : Math.ceil(count * .45);
+        const limit = settings.effects ? 650 : 180,
+            amount = settings.effects ? count : Math.ceil(count * 0.45);
 
-        for (let i = 0;
-            i < amount && g.particles.length < limit;
-            i++) {
-            const a = Math.random() * TAU, speed = (30 + Math.random() * 170) * force, life = smoke ? 1.1 + Math.random() : .15 + Math.random() * .5;
+        for (let i = 0; i < amount && g.particles.length < limit; i++) {
+            const a = Math.random() * TAU,
+                speed = (30 + Math.random() * 170) * force,
+                life = smoke ? 1.1 + Math.random() : 0.15 + Math.random() * 0.5;
 
-            g.particles.push({ x, y, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, life, maxLife: life, color, size: smoke ? 6 + Math.random() * 12 : 1 + Math.random() * 2.5, smoke });
-
+            g.particles.push({
+                x,
+                y,
+                vx: Math.cos(a) * speed,
+                vy: Math.sin(a) * speed,
+                life,
+                maxLife: life,
+                color,
+                size: smoke ? 6 + Math.random() * 12 : 1 + Math.random() * 2.5,
+                smoke
+            });
         }
     }
 
     function fireSplinters(x, y, size) {
-        const limit = settings.effects ? 650 : 180, amount = settings.effects ? Math.ceil(10 + size / 12) : Math.ceil(5 + size / 24);
+        const limit = settings.effects ? 650 : 180,
+            amount = settings.effects ? Math.ceil(10 + size / 12) : Math.ceil(5 + size / 24);
 
-        for (let i = 0;
-            i < amount && g.particles.length < limit;
-            i++) {
-            const a = Math.random() * TAU, speed = (100 + Math.random() * 240) * size / 75, life = .16 + Math.random() * .28;
+        for (let i = 0; i < amount && g.particles.length < limit; i++) {
+            const a = Math.random() * TAU,
+                speed = ((100 + Math.random() * 240) * size) / 75,
+                life = 0.16 + Math.random() * 0.28;
 
-            g.particles.push({ x, y, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, life, maxLife: life, color: Math.random() < .45 ? '#fff0ad' : '#ff9b59', size: .8 + Math.random() * 1.7, fireSplinter: true });
-
+            g.particles.push({
+                x,
+                y,
+                vx: Math.cos(a) * speed,
+                vy: Math.sin(a) * speed,
+                life,
+                maxLife: life,
+                color: Math.random() < 0.45 ? '#fff0ad' : '#ff9b59',
+                size: 0.8 + Math.random() * 1.7,
+                fireSplinter: true
+            });
         }
     }
 
     function explosion(x, y, size = 75) {
-        g.explosions.push({ x, y, size, life: .65, maxLife: .65 });
+        g.explosions.push({ x, y, size, life: 0.65, maxLife: 0.65 });
         burst(x, y, '#f9c57f', 46, size / 65);
-        burst(x, y, '#28342a', 16, .45, true);
+        burst(x, y, '#28342a', 16, 0.45, true);
         fireSplinters(x, y, size);
 
         g.shake = Math.max(g.shake, size / 6);
         sound.play('explode');
-
     }
 
     function float(text, x, y, color = '#e2eda9', big = false) {
@@ -1367,7 +3056,6 @@ function createEntities(runtime) {
         for (const burst of g.deathBursts) {
             if (burst.delay <= 0) explosion(burst.x, burst.y, burst.size);
             else pendingBursts.push(burst);
-
         }
         g.deathBursts = pendingBursts;
 
@@ -1375,16 +3063,30 @@ function createEntities(runtime) {
             source.life -= dt;
             source.timer -= dt;
 
-            if (source.life > 0 && source.timer <= 0 && g.particles.length < (settings.effects ? 650 : 180)) {
+            if (
+                source.life > 0 &&
+                source.timer <= 0 &&
+                g.particles.length < (settings.effects ? 650 : 180)
+            ) {
                 for (let i = 0; i < (settings.effects ? 2 : 1); i++) {
                     const life = 4.5 + Math.random() * 2;
-                    g.particles.push({ x: source.x + (Math.random() - .5) * 16, y: source.y - 12, vx: (Math.random() - .5) * 16, vy: -22 - Math.random() * 28, life, maxLife: life, smoke: true, persistent: true, color: '#111812b8', size: 14 + Math.random() * 12 });
+                    g.particles.push({
+                        x: source.x + (Math.random() - 0.5) * 16,
+                        y: source.y - 12,
+                        vx: (Math.random() - 0.5) * 16,
+                        vy: -22 - Math.random() * 28,
+                        life,
+                        maxLife: life,
+                        smoke: true,
+                        persistent: true,
+                        color: '#111812b8',
+                        size: 14 + Math.random() * 12
+                    });
                 }
                 source.timer = settings.effects ? 0.32 : 0.6;
-
             }
         }
-        g.wreckSmoke = g.wreckSmoke.filter(source => source.life > 0);
+        g.wreckSmoke = g.wreckSmoke.filter((source) => source.life > 0);
 
         for (const decal of g.decals) if (decal.burnTime > 0) decal.burnTime -= dt;
 
@@ -1394,26 +3096,23 @@ function createEntities(runtime) {
             const flareDrift = p.flare ? Math.sin(g.time * 15 + p.flarePhase) * p.flareWobble : 0;
 
             p.x += (p.vx + flareDrift) * dt;
-            p.y += (p.vy + flareDrift * .55) * dt;
+            p.y += (p.vy + flareDrift * 0.55) * dt;
             p.vx *= Math.exp(-dt * drag);
             p.vy *= Math.exp(-dt * drag);
             p.life -= dt;
-
         }
-        g.particles = g.particles.filter(p => p.life > 0);
+        g.particles = g.particles.filter((p) => p.life > 0);
 
         for (const e of g.explosions) e.life -= dt;
-        g.explosions = g.explosions.filter(e => e.life > 0);
+        g.explosions = g.explosions.filter((e) => e.life > 0);
 
         for (const f of g.floaters) {
             f.y -= dt * 30;
             f.life -= dt;
-
-        } g.floaters = g.floaters.filter(f => f.life > 0);
-
+        }
+        g.floaters = g.floaters.filter((f) => f.life > 0);
     }
     return { burst, fireSplinters, explosion, float, updateEffects };
-
 }
 
 // game/waves.js
@@ -1432,24 +3131,28 @@ function createWaves(runtime) {
         g.decals = [];
         g.treadMarks = [];
         g.wreckSmoke = [];
-        g.particles = g.particles.filter(particle => !particle.smoke);
+        g.particles = g.particles.filter((particle) => !particle.smoke);
         renderer.setMap(g.map);
         renderer.mapLabel = t(`map.${g.map.layout}`);
         $('sector-name').textContent = renderer.mapLabel;
         $('wave').innerHTML = `${t('hud.wave')} <b>${pad(g.wave, 2)}</b>`;
-        announce(t(g.plan.boss ? 'wave.bossTag' : 'wave.enemyTag'), t(g.plan.boss ? 'wave.bossTitle' : 'wave.title', { wave: pad(g.wave, 2) }), `${renderer.mapLabel} · ${t(g.plan.boss ? 'wave.bossNote' : g.wave === 1 ? 'wave.firstNote' : 'wave.note')}`, 3.2);
+        announce(
+            t(g.plan.boss ? 'wave.bossTag' : 'wave.enemyTag'),
+            t(g.plan.boss ? 'wave.bossTitle' : 'wave.title', { wave: pad(g.wave, 2) }),
+            `${renderer.mapLabel} · ${t(g.plan.boss ? 'wave.bossNote' : g.wave === 1 ? 'wave.firstNote' : 'wave.note')}`,
+            3.2
+        );
         sound.play(g.plan.boss ? 'alert' : 'wave');
         if (g.plan.boss) runtime.spawnEnemy('boss');
         sound.setMusicScene(g.plan.boss ? 'boss' : 'waves');
     }
 
     function spawnEnemy(forced) {
-        const { width: W, height: H } = g.world, p = g.player;
+        const { width: W, height: H } = g.world,
+            p = g.player;
         let x, y;
 
-        for (let attempt = 0;
-            attempt < 8;
-            attempt++) {
+        for (let attempt = 0; attempt < 8; attempt++) {
             const side = Math.floor(Math.random() * 4);
             x = side === 0 ? -45 : side === 1 ? W + 45 : 60 + Math.random() * (W - 120);
             y = side === 2 ? -45 : side === 3 ? H + 45 : 110 + Math.random() * (H - 170);
@@ -1457,8 +3160,26 @@ function createWaves(runtime) {
         }
 
         const type = forced || enemyType(g.wave, g.spawnIndex++);
-        const stats = ENEMIES[type], health = (stats.health + stats.healthPerWave * g.wave) * g.plan.health;
-        const enemy = { x, y, type, health, maxHealth: health, speed: (stats.speed + Math.min(g.wave * stats.speedPerWave, stats.speedWaveCap)) * stats.speedMultiplier, points: stats.points, radius: stats.radius, angle: Math.atan2(p.y - y, p.x - x), turret: 0, cooldown: stats.initialCooldown + Math.random() * stats.initialRandom, charge: 0, hit: 0, seed: Math.random() * TAU };
+        const stats = ENEMIES[type],
+            health = (stats.health + stats.healthPerWave * g.wave) * g.plan.health;
+        const enemy = {
+            x,
+            y,
+            type,
+            health,
+            maxHealth: health,
+            speed:
+                (stats.speed + Math.min(g.wave * stats.speedPerWave, stats.speedWaveCap)) *
+                stats.speedMultiplier,
+            points: stats.points,
+            radius: stats.radius,
+            angle: Math.atan2(p.y - y, p.x - x),
+            turret: 0,
+            cooldown: stats.initialCooldown + Math.random() * stats.initialRandom,
+            charge: 0,
+            hit: 0,
+            seed: Math.random() * TAU
+        };
         if (g.testRange) {
             enemy.health *= g.testRange.health;
             enemy.maxHealth = enemy.health;
@@ -1473,11 +3194,21 @@ function createWaves(runtime) {
 function createLoop(runtime) {
     const { g, sound, renderer } = runtime;
     function frame(time) {
-        const dt = Math.min((time - (runtime.lastTime || time)) / 1000, .05); runtime.lastTime = time;
+        const dt = Math.min((time - (runtime.lastTime || time)) / 1000, 0.05);
+        runtime.lastTime = time;
         if (!document.hidden) {
-            if (g.state === 'playing') { g.visualTime += dt; runtime.update(dt); runtime.updateEffects(dt); }
-            else if (g.state === 'ready' || g.state === 'over') { if (!matchMedia('(prefers-reduced-motion:reduce)').matches) g.visualTime += dt; runtime.updateEffects(dt); }
-            sound.update(g.state === 'playing' ? Math.hypot(g.player.vx, g.player.vy) / 300 : 0, runtime.upgrades.engine || 0);
+            if (g.state === 'playing') {
+                g.visualTime += dt;
+                runtime.update(dt);
+                runtime.updateEffects(dt);
+            } else if (g.state === 'ready' || g.state === 'over') {
+                if (!matchMedia('(prefers-reduced-motion:reduce)').matches) g.visualTime += dt;
+                runtime.updateEffects(dt);
+            }
+            sound.update(
+                g.state === 'playing' ? Math.hypot(g.player.vx, g.player.vy) / 300 : 0,
+                runtime.upgrades.engine || 0
+            );
             renderer.draw(g, dt);
         }
         requestAnimationFrame(frame);
@@ -1490,16 +3221,34 @@ function createLoop(runtime) {
 
 function createCombat(runtime) {
     const { g, settings, sound, keys, pointer, $, t } = runtime;
-    const burst = (...args) => runtime.burst(...args), explosion = (...args) => runtime.explosion(...args), float = (...args) => runtime.float(...args);
-    const positionalAudio = source => {
-        const p = g.player, distanceToSource = distance(source, p);
-        return { pan: clamp((source.x - p.x) / (g.world.width * .35), -1, 1), gain: clamp(1 - distanceToSource / (g.world.width * .7), .15, 1) };
+    const burst = (...args) => runtime.burst(...args),
+        explosion = (...args) => runtime.explosion(...args),
+        float = (...args) => runtime.float(...args);
+    const positionalAudio = (source) => {
+        const p = g.player,
+            distanceToSource = distance(source, p);
+        return {
+            pan: clamp((source.x - p.x) / (g.world.width * 0.35), -1, 1),
+            gain: clamp(1 - distanceToSource / (g.world.width * 0.7), 0.15, 1)
+        };
     };
 
     function gun() {
-        const p = g.player, w = WEAPONS.gun, a = p.cannonAngle + (Math.random() - .5) * w.spread, speed = w.speed;
+        const p = g.player,
+            w = WEAPONS.gun,
+            a = p.cannonAngle + (Math.random() - 0.5) * w.spread,
+            speed = w.speed;
 
-        g.bullets.push({ x: p.x + Math.cos(a) * 39, y: p.y + Math.sin(a) * 39, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, life: w.life, friendly: true, damage: w.damage + (runtime.upgrades.damage || 0) * w.damagePerUpgrade, kind: 'gun' });
+        g.bullets.push({
+            x: p.x + Math.cos(a) * 39,
+            y: p.y + Math.sin(a) * 39,
+            vx: Math.cos(a) * speed,
+            vy: Math.sin(a) * speed,
+            life: w.life,
+            friendly: true,
+            damage: w.damage + (runtime.upgrades.damage || 0) * w.damagePerUpgrade,
+            kind: 'gun'
+        });
 
         p.cooldown = w.cooldown * Math.pow(w.cooldownUpgradeFactor, runtime.upgrades.fireRate || 0);
         p.muzzle = w.muzzleTime;
@@ -1509,76 +3258,105 @@ function createCombat(runtime) {
         if (p.heat >= 1) {
             p.overheated = true;
             float(t('heat.cooling'), p.x, p.y - 55, '#ffb586', true);
-
         }
-        sound.play('shot', p.x / g.world.width * 1.4 - .7);
-
+        sound.play('shot', (p.x / g.world.width) * 1.4 - 0.7);
     }
-    
-    const rocketRecharge = () => WEAPONS.rocket.rechargeTime * Math.pow(WEAPONS.rocket.rechargeUpgradeFactor, runtime.upgrades.rockets || 0);
+
+    const rocketRecharge = () =>
+        WEAPONS.rocket.rechargeTime *
+        Math.pow(WEAPONS.rocket.rechargeUpgradeFactor, runtime.upgrades.rockets || 0);
     function launchRocket() {
-        const p = g.player, w = WEAPONS.rocket;
+        const p = g.player,
+            w = WEAPONS.rocket;
         if (g.state !== 'playing' || !p.rockets || p.rocketCooldown > 0) return;
 
-        let target = null, dist = Infinity;
+        let target = null,
+            dist = Infinity;
 
         for (const e of g.enemies) {
             const d = distance(e, g.touch ? p : pointer);
             if (d < dist) {
                 target = e;
                 dist = d;
-
             }
         }
         const a = target ? Math.atan2(target.y - p.y, target.x - p.x) : p.cannonAngle;
 
-        const railAngle = a + Math.PI / 2, side = p.rocketSide;
+        const railAngle = a + Math.PI / 2,
+            side = p.rocketSide;
 
         p.rocketSide *= -1;
 
-        g.bullets.push({ x: p.x + Math.cos(a) * ROCKET_RAIL_FORWARD + Math.cos(railAngle) * ROCKET_RAIL_OFFSET * side, y: p.y + Math.sin(a) * ROCKET_RAIL_FORWARD + Math.sin(railAngle) * ROCKET_RAIL_OFFSET * side, vx: Math.cos(a) * w.launchSpeed, vy: Math.sin(a) * w.launchSpeed, life: w.life, friendly: true, damage: w.damage + (runtime.upgrades.damage || 0) * w.damagePerUpgrade, kind: 'rocket', target, trail: 0, launchAngle: a, launchDelay: ROCKET_IGNITION_DELAY });
+        g.bullets.push({
+            x:
+                p.x +
+                Math.cos(a) * ROCKET_RAIL_FORWARD +
+                Math.cos(railAngle) * ROCKET_RAIL_OFFSET * side,
+            y:
+                p.y +
+                Math.sin(a) * ROCKET_RAIL_FORWARD +
+                Math.sin(railAngle) * ROCKET_RAIL_OFFSET * side,
+            vx: Math.cos(a) * w.launchSpeed,
+            vy: Math.sin(a) * w.launchSpeed,
+            life: w.life,
+            friendly: true,
+            damage: w.damage + (runtime.upgrades.damage || 0) * w.damagePerUpgrade,
+            kind: 'rocket',
+            target,
+            trail: 0,
+            launchAngle: a,
+            launchDelay: ROCKET_IGNITION_DELAY
+        });
 
         p.rockets--;
         p.rocketCooldown = w.launchCooldown;
         sound.play('rocket');
         runtime.updateHud();
-
     }
     function dash() {
         const p = g.player;
         if (g.state !== 'playing' || p.dashCooldown > 0) return;
 
-        const move = movement(), len = Math.hypot(move.x, move.y), a = len > .1 ? Math.atan2(move.y, move.x) : p.angle;
+        const move = movement(),
+            len = Math.hypot(move.x, move.y),
+            a = len > 0.1 ? Math.atan2(move.y, move.x) : p.angle;
 
         p.vx = Math.cos(a) * 850;
         p.vy = Math.sin(a) * 850;
-        p.dashTime = .22;
-        p.invulnerable = .55;
-        p.dashCooldown = 3.5 * Math.pow(.87, runtime.upgrades.engine || 0);
+        p.dashTime = 0.22;
+        p.invulnerable = 0.55;
+        p.dashCooldown = 3.5 * Math.pow(0.87, runtime.upgrades.engine || 0);
 
-        burst(p.x, p.y, '#b2c382', 12, .6);
+        burst(p.x, p.y, '#b2c382', 12, 0.6);
         sound.play('dash');
-
     }
     function movement() {
-        let x = Number(keys.has('KeyD') || keys.has('ArrowRight')) - Number(keys.has('KeyA') || keys.has('ArrowLeft')) + runtime.joystick.x;
+        let x =
+            Number(keys.has('KeyD') || keys.has('ArrowRight')) -
+            Number(keys.has('KeyA') || keys.has('ArrowLeft')) +
+            runtime.joystick.x;
 
-        let y = Number(keys.has('KeyS') || keys.has('ArrowDown')) - Number(keys.has('KeyW') || keys.has('ArrowUp')) + runtime.joystick.y;
+        let y =
+            Number(keys.has('KeyS') || keys.has('ArrowDown')) -
+            Number(keys.has('KeyW') || keys.has('ArrowUp')) +
+            runtime.joystick.y;
 
         const length = Math.hypot(x, y);
         if (length > 1) {
             x /= length;
             y /= length;
-
-        } return { x, y };
-
+        }
+        return { x, y };
     }
     function updateCamera(dt, instant = false) {
-        const { width: W, height: H } = g.world, camera = g.camera, p = g.player;
+        const { width: W, height: H } = g.world,
+            camera = g.camera,
+            p = g.player;
 
         camera.zoom = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 1.08;
 
-        const x = clamp(p.x - W / (2 * camera.zoom), 0, W - W / camera.zoom), y = clamp(p.y - H / (2 * camera.zoom), 0, H - H / camera.zoom);
+        const x = clamp(p.x - W / (2 * camera.zoom), 0, W - W / camera.zoom),
+            y = clamp(p.y - H / (2 * camera.zoom), 0, H - H / camera.zoom);
 
         const response = instant ? 1 : 1 - Math.exp(-3 * dt);
 
@@ -1589,61 +3367,85 @@ function createCombat(runtime) {
         if (pointer.screenX !== null) {
             pointer.x = camera.x + pointer.screenX / camera.zoom;
             pointer.y = camera.y + pointer.screenY / camera.zoom;
-
         }
     }
     function hitEnemy(e, damage) {
         if (e.health <= 0) return;
 
         e.health -= damage;
-        e.hit = .12;
-        burst(e.x, e.y, '#ebd99c', 4, .5);
+        e.hit = 0.12;
+        burst(e.x, e.y, '#ebd99c', 4, 0.5);
 
         if (e.health <= 0) {
             g.kills++;
             g.combo = g.comboTimer > 0 ? g.combo + 1 : 1;
             g.comboTimer = 4;
 
-            const multiplier = Math.min(5, 1 + Math.floor(g.combo / 3)), points = e.points * multiplier;
+            const multiplier = Math.min(5, 1 + Math.floor(g.combo / 3)),
+                points = e.points * multiplier;
             g.score += points;
 
-            float(`+${points}${multiplier > 1 ? ' ×' + multiplier : ''}`, e.x, e.y - 35, '#e0efa6', multiplier > 1);
+            float(
+                `+${points}${multiplier > 1 ? ' ×' + multiplier : ''}`,
+                e.x,
+                e.y - 35,
+                '#e0efa6',
+                multiplier > 1
+            );
 
             const stats = ENEMIES[e.type];
 
             explosion(e.x, e.y, stats.deathExplosion);
 
             if (e.type === 'boss') {
-                for (let i = 0;
-                    i < 5;
-                    i++) {
-                    const a = Math.random() * TAU, distance = 10 + Math.random() * 38;
+                for (let i = 0; i < 5; i++) {
+                    const a = Math.random() * TAU,
+                        distance = 10 + Math.random() * 38;
 
-                    g.deathBursts.push({ x: e.x + Math.cos(a) * distance, y: e.y + Math.sin(a) * distance, size: 58 + Math.random() * 28, delay: .1 + i * .12 + Math.random() * .05 });
-
+                    g.deathBursts.push({
+                        x: e.x + Math.cos(a) * distance,
+                        y: e.y + Math.sin(a) * distance,
+                        size: 58 + Math.random() * 28,
+                        delay: 0.1 + i * 0.12 + Math.random() * 0.05
+                    });
                 }
             }
-            if (e.type === 'kamikaze' && distance(e, g.player) < stats.explosionRadius + 17) damagePlayer(stats.projectileDamage);
+            if (e.type === 'kamikaze' && distance(e, g.player) < stats.explosionRadius + 17)
+                damagePlayer(stats.projectileDamage);
 
-            if (!['drone', 'kamikaze', 'boss'].includes(e.type)) g.wreckSmoke.push({ x: e.x, y: e.y, life: 18, timer: 0 });
+            if (!['drone', 'kamikaze', 'boss'].includes(e.type))
+                g.wreckSmoke.push({ x: e.x, y: e.y, life: 18, timer: 0 });
 
             if (e.type === 'boss') sound.setMusicScene('waves');
 
             if (e.type !== 'drone' && e.type !== 'kamikaze') {
-                g.decals.push({ x: e.x, y: e.y, angle: e.angle, size: e.type === 'boss' ? 48 : 26, wreck: true, type: e.type, scale: ENEMIES[e.type].scale, turretAngle: (e.turret ?? e.angle) - e.angle, burnTime: 18 });
+                g.decals.push({
+                    x: e.x,
+                    y: e.y,
+                    angle: e.angle,
+                    size: e.type === 'boss' ? 48 : 26,
+                    wreck: true,
+                    type: e.type,
+                    scale: ENEMIES[e.type].scale,
+                    turretAngle: (e.turret ?? e.angle) - e.angle,
+                    burnTime: 18
+                });
                 if (g.decals.length > 55) g.decals.shift();
             }
-            if (!g.testRange && (g.kills % 4 === 0 || e.type === 'boss')) g.pickups.push({ x: clamp(e.x, 40, g.world.width - 40), y: clamp(e.y, 120, g.world.height - 60), life: 25 });
-
+            if (!g.testRange && (g.kills % 4 === 0 || e.type === 'boss'))
+                g.pickups.push({
+                    x: clamp(e.x, 40, g.world.width - 40),
+                    y: clamp(e.y, 120, g.world.height - 60),
+                    life: 25
+                });
         } else sound.play('hit');
-
     }
     function damagePlayer(amount) {
         const p = g.player;
         if (p.invulnerable > 0 || g.state !== 'playing') return;
 
         p.health = Math.max(0, p.health - amount * g.plan.damage);
-        p.invulnerable = .65;
+        p.invulnerable = 0.65;
         g.shake = 10;
         g.combo = 0;
         g.comboTimer = 0;
@@ -1655,86 +3457,114 @@ function createCombat(runtime) {
         void $('damage-flash').offsetWidth;
         $('damage-flash').classList.add('hit');
 
-        if (p.health <= 25 && p.health > 0) runtime.announce(t('hull.repairing'), t('supply.collect'), t('supply.note'), 1.8);
+        if (p.health <= 25 && p.health > 0)
+            runtime.announce(t('hull.repairing'), t('supply.collect'), t('supply.note'), 1.8);
 
         if (p.health <= 0) {
             if (g.testRange) {
                 p.health = p.maxHealth;
                 p.invulnerable = 1;
-                p.x = g.world.width * .43;
-                p.y = g.world.height * .52;
-
-            }
-            else runtime.endGame();
-
-        } runtime.updateHud();
-
+                p.x = g.world.width * 0.43;
+                p.y = g.world.height * 0.52;
+            } else runtime.endGame();
+        }
+        runtime.updateHud();
     }
     function detonate(b) {
         explosion(b.x, b.y, 135);
 
         for (const e of g.enemies) {
             const d = distance(e, b);
-            if (d < 135 + e.radius) hitEnemy(e, b.damage * (1 - clamp(d / 230, 0, .65)));
-
+            if (d < 135 + e.radius) hitEnemy(e, b.damage * (1 - clamp(d / 230, 0, 0.65)));
         }
-        g.bullets.forEach(other => {
+        g.bullets.forEach((other) => {
             if (!other.friendly && distance(other, b) < 135) other.life = 0;
-
         });
-
     }
     function fireEnemy(e) {
-        const a = e.turret, p = g.player, kind = e.type, stats = ENEMIES[kind];
+        const a = e.turret,
+            p = g.player,
+            kind = e.type,
+            stats = ENEMIES[kind];
 
         if (kind === 'aa') {
             if (!e.burstRemaining) e.burstRemaining = stats.shotCount;
 
-            const angle = Math.random() * TAU, range = e.burstRemaining === stats.shotCount ? 0 : Math.sqrt(Math.random()) * stats.warningSpread;
+            const angle = Math.random() * TAU,
+                range =
+                    e.burstRemaining === stats.shotCount
+                        ? 0
+                        : Math.sqrt(Math.random()) * stats.warningSpread;
 
-            g.warnings.push({ x: clamp(p.x + Math.cos(angle) * range, 0, g.world.width), y: clamp(p.y + Math.sin(angle) * range, 0, g.world.height), life: stats.warningDelay, radius: stats.explosionRadius, damage: stats.projectileDamage });
+            g.warnings.push({
+                x: clamp(p.x + Math.cos(angle) * range, 0, g.world.width),
+                y: clamp(p.y + Math.sin(angle) * range, 0, g.world.height),
+                life: stats.warningDelay,
+                radius: stats.explosionRadius,
+                damage: stats.projectileDamage
+            });
 
             e.burstRemaining--;
 
-            e.cooldown = e.burstRemaining ? stats.burstInterval : stats.fireInterval + Math.random() * stats.fireRandom;
-
+            e.cooldown = e.burstRemaining
+                ? stats.burstInterval
+                : stats.fireInterval + Math.random() * stats.fireRandom;
         } else {
-            for (let i = 0;
-                i < stats.shotCount;
-                i++) {
-                const angle = a + (i - (stats.shotCount - 1) / 2) * stats.spread, speed = stats.projectileSpeed + Math.min(g.wave * stats.projectileSpeedPerWave, stats.projectileSpeedCap);
+            for (let i = 0; i < stats.shotCount; i++) {
+                const angle = a + (i - (stats.shotCount - 1) / 2) * stats.spread,
+                    speed =
+                        stats.projectileSpeed +
+                        Math.min(g.wave * stats.projectileSpeedPerWave, stats.projectileSpeedCap);
 
-                g.bullets.push({ x: e.x + Math.cos(a) * 30, y: e.y + Math.sin(a) * 30, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: stats.projectileLife, friendly: false, kind: kind === 'rocketSemi' ? 'enemyRocket' : 'shell', damage: stats.projectileDamage, turn: stats.rocketTurn, acceleration: stats.rocketAcceleration, maxSpeed: stats.rocketMaxSpeed, trail: 0 });
-
+                g.bullets.push({
+                    x: e.x + Math.cos(a) * 30,
+                    y: e.y + Math.sin(a) * 30,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: stats.projectileLife,
+                    friendly: false,
+                    kind: kind === 'rocketSemi' ? 'enemyRocket' : 'shell',
+                    damage: stats.projectileDamage,
+                    turn: stats.rocketTurn,
+                    acceleration: stats.rocketAcceleration,
+                    maxSpeed: stats.rocketMaxSpeed,
+                    trail: 0
+                });
             }
             const multiplier = kind === 'rocketSemi' ? stats[`${settings.difficulty}Interval`] : 1;
 
-            e.cooldown = (stats.fireInterval - Math.min(g.wave * stats.fireWaveReduction, stats.fireWaveReductionCap) + Math.random() * stats.fireRandom) * multiplier;
-
+            e.cooldown =
+                (stats.fireInterval -
+                    Math.min(g.wave * stats.fireWaveReduction, stats.fireWaveReductionCap) +
+                    Math.random() * stats.fireRandom) *
+                multiplier;
         }
         const audio = positionalAudio(e);
 
-        burst(e.x + Math.cos(a) * 33, e.y + Math.sin(a) * 33, '#f0c185', 4, .3);
-        sound.play(kind === 'rocketSemi' ? 'missile' : kind === 'aa' ? 'aa' : 'enemy', audio.pan, audio.gain);
-
+        burst(e.x + Math.cos(a) * 33, e.y + Math.sin(a) * 33, '#f0c185', 4, 0.3);
+        sound.play(
+            kind === 'rocketSemi' ? 'missile' : kind === 'aa' ? 'aa' : 'enemy',
+            audio.pan,
+            audio.gain
+        );
     }
     function incomingMissile() {
         const p = g.player;
-        let threat = null, nearest = FLARE_RANGE;
+        let threat = null,
+            nearest = FLARE_RANGE;
 
         for (const bullet of g.bullets) {
             if (bullet.kind !== 'enemyRocket' || bullet.life <= 0 || bullet.decoyed) continue;
 
-            const d = distance(bullet, p), closing = bullet.vx * (p.x - bullet.x) + bullet.vy * (p.y - bullet.y) > 0;
+            const d = distance(bullet, p),
+                closing = bullet.vx * (p.x - bullet.x) + bullet.vy * (p.y - bullet.y) > 0;
 
             if (closing && d < nearest) {
                 threat = bullet;
                 nearest = d;
-
             }
         }
         return threat;
-
     }
     function deployFlares() {
         const p = g.player;
@@ -1743,32 +3573,44 @@ function createCombat(runtime) {
 
         p.flareCooldown = FLARE_COOLDOWN;
 
-        for (const spread of [-.3, 0, .3]) {
-            const angle = p.angle + Math.PI + spread + (Math.random() - .5) * .24, life = .85;
+        for (const spread of [-0.3, 0, 0.3]) {
+            const angle = p.angle + Math.PI + spread + (Math.random() - 0.5) * 0.24,
+                life = 0.85;
 
             const speed = (130 + Math.random() * 70) * 3;
 
-            g.particles.push({ x: p.x + Math.cos(angle) * 25, y: p.y + Math.sin(angle) * 25, vx: p.vx + Math.cos(angle) * speed, vy: p.vy + Math.sin(angle) * speed, life, maxLife: life, color: '#ffc866', size: 5, flare: true, flarePhase: Math.random() * TAU, flareWobble: 35 + Math.random() * 40 });
-
+            g.particles.push({
+                x: p.x + Math.cos(angle) * 25,
+                y: p.y + Math.sin(angle) * 25,
+                vx: p.vx + Math.cos(angle) * speed,
+                vy: p.vy + Math.sin(angle) * speed,
+                life,
+                maxLife: life,
+                color: '#ffc866',
+                size: 5,
+                flare: true,
+                flarePhase: Math.random() * TAU,
+                flareWobble: 35 + Math.random() * 40
+            });
         }
         const missile = incomingMissile();
 
         if (missile && Math.random() < FLARE_DEFLECTION_CHANCE) {
             missile.decoyed = true;
-            missile.decoyTimer = .85;
+            missile.decoyTimer = 0.85;
 
             missile.decoyX = p.x - Math.cos(p.angle) * 48;
             missile.decoyY = p.y - Math.sin(p.angle) * 48;
-
         }
         sound.play('flare');
         runtime.updateHud();
 
         return true;
-
     }
     function update(dt) {
-        const p = g.player, W = g.world.width, H = g.world.height;
+        const p = g.player,
+            W = g.world.width,
+            H = g.world.height;
         g.time += dt;
         g.shake = Math.max(0, g.shake - dt * 35);
 
@@ -1782,12 +3624,19 @@ function createCombat(runtime) {
         p.rocketCooldown -= dt;
         p.muzzle -= dt;
 
-        const move = movement(), speed = 270 * Math.pow(1.12, runtime.upgrades.engine || 0), response = 1 - Math.exp(-(Math.hypot(move.x, move.y) > .01 ? PLAYER_ACCELERATION : PLAYER_DECELERATION) * dt);
+        const move = movement(),
+            speed = 270 * Math.pow(1.12, runtime.upgrades.engine || 0),
+            response =
+                1 -
+                Math.exp(
+                    -(Math.hypot(move.x, move.y) > 0.01
+                        ? PLAYER_ACCELERATION
+                        : PLAYER_DECELERATION) * dt
+                );
 
         if (p.dashTime <= 0) {
             p.vx += (move.x * speed - p.vx) * response;
             p.vy += (move.y * speed - p.vy) * response;
-
         }
         p.x = clamp(p.x + p.vx * dt, 34, W - 34);
         p.y = clamp(p.y + p.vy * dt, 104, H - 42);
@@ -1801,20 +3650,28 @@ function createCombat(runtime) {
         let aimAngle;
 
         if (g.touch) {
-            let nearest = null, near = Infinity;
+            let nearest = null,
+                near = Infinity;
             for (const e of g.enemies) {
                 if (e.health <= 0) continue;
                 const d = distance(p, e);
                 if (d < near) {
                     nearest = e;
                     near = d;
-
                 }
-            } aimAngle = nearest ? Math.atan2(nearest.y - p.y, nearest.x - p.x) : Math.hypot(move.x, move.y) > .2 ? Math.atan2(move.y, move.x) : p.angle;
-        }
-        else aimAngle = Math.atan2(pointer.y - p.y, pointer.x - p.x);
+            }
+            aimAngle = nearest
+                ? Math.atan2(nearest.y - p.y, nearest.x - p.x)
+                : Math.hypot(move.x, move.y) > 0.2
+                  ? Math.atan2(move.y, move.x)
+                  : p.angle;
+        } else aimAngle = Math.atan2(pointer.y - p.y, pointer.x - p.x);
 
-        p.angle = turn(p.angle, aimAngle, dt * (g.touch ? PLAYER_TOUCH_TURN_RATE : PLAYER_TURN_RATE));
+        p.angle = turn(
+            p.angle,
+            aimAngle,
+            dt * (g.touch ? PLAYER_TOUCH_TURN_RATE : PLAYER_TURN_RATE)
+        );
 
         p.cannonAngle = turn(p.cannonAngle, aimAngle, dt * PLAYER_CANNON_TURN_RATE);
 
@@ -1824,16 +3681,15 @@ function createCombat(runtime) {
 
         const tiltResponse = 1 - Math.exp(-PLAYER_BANK_RESPONSE * dt);
 
-        p.bank += (clamp(lateral / 270, -1, 1) * .3 - p.bank) * tiltResponse;
+        p.bank += (clamp(lateral / 270, -1, 1) * 0.3 - p.bank) * tiltResponse;
 
-        p.pitch += (clamp(forward / 270, -1, 1) * .2 - p.pitch) * tiltResponse;
+        p.pitch += (clamp(forward / 270, -1, 1) * 0.2 - p.pitch) * tiltResponse;
 
         const firing = pointer.down || keys.has('Space');
 
         if (p.overheated || !firing) {
             p.heat = Math.max(0, p.heat - dt / WEAPONS.gun.coolTime);
             if (p.overheated && p.heat === 0) p.overheated = false;
-
         }
         if (firing && !p.overheated && p.cooldown <= 0) gun();
 
@@ -1843,7 +3699,6 @@ function createCombat(runtime) {
             if (p.rocketTimer >= delay) {
                 p.rockets++;
                 p.rocketTimer = 0;
-
             }
         } else p.rocketTimer = 0;
 
@@ -1853,7 +3708,6 @@ function createCombat(runtime) {
                 if (g.spawnTimer <= 0) {
                     runtime.spawnEnemy(g.testRange.enemy);
                     g.spawnTimer = g.testRange.interval;
-
                 }
             }
         } else if (g.spawnRemaining > 0) {
@@ -1862,91 +3716,117 @@ function createCombat(runtime) {
                 runtime.spawnEnemy();
                 g.spawnRemaining--;
                 g.spawnTimer = g.plan.interval;
-
             }
         }
         for (const e of g.enemies) {
             if (e.health <= 0) continue;
             e.hit = Math.max(0, e.hit - dt);
 
-            const stats = ENEMIES[e.type], a = Math.atan2(p.y - e.y, p.x - e.x), d = distance(e, p), stop = stats.stopDistance;
+            const stats = ENEMIES[e.type],
+                a = Math.atan2(p.y - e.y, p.x - e.x),
+                d = distance(e, p),
+                stop = stats.stopDistance;
 
-            let vx = 0, vy = 0;
+            let vx = 0,
+                vy = 0;
 
             if (d > stop) {
                 vx = Math.cos(a) * e.speed;
                 vy = Math.sin(a) * e.speed;
-
             }
             if (stats.strafeSpeed) {
-                vx += Math.cos(a + Math.PI / 2) * Math.sin(g.time * 1.3 + e.seed) * stats.strafeSpeed;
-                vy += Math.sin(a + Math.PI / 2) * Math.sin(g.time * 1.3 + e.seed) * stats.strafeSpeed;
-
+                vx +=
+                    Math.cos(a + Math.PI / 2) * Math.sin(g.time * 1.3 + e.seed) * stats.strafeSpeed;
+                vy +=
+                    Math.sin(a + Math.PI / 2) * Math.sin(g.time * 1.3 + e.seed) * stats.strafeSpeed;
             }
             // Gentle separation keeps armor from stacking into one unreadable target.
             for (const other of g.enemies) {
                 if (e === other || other.health <= 0) continue;
-                const dist = distance(e, other), min = e.radius + other.radius + 9;
+                const dist = distance(e, other),
+                    min = e.radius + other.radius + 9;
                 if (dist > 0 && dist < min) {
-                    vx += (e.x - other.x) / dist * (min - dist) * 1.5;
-                    vy += (e.y - other.y) / dist * (min - dist) * 1.5;
-
+                    vx += ((e.x - other.x) / dist) * (min - dist) * 1.5;
+                    vy += ((e.y - other.y) / dist) * (min - dist) * 1.5;
                 }
             }
             e.x += vx * dt;
             e.y += vy * dt;
 
-            const previousAngle = e.angle, heading = Math.hypot(vx, vy) > 3 ? Math.atan2(vy, vx) : a;
+            const previousAngle = e.angle,
+                heading = Math.hypot(vx, vy) > 3 ? Math.atan2(vy, vx) : a;
 
             e.angle = turn(e.angle, heading, dt * stats.turnRate);
 
             if (e.type !== 'drone' && e.type !== 'kamikaze') {
-                const forwardDistance = (vx * Math.cos(previousAngle) + vy * Math.sin(previousAngle)) * dt;
+                const forwardDistance =
+                    (vx * Math.cos(previousAngle) + vy * Math.sin(previousAngle)) * dt;
 
-                const turnDistance = Math.atan2(Math.sin(e.angle - previousAngle), Math.cos(e.angle - previousAngle)) * (e.type === 'boss' ? GOLIATH_TRACK_HALF_WIDTH : TANK_TRACK_HALF_WIDTH);
+                const turnDistance =
+                    Math.atan2(
+                        Math.sin(e.angle - previousAngle),
+                        Math.cos(e.angle - previousAngle)
+                    ) * (e.type === 'boss' ? GOLIATH_TRACK_HALF_WIDTH : TANK_TRACK_HALF_WIDTH);
 
                 const trackScale = e.type === 'boss' ? 1.8 : 1;
 
-                const leftTrackDistance = forwardDistance + turnDistance, rightTrackDistance = forwardDistance - turnDistance;
+                const leftTrackDistance = forwardDistance + turnDistance,
+                    rightTrackDistance = forwardDistance - turnDistance;
 
                 e.leftTrackPhase = ((e.leftTrackPhase || 0) + leftTrackDistance / trackScale) % 6;
 
-                e.rightTrackPhase = ((e.rightTrackPhase || 0) + rightTrackDistance / trackScale) % 6;
+                e.rightTrackPhase =
+                    ((e.rightTrackPhase || 0) + rightTrackDistance / trackScale) % 6;
 
                 e.trackPhase = ((e.trackPhase || 0) + forwardDistance / trackScale) % 6;
 
-                e.treadDistance = (e.treadDistance || 0) + Math.max(Math.abs(leftTrackDistance), Math.abs(rightTrackDistance));
+                e.treadDistance =
+                    (e.treadDistance || 0) +
+                    Math.max(Math.abs(leftTrackDistance), Math.abs(rightTrackDistance));
 
                 if (e.treadDistance >= TREAD_MARK_SPACING) {
                     e.treadDistance %= TREAD_MARK_SPACING;
 
                     const boss = e.type === 'boss';
 
-                    g.treadMarks.push({ x: e.x, y: e.y, angle: e.angle, life: TREAD_MARK_LIFETIME, maxLife: TREAD_MARK_LIFETIME, trackOffset: boss ? 36 : 18, trackLength: boss ? 30 : 16, trackWidth: boss ? 24 : 6 });
+                    g.treadMarks.push({
+                        x: e.x,
+                        y: e.y,
+                        angle: e.angle,
+                        life: TREAD_MARK_LIFETIME,
+                        maxLife: TREAD_MARK_LIFETIME,
+                        trackOffset: boss ? 36 : 18,
+                        trackLength: boss ? 30 : 16,
+                        trackWidth: boss ? 24 : 6
+                    });
 
                     if (g.treadMarks.length > TREAD_MARK_LIMIT) g.treadMarks.shift();
-
                 }
             }
             e.turret = turn(e.turret, a, dt * stats.turretRate);
             e.cooldown -= dt;
-            e.charge = clamp(1 - e.cooldown / .7, 0, 1);
+            e.charge = clamp(1 - e.cooldown / 0.7, 0, 1);
 
-            if (e.type !== 'kamikaze' && e.cooldown <= 0 && e.x > 0 && e.x < W && e.y > 60 && e.y < H) fireEnemy(e);
+            if (
+                e.type !== 'kamikaze' &&
+                e.cooldown <= 0 &&
+                e.x > 0 &&
+                e.x < W &&
+                e.y > 60 &&
+                e.y < H
+            )
+                fireEnemy(e);
 
             if (distance(e, p) < e.radius + 22) {
                 if (e.type === 'kamikaze') hitEnemy(e, e.health);
                 else damagePlayer(stats.contactDamage);
-
             }
             if (g.state !== 'playing') return;
-
         }
-        if (p.health <= p.maxHealth * .25) {
+        if (p.health <= p.maxHealth * 0.25) {
             if (p.lowHealthAlarm <= 0) {
                 sound.play('lowHealth');
                 p.lowHealthAlarm = LOW_HEALTH_ALARM_INTERVAL;
-
             }
         } else p.lowHealthAlarm = 0;
 
@@ -1956,10 +3836,8 @@ function createCombat(runtime) {
             if (p.missileAlarm <= 0) {
                 sound.play('missileAlert');
                 p.missileAlarm = MISSILE_ALARM_INTERVAL;
-
             }
             if (settings.difficulty !== 'hard' && p.flareCooldown <= 0) deployFlares();
-
         } else p.missileAlarm = 0;
 
         for (const b of g.bullets) {
@@ -1981,50 +3859,63 @@ function createCombat(runtime) {
                 stepDt -= ejectionDt;
 
                 if (stepDt <= 0) continue;
-
             }
-            const ox = b.x, oy = b.y;
+            const ox = b.x,
+                oy = b.y;
 
             if (b.kind === 'rocket') {
-                if (b.target?.health <= 0) b.target = g.enemies.find(e => e.health > 0) || null;
+                if (b.target?.health <= 0) b.target = g.enemies.find((e) => e.health > 0) || null;
 
-                const speed = Math.min(WEAPONS.rocket.maxSpeed, Math.hypot(b.vx, b.vy) + WEAPONS.rocket.acceleration * stepDt);
+                const speed = Math.min(
+                    WEAPONS.rocket.maxSpeed,
+                    Math.hypot(b.vx, b.vy) + WEAPONS.rocket.acceleration * stepDt
+                );
 
-                const a = b.target ? turn(Math.atan2(b.vy, b.vx), Math.atan2(b.target.y - b.y, b.target.x - b.x), stepDt * WEAPONS.rocket.turnRate) : Math.atan2(b.vy, b.vx);
+                const a = b.target
+                    ? turn(
+                          Math.atan2(b.vy, b.vx),
+                          Math.atan2(b.target.y - b.y, b.target.x - b.x),
+                          stepDt * WEAPONS.rocket.turnRate
+                      )
+                    : Math.atan2(b.vy, b.vx);
 
                 b.vx = Math.cos(a) * speed;
                 b.vy = Math.sin(a) * speed;
 
                 b.trail -= stepDt;
                 if (b.trail <= 0) {
-                    burst(b.x, b.y, '#c1b89b', 2, .12, true);
-                    b.trail = .035;
-
+                    burst(b.x, b.y, '#c1b89b', 2, 0.12, true);
+                    b.trail = 0.035;
                 }
             } else if (b.kind === 'enemyRocket') {
-                const speed = Math.min(b.maxSpeed, Math.hypot(b.vx, b.vy) + b.acceleration * stepDt);
+                const speed = Math.min(
+                    b.maxSpeed,
+                    Math.hypot(b.vx, b.vy) + b.acceleration * stepDt
+                );
 
                 if (b.decoyed) {
                     b.decoyTimer -= stepDt;
                     if (b.decoyTimer <= 0) {
                         b.life = 0;
-                        burst(b.x, b.y, '#ffc866', 5, .25);
+                        burst(b.x, b.y, '#ffc866', 5, 0.25);
                         continue;
-
                     }
                 }
                 const target = b.decoyed ? { x: b.decoyX, y: b.decoyY } : p;
 
-                const a = turn(Math.atan2(b.vy, b.vx), Math.atan2(target.y - b.y, target.x - b.x), stepDt * b.turn);
+                const a = turn(
+                    Math.atan2(b.vy, b.vx),
+                    Math.atan2(target.y - b.y, target.x - b.x),
+                    stepDt * b.turn
+                );
 
                 b.vx = Math.cos(a) * speed;
                 b.vy = Math.sin(a) * speed;
 
                 b.trail -= stepDt;
                 if (b.trail <= 0) {
-                    burst(b.x, b.y, '#c1b89b', 1, .12, true);
-                    b.trail = .035;
-
+                    burst(b.x, b.y, '#c1b89b', 1, 0.12, true);
+                    b.trail = 0.035;
                 }
             }
             b.x += b.vx * stepDt;
@@ -2032,38 +3923,45 @@ function createCombat(runtime) {
             b.life -= stepDt;
 
             if (b.friendly) {
-                let target = null, nearest = Infinity;
+                let target = null,
+                    nearest = Infinity;
 
-                for (const e of g.enemies) if (e.health > 0 && segmentHitsCircle(ox, oy, b.x, b.y, e.x, e.y, e.radius + (b.kind === 'rocket' ? 8 : 2))) {
-                    const d = Math.hypot(e.x - ox, e.y - oy);
-                    if (d < nearest) {
-                        target = e;
-                        nearest = d;
-
+                for (const e of g.enemies)
+                    if (
+                        e.health > 0 &&
+                        segmentHitsCircle(
+                            ox,
+                            oy,
+                            b.x,
+                            b.y,
+                            e.x,
+                            e.y,
+                            e.radius + (b.kind === 'rocket' ? 8 : 2)
+                        )
+                    ) {
+                        const d = Math.hypot(e.x - ox, e.y - oy);
+                        if (d < nearest) {
+                            target = e;
+                            nearest = d;
+                        }
                     }
-                }
                 if (target) {
                     b.life = 0;
                     if (b.kind === 'rocket') detonate(b);
                     else hitEnemy(target, b.damage);
-
-                }
-                else if (b.kind === 'rocket' && b.life <= 0) detonate(b);
-
+                } else if (b.kind === 'rocket' && b.life <= 0) detonate(b);
             } else if (segmentHitsCircle(ox, oy, b.x, b.y, p.x, p.y, 17)) {
                 b.life = 0;
                 damagePlayer(b.damage);
                 if (g.state !== 'playing') return;
-
             }
             if (b.x < -90 || b.x > W + 90 || b.y < -90 || b.y > H + 90) b.life = 0;
-
         }
-        g.bullets = g.bullets.filter(b => b.life > 0);
-        g.enemies = g.enemies.filter(e => e.health > 0);
+        g.bullets = g.bullets.filter((b) => b.life > 0);
+        g.enemies = g.enemies.filter((e) => e.health > 0);
 
         for (const mark of g.treadMarks) mark.life -= dt;
-        g.treadMarks = g.treadMarks.filter(mark => mark.life > 0);
+        g.treadMarks = g.treadMarks.filter((mark) => mark.life > 0);
 
         for (const warning of g.warnings) {
             warning.life -= dt;
@@ -2072,19 +3970,17 @@ function createCombat(runtime) {
                 explosion(warning.x, warning.y, warning.radius);
                 if (distance(warning, p) < warning.radius + 17) damagePlayer(warning.damage);
                 if (g.state !== 'playing') return;
-
             }
         }
-        g.warnings = g.warnings.filter(warning => warning.life > 0);
+        g.warnings = g.warnings.filter((warning) => warning.life > 0);
 
-        g.pickups = g.pickups.filter(item => {
+        g.pickups = g.pickups.filter((item) => {
             item.life -= dt;
             const d = distance(item, p);
 
             if (d < 90 && p.health < p.maxHealth) {
                 item.x += (p.x - item.x) * dt * 4;
                 item.y += (p.y - item.y) * dt * 4;
-
             }
             if (d < 28 && p.health < p.maxHealth) {
                 p.health = Math.min(p.maxHealth, p.health + 30);
@@ -2094,22 +3990,19 @@ function createCombat(runtime) {
                 return false;
             }
             return item.life > 0;
-
         });
 
         if (!g.testRange && !g.spawnRemaining && !g.enemies.length && !g.warnings.length) {
             if (g.waveWait < 0) {
                 g.waveWait = 1.4;
-                g.bullets = g.bullets.filter(b => b.friendly);
+                g.bullets = g.bullets.filter((b) => b.friendly);
                 g.score += g.wave * 100;
                 float(t('wave.cleared', { score: g.wave * 100 }), p.x, p.y - 65, '#e5f1ac', true);
-            }
-            else {
+            } else {
                 g.waveWait -= dt;
                 if (g.waveWait <= 0) {
                     runtime.showUpgrades();
                     return;
-
                 }
             }
         }
@@ -2119,17 +4012,28 @@ function createCombat(runtime) {
         if (g.bannerTime > 0) {
             g.bannerTime -= dt;
             if (g.bannerTime <= 0) $('announcement').classList.remove('visible');
-
         }
         g.hudTimer -= dt;
         if (g.hudTimer <= 0) {
             runtime.updateHud();
-            g.hudTimer = .08;
-
+            g.hudTimer = 0.08;
         }
     }
-    return { gun, rocketRecharge, launchRocket, dash, movement, updateCamera, hitEnemy, damagePlayer, detonate, fireEnemy, incomingMissile, deployFlares, update };
-
+    return {
+        gun,
+        rocketRecharge,
+        launchRocket,
+        dash,
+        movement,
+        updateCamera,
+        hitEnemy,
+        damagePlayer,
+        detonate,
+        fireEnemy,
+        incomingMissile,
+        deployFlares,
+        update
+    };
 }
 
 // game/upgrades.js
@@ -2137,46 +4041,70 @@ function createUpgrades(runtime) {
     const { g, settings, sound, $, dialog, canvas, t, pad, clock, write, saveSettings } = runtime;
 
     function updateHud() {
-        const p = g.player, percent = Math.ceil(p.health / p.maxHealth * 100), multiplier = Math.min(5, 1 + Math.floor(g.combo / 3));
+        const p = g.player,
+            percent = Math.ceil((p.health / p.maxHealth) * 100),
+            multiplier = Math.min(5, 1 + Math.floor(g.combo / 3));
         $('wave').innerHTML = `${t('hud.wave')} <b>${pad(g.wave, 2)}</b>`;
         $('health').textContent = percent;
         $('health-fill').style.width = `${percent}%`;
         $('health-fill').style.background = percent <= 25 ? '#ee9b6b' : '#dbea9b';
-        $('hull-status').textContent = t(percent <= 25 ? 'hud.critical' : percent <= 60 ? 'hud.damaged' : 'hud.healthy');
+        $('hull-status').textContent = t(
+            percent <= 25 ? 'hud.critical' : percent <= 60 ? 'hud.damaged' : 'hud.healthy'
+        );
         $('hull-status').style.color = percent <= 25 ? '#ee9b6b' : '';
         $('score').textContent = pad(g.score);
         $('best').textContent = pad(Math.max(g.best, g.score));
-        $('hostiles').textContent = g.state === 'ready' ? t('hud.scanning') : `${g.enemies.length + g.spawnRemaining} ${t('hud.hostiles')}`;
+        $('hostiles').textContent =
+            g.state === 'ready'
+                ? t('hud.scanning')
+                : `${g.enemies.length + g.spawnRemaining} ${t('hud.hostiles')}`;
         $('flight-time').textContent = `${t('flight.label')} ${clock(g.time)}`;
-        $('dash-status').textContent = p.dashCooldown > 0 ? `${p.dashCooldown.toFixed(1)} s` : t('dash.ready');
-        $('dash-fill').style.width = `${(1 - p.dashCooldown / (3.5 * Math.pow(.87, runtime.upgrades.engine || 0))) * 100}%`;
+        $('dash-status').textContent =
+            p.dashCooldown > 0 ? `${p.dashCooldown.toFixed(1)} s` : t('dash.ready');
+        $('dash-fill').style.width =
+            `${(1 - p.dashCooldown / (3.5 * Math.pow(0.87, runtime.upgrades.engine || 0))) * 100}%`;
         $('dash-ability').classList.toggle('cooldown', p.dashCooldown > 0);
         $('rocket-status').textContent = `${p.rockets} / ${p.maxRockets}`;
-        $('rocket-fill').style.width = `${p.rockets === p.maxRockets ? 100 : p.rocketTimer / runtime.rocketRecharge() * 100}%`;
+        $('rocket-fill').style.width =
+            `${p.rockets === p.maxRockets ? 100 : (p.rocketTimer / runtime.rocketRecharge()) * 100}%`;
         $('rocket-ability').classList.toggle('cooldown', p.rockets === 0);
-        $('heat-status').textContent = p.overheated ? t('heat.cooling') : `${Math.round(p.heat * 100)}%`;
+        $('heat-status').textContent = p.overheated
+            ? t('heat.cooling')
+            : `${Math.round(p.heat * 100)}%`;
         $('heat-fill').style.width = `${p.heat * 100}%`;
         $('heat-ability').classList.toggle('overheated', p.overheated);
         $('heat-meter').setAttribute('aria-valuenow', String(Math.round(p.heat * 100)));
-        $('heat-meter').setAttribute('aria-valuetext', p.overheated ? t('heat.cooling') : `${Math.round(p.heat * 100)}%`);
+        $('heat-meter').setAttribute(
+            'aria-valuetext',
+            p.overheated ? t('heat.cooling') : `${Math.round(p.heat * 100)}%`
+        );
         $('touch-dash').disabled = p.dashCooldown > 0;
         $('touch-rocket').disabled = p.rockets === 0;
         $('touch-flare').hidden = settings.difficulty !== 'hard';
         $('touch-flare').disabled = p.flareCooldown > 0;
         $('combo').hidden = multiplier < 2;
         $('combo-value').textContent = `×${multiplier}`;
-        const boss = g.enemies.find(e => e.type === 'boss');
+        const boss = g.enemies.find((e) => e.type === 'boss');
         $('boss-hud').hidden = !boss || g.state === 'over';
-        if (boss) $('boss-fill').style.width = `${clamp(boss.health / boss.maxHealth * 100, 0, 100)}%`;
+        if (boss)
+            $('boss-fill').style.width = `${clamp((boss.health / boss.maxHealth) * 100, 0, 100)}%`;
     }
 
     function showUpgrades() {
         g.bullets = [];
         g.bannerTime = 0;
         $('announcement').classList.remove('visible');
-        const available = UPGRADES.filter(u => (runtime.upgrades[u.id] || 0) < u.max && (u.id !== 'repair' || g.player.health < g.player.maxHealth * .8));
-        runtime.choices = available.map(value => ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).slice(0, 3).map(item => item.value);
-        if (!runtime.choices.length) runtime.choices = [UPGRADES.find(u => u.id === 'repair')];
+        const available = UPGRADES.filter(
+            (u) =>
+                (runtime.upgrades[u.id] || 0) < u.max &&
+                (u.id !== 'repair' || g.player.health < g.player.maxHealth * 0.8)
+        );
+        runtime.choices = available
+            .map((value) => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .slice(0, 3)
+            .map((item) => item.value);
+        if (!runtime.choices.length) runtime.choices = [UPGRADES.find((u) => u.id === 'repair')];
         $('upgrade-note').textContent = t('upgrade.note', { wave: g.wave });
         $('upgrade-cards').replaceChildren();
         runtime.choices.forEach((u, i) => {
@@ -2190,25 +4118,26 @@ function createUpgrades(runtime) {
         });
         runtime.setState('upgrade', 'upgrade-panel');
         sound.play('upgrade');
-        requestAnimationFrame(() => $('upgrade-cards').firstElementChild?.focus({ preventScroll: true }));
+        requestAnimationFrame(() =>
+            $('upgrade-cards').firstElementChild?.focus({ preventScroll: true })
+        );
         runtime.updateHud();
     }
 
     function selectUpgrade(id) {
-        if (g.state !== 'upgrade' || dialog.open || !runtime.choices.some(c => c.id === id)) return;
+        if (g.state !== 'upgrade' || dialog.open || !runtime.choices.some((c) => c.id === id))
+            return;
         runtime.upgrades[id] = (runtime.upgrades[id] || 0) + 1;
         const p = g.player;
         if (id === 'armor') {
             p.maxHealth += 25;
             p.health = Math.min(p.maxHealth, p.health + 35);
-
         }
         if (id === 'repair') p.health = p.maxHealth;
         if (id === 'rockets') {
             p.maxRockets++;
             p.rockets = p.maxRockets;
             p.rocketTimer = 0;
-
         }
         p.invulnerable = 1;
         p.dashCooldown = 0;
@@ -2223,7 +4152,6 @@ function createUpgrades(runtime) {
         if (g.state !== 'playing') return;
         runtime.setState('paused', 'pause-panel');
         runtime.focusPanel('resume');
-
     }
     async function resume() {
         if (g.state !== 'paused' || dialog.open) return;
@@ -2252,15 +4180,17 @@ function createUpgrades(runtime) {
     function updateSettingsUI() {
         $('volume').value = settings.volume * 100;
         $('volume-value').textContent = `${Math.round(settings.volume * 100)}%`;
-        ['music', 'shake', 'effects'].forEach(id => $(id).checked = settings[id]);
+        ['music', 'shake', 'effects'].forEach((id) => ($(id).checked = settings[id]));
         $('sound-toggle').setAttribute('aria-pressed', String(settings.muted));
-        $('sound-toggle').setAttribute('aria-label', t(settings.muted ? 'nav.soundOn' : 'nav.soundOff'));
+        $('sound-toggle').setAttribute(
+            'aria-label',
+            t(settings.muted ? 'nav.soundOn' : 'nav.soundOff')
+        );
         $('sound-toggle').title = `${t(settings.muted ? 'nav.soundOn' : 'nav.soundOff')} (M)`;
-        document.querySelectorAll('[data-difficulty]').forEach(button => {
+        document.querySelectorAll('[data-difficulty]').forEach((button) => {
             const selected = button.dataset.difficulty === settings.difficulty;
             button.classList.toggle('selected', selected);
             button.setAttribute('aria-pressed', String(selected));
-
         });
     }
 
@@ -2277,17 +4207,26 @@ function createUpgrades(runtime) {
         if (runtime.settingsPaused) runtime.pause();
         dialog.showModal();
         sound.init();
-
     }
     function closeSettings() {
         dialog.close();
         if (runtime.settingsPaused) {
             runtime.settingsPaused = false;
             runtime.resume();
-
         }
     }
-    return { updateHud, showUpgrades, selectUpgrade, pause, resume, endGame, updateSettingsUI, toggleMute, openSettings, closeSettings };
+    return {
+        updateHud,
+        showUpgrades,
+        selectUpgrade,
+        pause,
+        resume,
+        endGame,
+        updateSettingsUI,
+        toggleMute,
+        openSettings,
+        closeSettings
+    };
 }
 
 // game/input.js
@@ -2298,28 +4237,26 @@ function createInput(runtime) {
     $('settings-close').addEventListener('click', runtime.closeSettings);
     $('settings-done').addEventListener('click', runtime.closeSettings);
 
-    dialog.addEventListener('cancel', event => {
+    dialog.addEventListener('cancel', (event) => {
         event.preventDefault();
         runtime.closeSettings();
-
     });
 
-    $('volume').addEventListener('input', event => {
+    $('volume').addEventListener('input', (event) => {
         settings.volume = event.target.value / 100;
         sound.init();
         sound.configure();
         runtime.saveSettings();
         runtime.updateSettingsUI();
-
     });
 
-    for (const id of ['music', 'shake', 'effects']) $(id).addEventListener('change', () => {
-        settings[id] = $(id).checked;
-        sound.configure();
-        runtime.saveSettings();
-        if (id === 'effects') runtime.resize();
-
-    });
+    for (const id of ['music', 'shake', 'effects'])
+        $(id).addEventListener('change', () => {
+            settings[id] = $(id).checked;
+            sound.configure();
+            runtime.saveSettings();
+            if (id === 'effects') runtime.resize();
+        });
 
     $('sound-toggle').addEventListener('click', runtime.toggleMute);
 
@@ -2327,10 +4264,13 @@ function createInput(runtime) {
         try {
             if (document.fullscreenElement) await document.exitFullscreen();
             else await document.querySelector('.game-frame').requestFullscreen();
-
         } catch {
-            runtime.announce(t('settings.fullscreen'), t('fullscreen.errorTitle'), t('fullscreen.errorNote'), 3);
-
+            runtime.announce(
+                t('settings.fullscreen'),
+                t('fullscreen.errorTitle'),
+                t('fullscreen.errorNote'),
+                3
+            );
         }
     });
 
@@ -2338,32 +4278,32 @@ function createInput(runtime) {
 
     if (!document.fullscreenEnabled) $('fullscreen').hidden = true;
 
-    $('language').addEventListener('change', event => {
+    $('language').addEventListener('change', (event) => {
         settings.language = event.target.value;
         runtime.saveSettings();
         runtime.applyLanguage();
-
     });
 
     document.addEventListener('pointerdown', runtime.activateMenuMusic, { once: true });
     document.addEventListener('keydown', runtime.activateMenuMusic, { once: true });
-    document.querySelectorAll('[data-difficulty]').forEach(button => button.addEventListener('click', () => {
-        settings.difficulty = button.dataset.difficulty;
-        runtime.saveSettings();
-        runtime.updateSettingsUI();
-        runtime.updateHud();
-        sound.init();
-        sound.play('ui');
+    document.querySelectorAll('[data-difficulty]').forEach((button) =>
+        button.addEventListener('click', () => {
+            settings.difficulty = button.dataset.difficulty;
+            runtime.saveSettings();
+            runtime.updateSettingsUI();
+            runtime.updateHud();
+            sound.init();
+            sound.play('ui');
+        })
+    );
 
-    }));
-
-    for (const id of ['start', 'retry', 'restart']) $(id).addEventListener('click', () => runtime.start(g.testRange ? 'test' : 'operation'));
+    for (const id of ['start', 'retry', 'restart'])
+        $(id).addEventListener('click', () => runtime.start(g.testRange ? 'test' : 'operation'));
     $('test-range-open').addEventListener('click', () => {
         $('test-range').hidden = false;
         $('start').hidden = true;
         $('test-range-open').hidden = true;
         $('intro-panel').querySelector('.intro-note').hidden = true;
-
     });
 
     $('test-range-close').addEventListener('click', () => {
@@ -2371,7 +4311,6 @@ function createInput(runtime) {
         $('start').hidden = false;
         $('test-range-open').hidden = false;
         $('intro-panel').querySelector('.intro-note').hidden = false;
-
     });
 
     $('test-range-start').addEventListener('click', () => runtime.start('test'));
@@ -2379,14 +4318,18 @@ function createInput(runtime) {
     $('resume').addEventListener('click', runtime.resume);
     $('pause').addEventListener('click', runtime.pause);
 
-    window.addEventListener('keydown', event => {
+    window.addEventListener('keydown', (event) => {
         if (dialog.open || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)) return;
 
         const code = event.code;
 
         if (event.target.closest('button') && code === 'Space') return;
 
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(code) && g.state === 'playing') event.preventDefault();
+        if (
+            ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(code) &&
+            g.state === 'playing'
+        )
+            event.preventDefault();
 
         if (event.repeat) return;
 
@@ -2394,18 +4337,15 @@ function createInput(runtime) {
             if (g.state === 'playing') runtime.pause();
             else if (g.state === 'paused') runtime.resume();
             return;
-
         }
         if (code === 'KeyM') {
             runtime.toggleMute();
             return;
-
         }
         if (g.state === 'upgrade' && /^Digit[123]$/.test(code)) {
             const choice = runtime.choices[Number(code.slice(-1)) - 1];
             if (choice) runtime.selectUpgrade(choice.id);
             return;
-
         }
         if (g.state !== 'playing') return;
 
@@ -2413,47 +4353,41 @@ function createInput(runtime) {
         if (code === 'ShiftLeft' || code === 'ShiftRight') runtime.dash();
         if (code === 'KeyE') runtime.launchRocket();
         if (code === 'KeyF' && settings.difficulty === 'hard') runtime.deployFlares();
-
     });
 
-    window.addEventListener('keyup', event => keys.delete(event.code));
+    window.addEventListener('keyup', (event) => keys.delete(event.code));
 
     window.addEventListener('blur', () => {
         runtime.clearInput();
         if (g.state === 'playing') runtime.pause();
-
     });
 
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             runtime.clearInput();
             if (g.state === 'playing') runtime.pause();
-
         }
     });
 
     function pointerPosition(event) {
         const rect = canvas.getBoundingClientRect();
-        pointer.screenX = (event.clientX - rect.left) / rect.width * g.world.width;
-        pointer.screenY = (event.clientY - rect.top) / rect.height * g.world.height;
+        pointer.screenX = ((event.clientX - rect.left) / rect.width) * g.world.width;
+        pointer.screenY = ((event.clientY - rect.top) / rect.height) * g.world.height;
         pointer.x = g.camera.x + pointer.screenX / g.camera.zoom;
         pointer.y = g.camera.y + pointer.screenY / g.camera.zoom;
-
     }
-    canvas.addEventListener('pointermove', event => {
+    canvas.addEventListener('pointermove', (event) => {
         if (event.pointerType === 'touch') return;
         g.touch = false;
         pointerPosition(event);
-
     });
 
-    canvas.addEventListener('pointerdown', event => {
+    canvas.addEventListener('pointerdown', (event) => {
         if (g.state !== 'playing') return;
 
         if (event.pointerType === 'touch') {
             g.touch = true;
             return;
-
         }
         if (event.button === 0) {
             pointerPosition(event);
@@ -2466,54 +4400,56 @@ function createInput(runtime) {
         if (event.button === 2) {
             event.preventDefault();
             runtime.launchRocket();
-
         }
     });
 
-    const releaseCanvas = event => {
+    const releaseCanvas = (event) => {
         if (event.pointerId === runtime.gamePointer) {
             pointer.down = false;
             runtime.gamePointer = null;
-
         }
     };
 
     canvas.addEventListener('pointerup', releaseCanvas);
     canvas.addEventListener('pointercancel', releaseCanvas);
     canvas.addEventListener('lostpointercapture', releaseCanvas);
-    canvas.addEventListener('contextmenu', event => event.preventDefault());
+    canvas.addEventListener('contextmenu', (event) => event.preventDefault());
 
     const stick = $('joystick');
     function moveStick(event) {
-        const rect = stick.getBoundingClientRect(), dx = event.clientX - rect.left - rect.width / 2, dy = event.clientY - rect.top - rect.height / 2, length = Math.hypot(dx, dy), radius = rect.width * .35, factor = Math.min(1, radius / (length || 1));
-        runtime.joystick.x = dx * factor / radius;
-        runtime.joystick.y = dy * factor / radius;
+        const rect = stick.getBoundingClientRect(),
+            dx = event.clientX - rect.left - rect.width / 2,
+            dy = event.clientY - rect.top - rect.height / 2,
+            length = Math.hypot(dx, dy),
+            radius = rect.width * 0.35,
+            factor = Math.min(1, radius / (length || 1));
+        runtime.joystick.x = (dx * factor) / radius;
+        runtime.joystick.y = (dy * factor) / radius;
         $('joystick-knob').style.transform = `translate(${dx * factor}px,${dy * factor}px)`;
     }
-    stick.addEventListener('pointerdown', event => {
+    stick.addEventListener('pointerdown', (event) => {
         if (g.state !== 'playing' || runtime.joystick.id !== null) return;
         event.preventDefault();
         g.touch = true;
         runtime.joystick.id = event.pointerId;
         stick.setPointerCapture(event.pointerId);
         moveStick(event);
-
     });
 
-    stick.addEventListener('pointermove', event => {
+    stick.addEventListener('pointermove', (event) => {
         if (event.pointerId === runtime.joystick.id) moveStick(event);
-
     });
 
-    const releaseStick = event => {
+    const releaseStick = (event) => {
         if (event.pointerId === runtime.joystick.id) {
             runtime.joystick = { x: 0, y: 0, id: null };
             $('joystick-knob').style.transform = '';
         }
     };
 
-    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) stick.addEventListener(type, releaseStick);
-    $('touch-fire').addEventListener('pointerdown', event => {
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'])
+        stick.addEventListener(type, releaseStick);
+    $('touch-fire').addEventListener('pointerdown', (event) => {
         if (g.state !== 'playing') return;
         event.preventDefault();
         g.touch = true;
@@ -2521,45 +4457,40 @@ function createInput(runtime) {
         runtime.firePointer = event.pointerId;
         $('touch-fire').setPointerCapture(event.pointerId);
         sound.init();
-
     });
 
-    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) $('touch-fire').addEventListener(type, event => {
-        if (event.pointerId === runtime.firePointer) {
-            pointer.down = false;
-            runtime.firePointer = null;
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'])
+        $('touch-fire').addEventListener(type, (event) => {
+            if (event.pointerId === runtime.firePointer) {
+                pointer.down = false;
+                runtime.firePointer = null;
+            }
+        });
 
-        }
-    });
-
-    $('touch-dash').addEventListener('pointerdown', event => {
+    $('touch-dash').addEventListener('pointerdown', (event) => {
         event.preventDefault();
         g.touch = true;
         runtime.dash();
-
     });
 
-    $('touch-rocket').addEventListener('pointerdown', event => {
+    $('touch-rocket').addEventListener('pointerdown', (event) => {
         event.preventDefault();
         g.touch = true;
         runtime.launchRocket();
-
     });
 
-    $('touch-flare').addEventListener('pointerdown', event => {
+    $('touch-flare').addEventListener('pointerdown', (event) => {
         event.preventDefault();
         g.touch = true;
         if (settings.difficulty === 'hard') runtime.deployFlares();
-
     });
 
     return { pointerPosition };
-
 }
 
 // game.js
 
-const runtime=createState();
+const runtime = createState();
 Object.assign(runtime, createEntities(runtime));
 Object.assign(runtime, createWaves(runtime));
 Object.assign(runtime, createLoop(runtime));

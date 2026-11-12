@@ -18,16 +18,16 @@ No dependency installation or API keys are needed. All visuals are rendered in C
 
 ## Controls
 
-| Action | Desktop | Touch |
-| --- | --- | --- |
-| Move | WASD / arrows | Left virtual joystick |
-| Aim | Mouse | Automatically tracks nearest enemy |
-| Fire | Hold left click / Space | Hold ATEŞ |
-| Homing rocket | E / right click | Small rocket button |
-| Evasive dash | Shift | Small arrow button |
-| Pause / resume | Escape / P | Pause button |
-| Mute | M | Speaker button |
-| Choose an upgrade | Click / 1, 2, 3 | Tap a card |
+| Action            | Desktop                 | Touch                              |
+| ----------------- | ----------------------- | ---------------------------------- |
+| Move              | WASD / arrows           | Left virtual joystick              |
+| Aim               | Mouse                   | Automatically tracks nearest enemy |
+| Fire              | Hold left click / Space | Hold ATEŞ                          |
+| Homing rocket     | E / right click         | Small rocket button                |
+| Evasive dash      | Shift                   | Small arrow button                 |
+| Pause / resume    | Escape / P              | Pause button                       |
+| Mute              | M                       | Speaker button                     |
+| Choose an upgrade | Click / 1, 2, 3         | Tap a card                         |
 
 Rockets accelerate after launch and recharge individually. The machine gun heats with each shot; release fire to cool it, or wait three seconds for a fully overheated gun to cool before it can fire again. Faster firing upgrades build heat faster. The helicopter coasts briefly when movement is released, while dash briefly prevents damage. Green field supplies repair 30 hull points. Consecutive kills raise the score multiplier up to ×5. Each cleared wave awards bonus points and a choice of upgrades. The battlefield rotates through desert, valley, and red-zone sectors each wave; every fifth wave includes a boss.
 
@@ -39,18 +39,18 @@ Edit `enemies.csv` in a spreadsheet or text editor, save it as comma-separated U
 
 Each row configures one enemy. Distances and speeds use game world units and world units per second; times are seconds, and angles are radians.
 
-| Columns | Meaning |
-| --- | --- |
-| `health`, `healthPerWave` | Base health and extra health per wave, before the shared wave health multiplier. |
-| `speed`, `speedPerWave`, `speedWaveCap`, `speedMultiplier` | Movement speed: `(speed + min(wave * speedPerWave, speedWaveCap)) * speedMultiplier`. |
-| `points`, `radius`, `scale`, `deathExplosion` | Score, collision radius, visual scale, and death explosion size. Set radius and scale separately. |
-| `stopDistance`, `strafeSpeed`, `turnRate`, `turretRate`, `contactDamage` | Movement, aiming and collision damage. |
-| `spawnWave`, `spawnModulo`, `spawnRemainder` | Earliest wave and zero-based spawn-index pattern; a zero modulo disables ordinary spawning. When patterns overlap, priority is rocket semi, AA, kamikaze, artillery, then drone; otherwise a tank spawns. Bosses are spawned separately on boss waves. |
-| `projectileDamage`, `projectileSpeed`, `projectileSpeedPerWave`, `projectileSpeedCap`, `projectileLife` | Weapon damage, initial speed, wave speed bonus and cap, and lifetime. For kamikazes, damage is applied once to a player in the blast radius. For AA, damage is per explosion. All damage is also multiplied by the selected difficulty. |
-| `fireInterval`, `fireWaveReduction`, `fireWaveReductionCap`, `fireRandom`, `initialCooldown`, `initialRandom` | Time between attacks, wave reduction and cap, random extra delay, and initial delay plus random extra delay. AA uses the base interval and random delay between bursts. |
-| `spread`, `shotCount` | Angular separation and number of projectiles or AA explosions per burst. |
-| `explosionRadius`, `warningDelay`, `warningSpread`, `burstInterval` | Kamikaze blast radius or AA explosion radius; AA warning duration, placement spread around the player, and delay between the nine shots. Warnings persist if the gun is destroyed. |
-| `rocketTurn`, `rocketAcceleration`, `rocketMaxSpeed`, `easyInterval`, `normalInterval`, `hardInterval` | Rocket semi homing and speed parameters, and difficulty multipliers for its firing interval. Lower multipliers fire faster. |
+| Columns                                                                                                       | Meaning                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `health`, `healthPerWave`                                                                                     | Base health and extra health per wave, before the shared wave health multiplier.                                                                                                                                                                       |
+| `speed`, `speedPerWave`, `speedWaveCap`, `speedMultiplier`                                                    | Movement speed: `(speed + min(wave * speedPerWave, speedWaveCap)) * speedMultiplier`.                                                                                                                                                                  |
+| `points`, `radius`, `scale`, `deathExplosion`                                                                 | Score, collision radius, visual scale, and death explosion size. Set radius and scale separately.                                                                                                                                                      |
+| `stopDistance`, `strafeSpeed`, `turnRate`, `turretRate`, `contactDamage`                                      | Movement, aiming and collision damage.                                                                                                                                                                                                                 |
+| `spawnWave`, `spawnModulo`, `spawnRemainder`                                                                  | Earliest wave and zero-based spawn-index pattern; a zero modulo disables ordinary spawning. When patterns overlap, priority is rocket semi, AA, kamikaze, artillery, then drone; otherwise a tank spawns. Bosses are spawned separately on boss waves. |
+| `projectileDamage`, `projectileSpeed`, `projectileSpeedPerWave`, `projectileSpeedCap`, `projectileLife`       | Weapon damage, initial speed, wave speed bonus and cap, and lifetime. For kamikazes, damage is applied once to a player in the blast radius. For AA, damage is per explosion. All damage is also multiplied by the selected difficulty.                |
+| `fireInterval`, `fireWaveReduction`, `fireWaveReductionCap`, `fireRandom`, `initialCooldown`, `initialRandom` | Time between attacks, wave reduction and cap, random extra delay, and initial delay plus random extra delay. AA uses the base interval and random delay between bursts.                                                                                |
+| `spread`, `shotCount`                                                                                         | Angular separation and number of projectiles or AA explosions per burst.                                                                                                                                                                               |
+| `explosionRadius`, `warningDelay`, `warningSpread`, `burstInterval`                                           | Kamikaze blast radius or AA explosion radius; AA warning duration, placement spread around the player, and delay between the nine shots. Warnings persist if the gun is destroyed.                                                                     |
+| `rocketTurn`, `rocketAcceleration`, `rocketMaxSpeed`, `easyInterval`, `normalInterval`, `hardInterval`        | Rocket semi homing and speed parameters, and difficulty multipliers for its firing interval. Lower multipliers fire faster.                                                                                                                            |
 
 Kamikazes pursue the player and explode on contact or destruction. AA guns mark each delayed impact with a flashing crosshair and circle. Rocket semis fire homing rockets.
 

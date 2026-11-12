@@ -3,81 +3,159 @@ import { fileURLToPath } from 'node:url';
 
 // Small, dependency-free packager for the ordered source modules.
 // The checked-in output also works over file:// and on GitHub Pages.
-const root=new URL('../',import.meta.url);
-const csv=(await readFile(new URL('enemies.csv',root),'utf8')).trim().split(/\r?\n/);
-const columns=csv.shift().split(',');
-const expected='type,health,healthPerWave,speed,speedMultiplier,points,radius,scale,stopDistance,contactDamage,spawnWave,spawnModulo,spawnRemainder,projectileDamage,projectileSpeed,projectileSpeedPerWave,projectileSpeedCap,projectileLife,fireInterval,fireWaveReduction,fireWaveReductionCap,fireRandom,initialCooldown,initialRandom,spread,shotCount,explosionRadius,warningDelay,warningSpread,burstInterval,rocketTurn,rocketAcceleration,rocketMaxSpeed,easyInterval,normalInterval,hardInterval,speedPerWave,speedWaveCap,strafeSpeed,turnRate,turretRate,deathExplosion';
-if(columns.join(',')!==expected)throw new Error('Invalid enemies.csv header');
-const required=['tank','drone','artillery','kamikaze','aa','rocketSemi','boss'];
-const enemies={};
-for(const line of csv){
-  const cells=line.split(',');
-  if(cells.length!==columns.length)throw new Error(`Invalid enemy row: ${line}`);
-  const [type,...values]=cells;
-  if(!required.includes(type)||enemies[type])throw new Error(`Invalid or duplicate enemy type: ${type}`);
-  const stats={};
-  for(let i=1;i<columns.length;i++){
-    const value=Number(values[i-1]);
-    if(values[i-1].trim()===''||!Number.isFinite(value)||value<0)throw new Error(`Invalid ${columns[i]} for ${type}`);
-    stats[columns[i]]=value;
-  }
-  if(!stats.health||!stats.radius||!stats.scale||!stats.speedMultiplier||!Number.isInteger(stats.shotCount)||stats.shotCount<1||
-    !Number.isInteger(stats.spawnWave)||!Number.isInteger(stats.spawnModulo)||!Number.isInteger(stats.spawnRemainder)||
-    (stats.spawnModulo&&stats.spawnRemainder>=stats.spawnModulo))throw new Error(`Invalid enemy configuration for ${type}`);
-  enemies[type]=stats;
+const root = new URL('../', import.meta.url);
+const csv = (await readFile(new URL('enemies.csv', root), 'utf8')).trim().split(/\r?\n/);
+const columns = csv.shift().split(',');
+const expected =
+    'type,health,healthPerWave,speed,speedMultiplier,points,radius,scale,stopDistance,contactDamage,spawnWave,spawnModulo,spawnRemainder,projectileDamage,projectileSpeed,projectileSpeedPerWave,projectileSpeedCap,projectileLife,fireInterval,fireWaveReduction,fireWaveReductionCap,fireRandom,initialCooldown,initialRandom,spread,shotCount,explosionRadius,warningDelay,warningSpread,burstInterval,rocketTurn,rocketAcceleration,rocketMaxSpeed,easyInterval,normalInterval,hardInterval,speedPerWave,speedWaveCap,strafeSpeed,turnRate,turretRate,deathExplosion';
+if (columns.join(',') !== expected) throw new Error('Invalid enemies.csv header');
+const required = ['tank', 'drone', 'artillery', 'kamikaze', 'aa', 'rocketSemi', 'boss'];
+const enemies = {};
+for (const line of csv) {
+    const cells = line.split(',');
+    if (cells.length !== columns.length) throw new Error(`Invalid enemy row: ${line}`);
+    const [type, ...values] = cells;
+    if (!required.includes(type) || enemies[type])
+        throw new Error(`Invalid or duplicate enemy type: ${type}`);
+    const stats = {};
+    for (let i = 1; i < columns.length; i++) {
+        const value = Number(values[i - 1]);
+        if (values[i - 1].trim() === '' || !Number.isFinite(value) || value < 0)
+            throw new Error(`Invalid ${columns[i]} for ${type}`);
+        stats[columns[i]] = value;
+    }
+    if (
+        !stats.health ||
+        !stats.radius ||
+        !stats.scale ||
+        !stats.speedMultiplier ||
+        !Number.isInteger(stats.shotCount) ||
+        stats.shotCount < 1 ||
+        !Number.isInteger(stats.spawnWave) ||
+        !Number.isInteger(stats.spawnModulo) ||
+        !Number.isInteger(stats.spawnRemainder) ||
+        (stats.spawnModulo && stats.spawnRemainder >= stats.spawnModulo)
+    )
+        throw new Error(`Invalid enemy configuration for ${type}`);
+    enemies[type] = stats;
 }
-if(required.some(type=>!enemies[type]))throw new Error('Missing enemy type in enemies.csv');
-if(!enemies.aa.warningDelay||!enemies.aa.explosionRadius||!enemies.aa.burstInterval||
-  !enemies.kamikaze.explosionRadius||!enemies.rocketSemi.projectileLife||!enemies.rocketSemi.rocketMaxSpeed||
-  !enemies.rocketSemi.easyInterval||!enemies.rocketSemi.normalInterval||!enemies.rocketSemi.hardInterval)
-  throw new Error('Invalid special enemy configuration');
-const levelCsv=(await readFile(new URL('levels.csv',root),'utf8')).trim().split(/\r?\n/);
-const levelColumns=levelCsv.shift().split(',');
-const expectedLevelColumns='name,layout,seed,color1,color2,color3,accent';
-if(levelColumns.join(',')!==expectedLevelColumns)throw new Error('Invalid levels.csv header');
-const layouts=new Set(['desert','valley','canyon']),levels=[];
-for(const line of levelCsv){
-  const [name,layout,seed,...colors]=line.split(',');
-  if(!name||!layouts.has(layout)||colors.length!==4||!colors.every(color=>/^#[\da-f]{6}$/i.test(color))||!Number.isInteger(Number(seed))||Number(seed)<0)
-    throw new Error(`Invalid level row: ${line}`);
-  levels.push({name,layout,seed:Number(seed),colors:colors.slice(0,3),accent:colors[3]});
+if (required.some((type) => !enemies[type])) throw new Error('Missing enemy type in enemies.csv');
+if (
+    !enemies.aa.warningDelay ||
+    !enemies.aa.explosionRadius ||
+    !enemies.aa.burstInterval ||
+    !enemies.kamikaze.explosionRadius ||
+    !enemies.rocketSemi.projectileLife ||
+    !enemies.rocketSemi.rocketMaxSpeed ||
+    !enemies.rocketSemi.easyInterval ||
+    !enemies.rocketSemi.normalInterval ||
+    !enemies.rocketSemi.hardInterval
+)
+    throw new Error('Invalid special enemy configuration');
+const levelCsv = (await readFile(new URL('levels.csv', root), 'utf8')).trim().split(/\r?\n/);
+const levelColumns = levelCsv.shift().split(',');
+const expectedLevelColumns = 'name,layout,seed,color1,color2,color3,accent';
+if (levelColumns.join(',') !== expectedLevelColumns) throw new Error('Invalid levels.csv header');
+const layouts = new Set(['desert', 'valley', 'canyon']),
+    levels = [];
+for (const line of levelCsv) {
+    const [name, layout, seed, ...colors] = line.split(',');
+    if (
+        !name ||
+        !layouts.has(layout) ||
+        colors.length !== 4 ||
+        !colors.every((color) => /^#[\da-f]{6}$/i.test(color)) ||
+        !Number.isInteger(Number(seed)) ||
+        Number(seed) < 0
+    )
+        throw new Error(`Invalid level row: ${line}`);
+    levels.push({
+        name,
+        layout,
+        seed: Number(seed),
+        colors: colors.slice(0, 3),
+        accent: colors[3]
+    });
 }
-if(!levels.length)throw new Error('Missing levels');
-await writeFile(new URL('level-data.js',root),`// Generated from levels.csv by scripts/build.mjs. Do not edit.\nexport const LEVEL_DATA = ${JSON.stringify(levels,null,2)};\n`);
-const wcsv=(await readFile(new URL('weapons.csv',root),'utf8')).trim().split(/\r?\n/);
-const wcolumns=wcsv.shift().split(',');
-const wexpected='weapon,damage,damagePerUpgrade,speed,life,cooldown,cooldownUpgradeFactor,spread,muzzleTime,heatPerShot,coolTime,launchSpeed,maxSpeed,acceleration,turnRate,launchCooldown,rechargeTime,rechargeUpgradeFactor';
-if(wcolumns.join(',')!==wexpected)throw new Error('Invalid weapons.csv header');
-const weapons={};
-for(const line of wcsv){
-  const cells=line.split(',');
-  if(cells.length!==wcolumns.length)throw new Error(`Invalid weapon row: ${line}`);
-  const [name,...values]=cells;
-  if(!['gun','rocket'].includes(name)||weapons[name])throw new Error(`Invalid or duplicate weapon: ${name}`);
-  const stats={};
-  for(let i=1;i<wcolumns.length;i++){
-    const value=Number(values[i-1]);
-    if(values[i-1].trim()===''||!Number.isFinite(value)||value<0)throw new Error(`Invalid ${wcolumns[i]} for ${name}`);
-    stats[wcolumns[i]]=value;
-  }
-  weapons[name]=stats;
+if (!levels.length) throw new Error('Missing levels');
+await writeFile(
+    new URL('level-data.js', root),
+    `// Generated from levels.csv by scripts/build.mjs. Do not edit.\nexport const LEVEL_DATA = ${JSON.stringify(levels, null, 2)};\n`
+);
+const wcsv = (await readFile(new URL('weapons.csv', root), 'utf8')).trim().split(/\r?\n/);
+const wcolumns = wcsv.shift().split(',');
+const wexpected =
+    'weapon,damage,damagePerUpgrade,speed,life,cooldown,cooldownUpgradeFactor,spread,muzzleTime,heatPerShot,coolTime,launchSpeed,maxSpeed,acceleration,turnRate,launchCooldown,rechargeTime,rechargeUpgradeFactor';
+if (wcolumns.join(',') !== wexpected) throw new Error('Invalid weapons.csv header');
+const weapons = {};
+for (const line of wcsv) {
+    const cells = line.split(',');
+    if (cells.length !== wcolumns.length) throw new Error(`Invalid weapon row: ${line}`);
+    const [name, ...values] = cells;
+    if (!['gun', 'rocket'].includes(name) || weapons[name])
+        throw new Error(`Invalid or duplicate weapon: ${name}`);
+    const stats = {};
+    for (let i = 1; i < wcolumns.length; i++) {
+        const value = Number(values[i - 1]);
+        if (values[i - 1].trim() === '' || !Number.isFinite(value) || value < 0)
+            throw new Error(`Invalid ${wcolumns[i]} for ${name}`);
+        stats[wcolumns[i]] = value;
+    }
+    weapons[name] = stats;
 }
-if(!weapons.gun||!weapons.rocket)throw new Error('Missing weapon in weapons.csv');
-if(!weapons.gun.speed||!weapons.gun.life||!weapons.gun.cooldown||!weapons.gun.heatPerShot||!weapons.gun.coolTime||
-  !weapons.rocket.life||!weapons.rocket.maxSpeed||!weapons.rocket.rechargeTime||!weapons.rocket.rechargeUpgradeFactor||!weapons.gun.cooldownUpgradeFactor)
-  throw new Error('Invalid weapon configuration');
-await writeFile(new URL('weapon-data.js',root),`// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons,null,2)};\n`);
-const data=`// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies,null,2)};\n`;
-await writeFile(new URL('enemy-data.js',root),data);
-const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game/constants.js','game/state.js','game/entities.js','game/waves.js','game/loop.js','game/combat.js','game/upgrades.js','game/input.js','game.js'];
-const modules=[];
-for(const file of files){
-  const source=(await readFile(new URL(file,root),'utf8'))
-    .replace(/^import .*;\n/gm,'')
-    .replace(/^export (?=(?:const|function|class)\b)/gm,'');
-  if(/^\s*(?:import|export)\s/m.test(source))throw new Error(`Unsupported module syntax in ${file}`);
-  modules.push(`// ${file}\n${source}`);
+if (!weapons.gun || !weapons.rocket) throw new Error('Missing weapon in weapons.csv');
+if (
+    !weapons.gun.speed ||
+    !weapons.gun.life ||
+    !weapons.gun.cooldown ||
+    !weapons.gun.heatPerShot ||
+    !weapons.gun.coolTime ||
+    !weapons.rocket.life ||
+    !weapons.rocket.maxSpeed ||
+    !weapons.rocket.rechargeTime ||
+    !weapons.rocket.rechargeUpgradeFactor ||
+    !weapons.gun.cooldownUpgradeFactor
+)
+    throw new Error('Invalid weapon configuration');
+await writeFile(
+    new URL('weapon-data.js', root),
+    `// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons, null, 2)};\n`
+);
+const data = `// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies, null, 2)};\n`;
+await writeFile(new URL('enemy-data.js', root), data);
+const files = [
+    'enemy-data.js',
+    'level-data.js',
+    'weapon-data.js',
+    'i18n.js',
+    'core.js',
+    'audio.js',
+    'renderer.js',
+    'game/constants.js',
+    'game/state.js',
+    'game/entities.js',
+    'game/waves.js',
+    'game/loop.js',
+    'game/combat.js',
+    'game/upgrades.js',
+    'game/input.js',
+    'game.js'
+];
+const modules = [];
+for (const file of files) {
+    const source = (await readFile(new URL(file, root), 'utf8'))
+        .replace(
+            /^import\s+(?:[\w$]+|\{[^{}]*\}|\*\s+as\s+[\w$]+)?\s*from\s*['"][^'"]+['"];\n/gm,
+            ''
+        )
+        .replace(/^import\s+['"][^'"]+['"];\n/gm, '')
+        .replace(/^export (?=(?:const|function|class)\b)/gm, '');
+    if (/^\s*(?:import|export)\s/m.test(source))
+        throw new Error(`Unsupported module syntax in ${file}`);
+    modules.push(`// ${file}\n${source}`);
 }
-const output=`// Generated by scripts/build.mjs. Edit the source modules, then rebuild.\n(()=>{\n'use strict';\n${modules.join('\n')}\n})();\n`;
-await writeFile(new URL('blackout.js',root),output);
-console.log(`Built ${fileURLToPath(new URL('blackout.js',root))} (${Buffer.byteLength(output)} bytes)`);
+const output = `// Generated by scripts/build.mjs. Edit the source modules, then rebuild.\n(()=>{\n'use strict';\n${modules.join('\n')}\n})();\n`;
+await writeFile(new URL('blackout.js', root), output);
+console.log(
+    `Built ${fileURLToPath(new URL('blackout.js', root))} (${Buffer.byteLength(output)} bytes)`
+);
