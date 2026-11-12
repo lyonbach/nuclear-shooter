@@ -66,6 +66,9 @@ The soundtrack switches between menu, wave-combat, and boss music using the MP3 
 
 ### Audio test page
 
+See [Audio Lab Usage](USAGE.md) for setup, controls, editing, CSV export,
+rebuilding, and troubleshooting.
+
 Run `npm start` and open `http://localhost:8080/audio-test.html` to audition the
 18 effects without the game or music. Select an effect, then use Play, Burst ×5,
 or the rotor's start/stop control. Escape and Stop all cancel queued bursts as
