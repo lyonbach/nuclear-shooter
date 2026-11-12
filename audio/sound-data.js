@@ -2,24 +2,24 @@
 export const SOUND_DATA = {
   "shot": {
     "spatial": true,
-    "maxVoices": 8,
+    "maxVoices": 20,
     "noiseDuration": {
-      "value": 0.09,
-      "spread": 0,
+      "value": 0.5,
+      "spread": 0.1,
       "unit": "duration"
     },
     "noiseGain": {
-      "value": 0.24,
+      "value": 2,
       "spread": 0,
       "unit": "gain"
     },
     "noiseCutoff": {
-      "value": 4200,
+      "value": 500,
       "spread": 0,
       "unit": "hertz"
     },
     "sparkDuration": {
-      "value": 0.04,
+      "value": 0.2,
       "spread": 0,
       "unit": "duration"
     },
@@ -58,38 +58,38 @@ export const SOUND_DATA = {
     "spatial": true,
     "maxVoices": 6,
     "noiseDuration": {
-      "value": 0.05,
-      "spread": 0,
+      "value": 1,
+      "spread": 0.3,
       "unit": "duration"
     },
     "noiseGain": {
-      "value": 0.07,
+      "value": 8,
       "spread": 0,
       "unit": "gain"
     },
     "noiseCutoff": {
-      "value": 1900,
-      "spread": 0,
+      "value": 280,
+      "spread": 0.25,
       "unit": "hertz"
     },
     "subStart": {
-      "value": 120,
-      "spread": 0,
+      "value": 900,
+      "spread": 0.5,
       "unit": "hertz"
     },
     "subEnd": {
-      "value": 45,
+      "value": 400,
       "spread": 0,
       "unit": "hertz"
     },
     "subDuration": {
-      "value": 0.12,
+      "value": 0.3,
       "spread": 0,
       "unit": "duration"
     },
     "subGain": {
-      "value": 0.045,
-      "spread": 0,
+      "value": 0.05,
+      "spread": 0.99,
       "unit": "gain"
     }
   },
@@ -136,57 +136,57 @@ export const SOUND_DATA = {
     "spatial": true,
     "maxVoices": 4,
     "heavyChance": {
-      "value": 0.05,
+      "value": 0.3,
       "spread": 0,
       "unit": "ratio"
     },
     "pitch": {
-      "value": 1,
+      "value": 0.5,
       "spread": 0.08,
       "unit": "ratio"
     },
     "decay": {
-      "value": 1,
-      "spread": 0.12,
+      "value": 3,
+      "spread": 0.7,
       "unit": "ratio"
     },
     "snapGain": {
-      "value": 0.07,
-      "spread": 0,
+      "value": 1,
+      "spread": 0.3,
       "unit": "gain"
     },
     "bodyGain": {
-      "value": 0.17,
-      "spread": 0,
+      "value": 1,
+      "spread": 0.3,
       "unit": "gain"
     },
     "thudGain": {
-      "value": 0.1,
+      "value": 1,
       "spread": 0,
       "unit": "gain"
     },
     "subGain": {
-      "value": 0.14,
+      "value": 3,
       "spread": 0,
       "unit": "gain"
     },
     "ringGain": {
-      "value": 0.016,
+      "value": 0,
       "spread": 0,
       "unit": "gain"
     },
     "heavyGain": {
-      "value": 0.12,
-      "spread": 0,
+      "value": 3,
+      "spread": 0.99,
       "unit": "gain"
     },
     "heavySubGain": {
-      "value": 0.13,
+      "value": 4,
       "spread": 0,
       "unit": "gain"
     },
     "heavyRingGain": {
-      "value": 0.024,
+      "value": 0.23,
       "spread": 0,
       "unit": "gain"
     }
