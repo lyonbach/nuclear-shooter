@@ -9,6 +9,15 @@
 .ability b { font-size: 14px; }
 .ability kbd { font-size: 13px; }
 
+/* The translated caption is not one of the decorative side rules. */
+.intro-kicker > span[data-i18n] {
+  width: auto;
+  height: auto;
+  background: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 @media (max-width: 800px) {
   .hud-label { font-size: 10px; }
   .hull-reading strong, .score-hud > strong { font-size: 36px; }
@@ -22,11 +31,11 @@
 }
 
 @media (max-width: 520px) {
-  .hud-label { font-size: 9px; }
-  .hull-reading strong, .score-hud > strong { font-size: 34px; }
-  .hull-reading small { font-size: 12px; }
-  .hull-reading > span, .wave-hud > span:last-child, .score-hud > span:last-child { font-size: 9px; }
-  .wave-hud > strong { font-size: 26px; }
+  .hud-label { font-size: 8px; }
+  .hull-reading strong, .score-hud > strong { font-size: 25px; }
+  .hull-reading small { font-size: 10px; }
+  .hull-reading > span, .wave-hud > span:last-child, .score-hud > span:last-child { font-size: 7px; }
+  .wave-hud > strong { font-size: 18px; }
   .ability { min-width: 90px; }
   .ability > span { font-size: 9px; }
   .ability b { font-size: 12px; }

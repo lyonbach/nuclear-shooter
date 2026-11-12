@@ -664,196 +664,1186 @@ const UPGRADES = [
   { id: 'repair', icon: '+', title: 'Field Repairs', description: 'Fully repairs the hull.', detail: 'FULL REPAIR', max: Infinity },
 ];
 
+// audio/sound-data.js
+// Generated from sounds.csv by scripts/build-sounds.mjs. Do not edit.
+const SOUND_DATA = {
+  "shot": {
+    "spatial": true,
+    "maxVoices": 8,
+    "noiseDuration": {
+      "value": 0.09,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "noiseGain": {
+      "value": 0.24,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "noiseCutoff": {
+      "value": 4200,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "sparkDuration": {
+      "value": 0.04,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "sparkGain": {
+      "value": 0.12,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "sparkCutoff": {
+      "value": 7200,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subStart": {
+      "value": 180,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subEnd": {
+      "value": 65,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subDuration": {
+      "value": 0.06,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "subGain": {
+      "value": 0.07,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "enemy": {
+    "spatial": true,
+    "maxVoices": 6,
+    "noiseDuration": {
+      "value": 0.05,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "noiseGain": {
+      "value": 0.07,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "noiseCutoff": {
+      "value": 1900,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subStart": {
+      "value": 120,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subEnd": {
+      "value": 45,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subDuration": {
+      "value": 0.12,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "subGain": {
+      "value": 0.045,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "aa": {
+    "spatial": true,
+    "maxVoices": 6,
+    "noiseDuration": {
+      "value": 0.035,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "noiseGain": {
+      "value": 0.018,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "noiseCutoff": {
+      "value": 850,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subStart": {
+      "value": 78,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subEnd": {
+      "value": 48,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "subDuration": {
+      "value": 0.04,
+      "spread": 0,
+      "unit": "duration"
+    },
+    "subGain": {
+      "value": 0.035,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "hit": {
+    "spatial": true,
+    "maxVoices": 4,
+    "heavyChance": {
+      "value": 0.05,
+      "spread": 0,
+      "unit": "ratio"
+    },
+    "pitch": {
+      "value": 1,
+      "spread": 0.08,
+      "unit": "ratio"
+    },
+    "decay": {
+      "value": 1,
+      "spread": 0.12,
+      "unit": "ratio"
+    },
+    "snapGain": {
+      "value": 0.07,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "bodyGain": {
+      "value": 0.17,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "thudGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "subGain": {
+      "value": 0.14,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "ringGain": {
+      "value": 0.016,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "heavyGain": {
+      "value": 0.12,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "heavySubGain": {
+      "value": 0.13,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "heavyRingGain": {
+      "value": 0.024,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "explode": {
+    "spatial": true,
+    "maxVoices": 2,
+    "debrisChance": {
+      "value": 0.45,
+      "spread": 0,
+      "unit": "ratio"
+    },
+    "pitch": {
+      "value": 1,
+      "spread": 0.16,
+      "unit": "ratio"
+    },
+    "decay": {
+      "value": 1,
+      "spread": 0.14,
+      "unit": "ratio"
+    },
+    "crack": {
+      "value": 1,
+      "spread": 0.2,
+      "unit": "ratio"
+    },
+    "bodyGain": {
+      "value": 0.28,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "midGain": {
+      "value": 0.23,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "highGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "rumbleGain": {
+      "value": 0.48,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "tailGain": {
+      "value": 0.32,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "sparkGain": {
+      "value": 0.2,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "dustGain": {
+      "value": 0.11,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "debrisGain": {
+      "value": 0.06,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "crackGain": {
+      "value": 0.24,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "rocket": {
+    "spatial": true,
+    "maxVoices": 3,
+    "snapGain": {
+      "value": 0.24,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "pitch": {
+      "value": 1,
+      "spread": 0.08,
+      "unit": "ratio"
+    },
+    "decay": {
+      "value": 1,
+      "spread": 0.1,
+      "unit": "ratio"
+    },
+    "snapSubGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "whooshGain": {
+      "value": 0.72,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "whooshTailGain": {
+      "value": 0.24,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "missile": {
+    "spatial": true,
+    "maxVoices": 3,
+    "snapGain": {
+      "value": 0.18,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "pitch": {
+      "value": 1,
+      "spread": 0.08,
+      "unit": "ratio"
+    },
+    "decay": {
+      "value": 1,
+      "spread": 0.1,
+      "unit": "ratio"
+    },
+    "snapSubGain": {
+      "value": 0.08,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "whooshGain": {
+      "value": 0.68,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "whooshTailGain": {
+      "value": 0.28,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "flare": {
+    "spatial": true,
+    "maxVoices": 4,
+    "snapGain": {
+      "value": 0.13,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "pitch": {
+      "value": 1,
+      "spread": 0.1,
+      "unit": "ratio"
+    },
+    "snapSubGain": {
+      "value": 0.06,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "whooshGain": {
+      "value": 0.25,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "tailGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "dash": {
+    "spatial": false,
+    "maxVoices": 2,
+    "noiseGain": {
+      "value": 0.2,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "subGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "damage": {
+    "spatial": false,
+    "maxVoices": 3,
+    "noiseGain": {
+      "value": 0.3,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "subGain": {
+      "value": 0.16,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "lowHealth": {
+    "spatial": false,
+    "maxVoices": 1,
+    "noiseGain": {
+      "value": 0.12,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "sawGain": {
+      "value": 0.2,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "squareGain": {
+      "value": 0.08,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "missileAlert": {
+    "spatial": false,
+    "maxVoices": 1,
+    "toneGain": {
+      "value": 0.16,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "pickup": {
+    "spatial": false,
+    "maxVoices": 4,
+    "noteGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "upgrade": {
+    "spatial": false,
+    "maxVoices": 4,
+    "noteGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "wave": {
+    "spatial": false,
+    "maxVoices": 2,
+    "noteGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "alert": {
+    "spatial": false,
+    "maxVoices": 2,
+    "toneGain": {
+      "value": 0.1,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "ui": {
+    "spatial": false,
+    "maxVoices": 8,
+    "toneGain": {
+      "value": 0.06,
+      "spread": 0,
+      "unit": "gain"
+    }
+  },
+  "rotor": {
+    "spatial": false,
+    "maxVoices": 1,
+    "bladePulseHz": {
+      "value": 18,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "bladeAirHz": {
+      "value": 1550,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "noiseCutoff": {
+      "value": 240,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "bodyGain": {
+      "value": 0.62,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "pulseGain": {
+      "value": 0.2,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "airQ": {
+      "value": 1.2,
+      "spread": 0,
+      "unit": "ratio"
+    },
+    "airGain": {
+      "value": 0.09,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "airPulseGain": {
+      "value": 0.075,
+      "spread": 0,
+      "unit": "gain"
+    },
+    "motorHz": {
+      "value": 43,
+      "spread": 0,
+      "unit": "hertz"
+    },
+    "motorGain": {
+      "value": 0.12,
+      "spread": 0,
+      "unit": "gain"
+    }
+  }
+};
+
+// audio/core/engine.js
+// One context and shared buffers per game. Volume belongs on master, not every bus.
+class AudioEngine {
+    constructor({ random = Math.random } = {}) {
+        this.ctx = null;
+        this.random = random;
+        this.buses = new Map();
+        this.effects = new Map();
+        this.voices = new Set();
+        this.muted = false;
+        this.volume = 1;
+        this.listener = { x: 0, y: 0, panDistance: 500, maxDistance: Infinity };
+    }
+
+    init(context = null) {
+        if (this.ctx) return this;
+        const Context = globalThis.AudioContext || globalThis.webkitAudioContext;
+        if (!context && !Context) return this;
+        this.ctx = context || new Context();
+        this.ownsContext = !context;
+        this.master = this.ctx.createGain();
+        this.limiter = this.ctx.createDynamicsCompressor();
+        this.limiter.threshold.value = -16;
+        this.limiter.ratio.value = 8;
+        this.master.connect(this.limiter);
+        this.limiter.connect(this.ctx.destination);
+        for (const name of ['fx', 'music', 'ui', 'rotor']) {
+            const bus = this.ctx.createGain();
+            bus.connect(name === 'rotor' ? this.bus('fx') : this.master);
+            this.buses.set(name, bus);
+        }
+        this.bus('music').gain.value = 0.25;
+        this.bus('rotor').gain.value = 0;
+        this.noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate);
+        const samples = this.noiseBuffer.getChannelData(0);
+        for (let i = 0; i < samples.length; i++) samples[i] = this.random() * 2 - 1;
+        this.configure();
+        return this;
+    }
+
+    bus(name) { return this.buses.get(name); }
+    get canSchedule() { return this.ctx && (this.ctx.state === 'running' || (this.ctx.state === 'suspended' && typeof this.ctx.startRendering === 'function')); }
+    register(name, effect) { this.effects.set(name, effect); return effect; }
+    effect(name) { return this.effects.get(name); }
+    play(name, options = {}) { return this.effect(name)?.play(options) ?? null; }
+
+    configure({ muted = this.muted, volume = this.volume, music = true } = {}) {
+        this.muted = Boolean(muted);
+        this.volume = Number.isFinite(volume) ? Math.max(0, Math.min(1, volume)) : 1;
+        if (!this.ctx) return;
+        this.master.gain.setTargetAtTime(this.muted ? 0 : this.volume, this.ctx.currentTime, 0.03);
+        this.bus('music').gain.setTargetAtTime(music ? 0.25 : 0, this.ctx.currentTime, 0.1);
+    }
+
+    jitter(param, enabled = true) {
+        if (!param || !Number.isFinite(param.value)) throw new TypeError('Missing or invalid sound parameter');
+        return param.value * (1 + (enabled && param.spread ? (this.random() * 2 - 1) * param.spread : 0));
+    }
+
+    setListener(options = {}) {
+        const next = { ...this.listener, ...options };
+        if (![next.x, next.y, next.panDistance].every(Number.isFinite) || next.panDistance <= 0 ||
+            !(next.maxDistance > 0)) throw new RangeError('Invalid audio listener');
+        this.listener = next;
+    }
+
+    spatialize(position) {
+        if (!Number.isFinite(position?.x) || !Number.isFinite(position?.y)) throw new TypeError('Position needs finite x and y');
+        const { x, y, panDistance, maxDistance } = this.listener;
+        return {
+            pan: Math.max(-1, Math.min(1, (position.x - x) / panDistance)),
+            gain: Math.max(0, 1 - Math.hypot(position.x - x, position.y - y) / maxDistance)
+        };
+    }
+
+    async resume() { if (this.ctx?.state === 'suspended') await this.ctx.resume(); }
+
+    async dispose() {
+        for (const effect of this.effects.values()) effect.stop();
+        for (const voice of [...this.voices]) voice.stop();
+        for (const bus of this.buses.values()) bus.disconnect();
+        this.master?.disconnect();
+        this.limiter?.disconnect();
+        if (this.ownsContext && this.ctx?.state !== 'closed') await this.ctx?.close();
+        this.buses.clear();
+        this.ctx = null;
+        this.noiseBuffer = null;
+    }
+}
+
+// audio/core/primitives.js
+// A voice owns every layer, including future sources. No wall-clock timers.
+class AudioVoice {
+    constructor(engine, { pan = 0, gain = 1, bus = 'fx', randomize = true, onEnd = () => {} } = {}) {
+        this.engine = engine;
+        this.randomize = randomize;
+        this.onEnd = onEnd;
+        this.sources = new Map();
+        this.nodes = new Set();
+        this.sealed = false;
+        this.ended = false;
+        this.output = engine.ctx.createGain();
+        this.output.gain.value = gain;
+        this.nodes.add(this.output);
+        const destination = typeof bus === 'string' ? engine.bus(bus) : bus;
+        if (engine.ctx.createStereoPanner) {
+            this.panner = engine.ctx.createStereoPanner();
+            this.panner.pan.value = Math.max(-1, Math.min(1, pan));
+            this.nodes.add(this.panner);
+            this.output.connect(this.panner);
+            this.panner.connect(destination);
+        } else this.output.connect(destination);
+        engine.voices.add(this);
+    }
+
+    track(source, nodes) {
+        for (const node of nodes) this.nodes.add(node);
+        this.sources.set(source, nodes);
+        source.onended = () => {
+            if (!this.sources.has(source)) return;
+            this.sources.delete(source);
+            source.onended = null;
+            for (const node of nodes) { node.disconnect(); this.nodes.delete(node); }
+            if (this.sealed && !this.sources.size) this.finish();
+        };
+    }
+
+    seal() { this.sealed = true; if (!this.sources.size) this.finish(); }
+
+    finish() {
+        if (this.ended) return;
+        this.ended = true;
+        for (const node of this.nodes) node.disconnect();
+        this.nodes.clear();
+        this.engine.voices.delete(this);
+        this.onEnd();
+    }
+
+    stop() {
+        if (this.ended) return;
+        for (const source of this.sources.keys()) {
+            source.onended = null;
+            try { source.stop(); } catch { /* Already ended. */ }
+        }
+        this.sources.clear();
+        this.finish();
+    }
+}
+
+class Tone {
+    constructor(engine, { freq, end, duration, gain = 0.1, type = 'sine', bus = 'fx', time, pan = 0, voice } = {}) {
+        if (![freq, end, duration, gain].every(Number.isFinite) || freq <= 0 || end <= 0 || duration <= 0 || gain < 0)
+            throw new RangeError('Invalid tone');
+        const owned = !voice;
+        this.voice = voice || new AudioVoice(engine, { pan, bus });
+        const ctx = engine.ctx, at = time ?? ctx.currentTime;
+        const osc = ctx.createOscillator(), envelope = ctx.createGain();
+        this.voice.track(osc, [osc, envelope]);
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, at);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(10, end), at + duration);
+        envelope.gain.setValueAtTime(0, at);
+        envelope.gain.linearRampToValueAtTime(gain, at + Math.min(0.006, duration / 2));
+        envelope.gain.exponentialRampToValueAtTime(0.001, at + duration);
+        osc.connect(envelope); envelope.connect(this.voice.output);
+        osc.start(at); osc.stop(at + duration + 0.03);
+        if (owned) this.voice.seal();
+    }
+    dispose() { this.voice?.stop(); }
+}
+
+class Noise {
+    constructor(engine, { duration, gain = 0.1, frequency = 1000, bus = 'fx', time, pan = 0, voice } = {}) {
+        if (![duration, gain, frequency].every(Number.isFinite) || duration <= 0 || gain < 0 || frequency <= 0)
+            throw new RangeError('Invalid noise');
+        const owned = !voice;
+        this.voice = voice || new AudioVoice(engine, { pan, bus });
+        const ctx = engine.ctx, at = time ?? ctx.currentTime;
+        const source = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), envelope = ctx.createGain();
+        this.voice.track(source, [source, filter, envelope]);
+        source.buffer = engine.noiseBuffer;
+        source.loop = true; // A randomized tail must never run past the shared buffer.
+        filter.type = 'lowpass'; filter.frequency.value = frequency;
+        envelope.gain.setValueAtTime(gain, at);
+        envelope.gain.exponentialRampToValueAtTime(0.001, at + duration);
+        source.connect(filter); filter.connect(envelope); envelope.connect(this.voice.output);
+        source.start(at, this.voice.randomize ? engine.random() : 0);
+        source.stop(at + duration);
+        if (owned) this.voice.seal();
+    }
+    dispose() { this.voice?.stop(); }
+}
+
+// audio/core/effect.js
+
+class SoundEffect {
+    static key = null;
+    constructor(engine, options = {}) {
+        this.engine = engine;
+        const data = { ...SOUND_DATA[this.constructor.key], ...options };
+        const { spatial = false, maxVoices = 8, randomize = true, ...params } = data;
+        this.spatial = spatial;
+        this.maxVoices = maxVoices;
+        this.randomize = randomize;
+        this.params = Object.fromEntries(Object.entries(params).map(([key, value]) => [key, { ...value }]));
+        this.voices = new Set();
+    }
+    get voiceCount() { return this.voices.size; }
+
+    play({ pan = 0, gain = 1, at, position, spatial = this.spatial, randomize = this.randomize } = {}) {
+        const { engine } = this;
+        if (!engine.canSchedule || engine.muted || this.voiceCount >= this.maxVoices) return null;
+        if (![pan, gain, at ?? engine.ctx.currentTime].every(Number.isFinite) || gain < 0)
+            throw new RangeError('Invalid playback options');
+        const placement = spatial && position ? engine.spatialize(position) : { pan: spatial ? pan : 0, gain: 1 };
+        const voice = new AudioVoice(engine, {
+            pan: placement.pan, gain: placement.gain, randomize,
+            onEnd: () => this.voices.delete(voice)
+        });
+        this.voices.add(voice);
+        this.sampleCache = new Map();
+        this.playRandomize = randomize;
+        try {
+            this.render({ pan: placement.pan, gain, at: Math.max(engine.ctx.currentTime, at ?? engine.ctx.currentTime), voice });
+            voice.seal();
+            return voice;
+        } catch (error) { voice.stop(); throw error; }
+        finally { this.sampleCache = null; this.playRandomize = undefined; }
+    }
+
+    n(key) {
+        if (this.sampleCache?.has(key)) return this.sampleCache.get(key);
+        const result = this.engine.jitter(this.params[key], this.playRandomize ?? this.randomize);
+        this.sampleCache?.set(key, result);
+        return result;
+    }
+    s(key) { return this.n(key); }
+    chance(key) { return (this.playRandomize ?? this.randomize) ? this.engine.random() < this.n(key) : false; }
+    stop() { for (const voice of [...this.voices]) voice.stop(); }
+    render() { throw new Error(`${this.constructor.name} must implement render()`); }
+}
+
+class LoopingSound extends SoundEffect {
+    get running() { return this.voiceCount > 0; }
+    start(options = {}) { return this.running ? [...this.voices][0] : this.play(options); }
+    update() {}
+}
+
+// audio/effects/gun-shot.js
+
+class GunShot extends SoundEffect {
+    static key = 'shot';
+    render({ pan, gain, at, voice }) {
+        new Noise(this.engine, { voice, duration: this.n('noiseDuration'), gain: gain * this.n('noiseGain'), frequency: this.n('noiseCutoff'), pan, time: at });
+        new Noise(this.engine, { voice, duration: this.n('sparkDuration'), gain: gain * this.n('sparkGain'), frequency: this.n('sparkCutoff'), pan, time: at });
+        new Tone(this.engine, { voice, freq: this.n('subStart'), end: this.n('subEnd'), duration: this.n('subDuration'), gain: gain * this.n('subGain'), type: 'sine', time: at });
+    }
+}
+
+// audio/effects/enemy-shots.js
+
+// Player gunfire uses 'shot'; these cover the three enemy variants that
+// 'play' used to branch on: 'enemy', 'aa' and 'flare'.
+class EnemyShot extends SoundEffect {
+    static key = 'enemy';
+    render({ pan, gain, at, voice }) {
+        new Noise(this.engine, { voice, duration: this.n('noiseDuration'), gain: gain * this.n('noiseGain'), frequency: this.n('noiseCutoff'), pan, time: at });
+        new Tone(this.engine, { voice, freq: this.n('subStart'), end: this.n('subEnd'), duration: this.n('subDuration'), gain: gain * this.n('subGain'), type: 'sawtooth', time: at });
+    }
+}
+
+class AAShot extends SoundEffect {
+    static key = 'aa';
+    render({ pan, gain, at, voice }) {
+        new Noise(this.engine, { voice, duration: this.n('noiseDuration'), gain: gain * this.n('noiseGain'), frequency: this.n('noiseCutoff'), pan, time: at });
+        new Tone(this.engine, { voice, freq: this.n('subStart'), end: this.n('subEnd'), duration: this.n('subDuration'), gain: gain * this.n('subGain'), type: 'sine', time: at });
+    }
+}
+
+class Flare extends SoundEffect {
+    static key = 'flare';
+    render({ pan, gain, at, voice }) {
+        const pitch = this.n('pitch');
+        new Noise(this.engine, { voice, duration: 0.025, gain: gain * this.n('snapGain'), frequency: 4000 * pitch, pan, time: at });
+        new Tone(this.engine, { voice, freq: 110 * pitch, end: 42 * pitch, duration: 0.045, gain: gain * this.n('snapSubGain'), type: 'sine', time: at });
+        new Noise(this.engine, { voice, duration: 0.24, gain: gain * this.n('whooshGain'), frequency: 1600 * pitch, pan, time: at });
+        new Noise(this.engine, { voice, duration: 0.18, gain: gain * this.n('tailGain'), frequency: 650 * pitch, pan, time: at });
+    }
+}
+
+// audio/effects/impacts.js
+
+class Hit extends SoundEffect {
+    static key = 'hit';
+    render({ pan, gain, at, voice }) {
+        const pitch = this.n('pitch'), decay = this.n('decay');
+        const heavy = this.chance('heavyChance');
+
+        new Noise(this.engine, { voice, duration: 0.01 * decay, gain: gain * this.n('snapGain'), frequency: 7200 * pitch, pan, time: at });
+        new Noise(this.engine, { voice, duration: 0.028 * decay, gain: gain * this.n('bodyGain'), frequency: 2800 * pitch, pan, time: at });
+        new Noise(this.engine, { voice, duration: 0.045 * decay, gain: gain * this.n('thudGain'), frequency: 800 * pitch, pan, time: at });
+        new Tone(this.engine, { voice, freq: 85 * pitch, end: 28 * pitch, duration: 0.055 * decay, gain: gain * this.n('subGain'), type: 'sine', time: at });
+        new Tone(this.engine, { voice, freq: 1050 * pitch, end: 680 * pitch, duration: 0.025 * decay, gain: gain * this.n('ringGain'), type: 'sine', time: at });
+        if (heavy) {
+            new Noise(this.engine, { voice, duration: 0.05 * decay, gain: gain * this.n('heavyGain'), frequency: 1200 * pitch, pan, time: at });
+            new Tone(this.engine, { voice, freq: 58 * pitch, end: 22 * pitch, duration: 0.07 * decay, gain: gain * this.n('heavySubGain'), type: 'sine', time: at });
+            new Tone(this.engine, { voice, freq: 700 * pitch, end: 420 * pitch, duration: 0.04 * decay, gain: gain * this.n('heavyRingGain'), type: 'sine', time: at });
+        }
+    }
+}
+
+class Damage extends SoundEffect {
+    static key = 'damage';
+    render({ pan, gain, at, voice }) {
+        new Noise(this.engine, { voice, duration: 0.22, gain: gain * this.n('noiseGain'), frequency: 700, pan, time: at });
+        new Tone(this.engine, { voice, freq: 160, end: 50, duration: 0.25, gain: gain * this.n('subGain'), type: 'sawtooth', time: at });
+    }
+}
+
+class Dash extends SoundEffect {
+    static key = 'dash';
+    render({ pan, gain, at, voice }) {
+        new Noise(this.engine, { voice, duration: 0.28, gain: gain * this.n('noiseGain'), frequency: 1400, time: at });
+        new Tone(this.engine, { voice, freq: 150, end: 60, duration: 0.3, gain: gain * this.n('subGain'), time: at });
+    }
+}
+
+// audio/effects/explosion.js
+
+class Explosion extends SoundEffect {
+    static key = 'explode';
+    render({ pan, gain, at, voice }) {
+        const pitch = this.n('pitch'), decay = this.n('decay'), crack = this.n('crack');
+        const debris = this.chance('debrisChance');
+
+        new Noise(this.engine, { voice, duration: 0.055 * decay, gain: gain * this.n('crackGain'), frequency: 2400 * pitch * crack, pan, time: at });
+        new Tone(this.engine, { voice, freq: 82 * pitch, end: 26 * pitch, duration: 0.16 * decay, gain: gain * this.n('bodyGain'), type: 'sine', time: at });
+        new Tone(this.engine, { voice, freq: 165 * pitch, end: 72 * pitch, duration: 0.095 * decay, gain: gain * this.n('midGain'), type: 'sine', time: at });
+        new Tone(this.engine, { voice, freq: 310 * pitch, end: 130 * pitch, duration: 0.04 * decay, gain: gain * this.n('highGain'), type: 'sine', time: at });
+        new Noise(this.engine, { voice, duration: 0.82 * decay, gain: gain * this.n('rumbleGain'), frequency: 1000 * pitch, pan, time: at });
+        new Tone(this.engine, { voice, freq: 100 * pitch, end: 22 * pitch, duration: 0.78 * decay, gain: gain * this.n('tailGain'), time: at });
+        new Noise(this.engine, { voice, duration: 0.22 * decay, gain: gain * this.n('sparkGain'), frequency: 4200 * pitch * crack, pan, time: at });
+        new Noise(this.engine, { voice, duration: 0.09 * decay, gain: gain * this.n('dustGain'), frequency: 6200 * pitch * crack, pan, time: at });
+        if (debris) new Noise(this.engine, { voice, duration: 0.055 * decay, gain: gain * this.n('debrisGain'), frequency: 7600 * pitch * crack, pan, time: at });
+    }
+}
+
+// audio/effects/rocket.js
+
+class Rocket extends SoundEffect {
+    static key = 'rocket';
+    render({ pan, gain, at, voice }) {
+        const whooshAt = at + ROCKET_IGNITION_DELAY;
+        const pitch = this.n('pitch'), duration = this.n('decay');
+        new Noise(this.engine, { voice, duration: 0.06, gain: gain * this.n('snapGain'), frequency: 4200 * pitch, pan, time: at });
+        new Tone(this.engine, { voice, freq: 125 * pitch, end: 45 * pitch, duration: 0.08, gain: gain * this.n('snapSubGain'), type: 'sine', time: at });
+        new Noise(this.engine, { voice, duration: 1.05 * duration, gain: gain * this.n('whooshGain'), frequency: 1700 * pitch, pan, time: whooshAt });
+        new Noise(this.engine, { voice, duration: 0.9 * duration, gain: gain * this.n('whooshTailGain'), frequency: 650 * pitch, pan, time: whooshAt });
+    }
+}
+
+class Missile extends SoundEffect {
+    static key = 'missile';
+    render({ pan, gain, at, voice }) {
+        const whooshAt = at + ROCKET_IGNITION_DELAY;
+        const pitch = this.n('pitch'), duration = this.n('decay');
+        new Noise(this.engine, { voice, duration: 0.05, gain: gain * this.n('snapGain'), frequency: 4000 * pitch, pan, time: at });
+        new Tone(this.engine, { voice, freq: 115 * pitch, end: 40 * pitch, duration: 0.07, gain: gain * this.n('snapSubGain'), type: 'sine', time: at });
+        new Noise(this.engine, { voice, duration: 1.15 * duration, gain: gain * this.n('whooshGain'), frequency: 1500 * pitch, pan, time: whooshAt });
+        new Noise(this.engine, { voice, duration: 0.95 * duration, gain: gain * this.n('whooshTailGain'), frequency: 650 * pitch, pan, time: whooshAt });
+    }
+}
+
+// audio/effects/ui.js
+
+class Arpeggio extends SoundEffect {
+    static key = 'pickup';
+    render({ gain, at, voice }) {
+        for (const [i, f] of [440, 554, 659].entries()) {
+            new Tone(this.engine, { voice, freq: f, end: f, duration: 0.3, gain: gain * this.n('noteGain'), type: 'sine', time: at + i * 0.08 });
+        }
+    }
+}
+
+class WaveFanfare extends SoundEffect {
+    static key = 'wave';
+    render({ gain, at, voice }) {
+        for (const [i, f] of [330, 440, 660].entries()) {
+            new Tone(this.engine, { voice, freq: f, end: f, duration: 0.2, gain: gain * this.n('noteGain'), type: 'triangle', time: at + i * 0.13 });
+        }
+    }
+}
+
+class UpgradeChime extends Arpeggio {
+    static key = 'upgrade';
+}
+
+class LowHealthAlarm extends SoundEffect {
+    static key = 'lowHealth';
+    render({ gain, at, voice }) {
+        for (const offset of [0, 0.62]) {
+            new Noise(this.engine, { voice, duration: 0.42, gain: gain * this.n('noiseGain'), frequency: 2400, time: at + offset });
+            new Tone(this.engine, { voice, freq: 240, end: 110, duration: 0.42, gain: gain * this.n('sawGain'), type: 'sawtooth', time: at + offset });
+            new Tone(this.engine, { voice, freq: 420, end: 190, duration: 0.35, gain: gain * this.n('squareGain'), type: 'square', time: at + offset });
+        }
+    }
+}
+
+class MissileWarning extends SoundEffect {
+    static key = 'missileAlert';
+    render({ gain, at, voice }) {
+        for (const offset of [0, 0.1, 0.2]) {
+            new Tone(this.engine, { voice, freq: 980, end: 820, duration: 0.05, gain: gain * this.n('toneGain'), type: 'sine', time: at + offset });
+        }
+    }
+}
+
+class Alert extends SoundEffect {
+    static key = 'alert';
+    render({ gain, at, voice }) {
+        new Tone(this.engine, { voice, freq: 440, end: 330, duration: 0.25, gain: gain * this.n('toneGain'), type: 'square', time: at });
+    }
+}
+
+class UiBlip extends SoundEffect {
+    static key = 'ui';
+    render({ gain, at, voice }) {
+        new Tone(this.engine, { voice, freq: 700, end: 1000, duration: 0.08, gain: gain * this.n('toneGain'), time: at });
+    }
+}
+
+// audio/effects/rotor.js
+
+class Rotor extends LoopingSound {
+    static key = 'rotor';
+    get spinning() { return this.running; }
+
+    render({ voice, at, gain }) {
+        const ctx = this.engine.ctx;
+        voice.output.gain.value *= gain;
+        this.engine.bus('rotor').gain.setTargetAtTime(0.26, at, 0.2);
+        // The lifecycle is shared with one-shots; these sources end on stop().
+        const noise = ctx.createBufferSource(), pulse = ctx.createOscillator(), motor = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter(), body = ctx.createGain();
+        const pulseGain = ctx.createGain(), air = ctx.createBiquadFilter(), airGain = ctx.createGain();
+        const airPulse = ctx.createGain(), motorGain = ctx.createGain();
+        voice.output.disconnect();
+        voice.output.connect(voice.panner || this.engine.bus('rotor'));
+        if (voice.panner) { voice.panner.disconnect(); voice.panner.connect(this.engine.bus('rotor')); }
+        noise.buffer = this.engine.noiseBuffer; noise.loop = true;
+        filter.type = 'lowpass'; filter.frequency.value = this.n('noiseCutoff');
+        body.gain.value = this.n('bodyGain');
+        pulse.type = 'square'; this.basePulse = this.n('bladePulseHz'); pulse.frequency.value = this.basePulse;
+        pulseGain.gain.value = this.n('pulseGain');
+        air.type = 'bandpass'; this.baseAir = this.n('bladeAirHz'); air.frequency.value = this.baseAir;
+        air.Q.value = this.n('airQ'); airGain.gain.value = this.n('airGain'); airPulse.gain.value = this.n('airPulseGain');
+        motor.type = 'triangle'; motor.frequency.value = this.n('motorHz'); motorGain.gain.value = this.n('motorGain');
+        voice.track(noise, [noise, filter, body, air, airGain]);
+        voice.track(pulse, [pulse, pulseGain, airPulse]);
+        voice.track(motor, [motor, motorGain]);
+        noise.connect(filter); filter.connect(body); body.connect(voice.output);
+        noise.connect(air); air.connect(airGain); airGain.connect(voice.output);
+        pulse.connect(pulseGain); pulseGain.connect(body.gain);
+        pulse.connect(airPulse); airPulse.connect(airGain.gain);
+        motor.connect(motorGain); motorGain.connect(voice.output);
+        noise.start(at, voice.randomize ? this.engine.random() : 0); pulse.start(at); motor.start(at);
+        this.bladePulse = pulse; this.bladeAir = air;
+    }
+
+    stop() {
+        super.stop();
+        this.bladePulse = null; this.bladeAir = null;
+        if (this.engine.ctx) this.engine.bus('rotor').gain.setTargetAtTime(0, this.engine.ctx.currentTime, 0.03);
+    }
+
+    update({ speed = 0, rotorUpgrade = 0 } = {}) {
+        if (!this.running || !this.engine.ctx) return;
+        const t = this.engine.ctx.currentTime;
+        this.bladePulse.frequency.setTargetAtTime(this.basePulse * Math.pow(1.12, rotorUpgrade), t, 0.06);
+        this.bladeAir.frequency.setTargetAtTime(this.baseAir * Math.pow(1.13, rotorUpgrade), t, 0.08);
+        this.engine.bus('rotor').gain.setTargetAtTime(0.24 + Math.sin(t * 42) * 0.045 + speed * 0.045, t, 0.015);
+    }
+}
+
+// audio/music/index.js
+// Fallback procedural score, moved out of the effects code.
+// MP3 tracks continue to be handled by the existing music-track loader.
+
+const SCORES = {
+    menu: { tempo: 0.72, notes: [55, 65.41, 73.42, 49, 55, 82.41, 65.41, 49], type: 'sine' },
+    waves: { tempo: 0.32, notes: [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49], type: 'triangle' },
+    boss: { tempo: 0.24, notes: [49, 49, 73.42, 55, 46.25, 55, 65.41, 46.25], type: 'sawtooth' },
+};
+
+class ProceduralScore {
+    constructor(engine) { this.engine = engine; this.step = 0; this.nextBeat = 0; }
+
+    setScene(scene) { this.scene = scene; this.step = 0; this.nextBeat = 0; }
+
+    update(t, enabled, scene, trackActive) {
+        const engine = this.engine;
+        if (!engine.ctx || !enabled || trackActive || t < this.nextBeat) return;
+        const score = SCORES[scene] || SCORES.menu;
+        const beat = this.step % 16;
+        const root = score.notes[Math.floor(this.step / 4) % score.notes.length];
+
+        if (beat % 4 === 0) new Tone(engine, { freq: root, end: root * 0.98, duration: score.tempo * 1.8, gain: scene === 'boss' ? 0.22 : 0.16, type: score.type, bus: 'music', time: t });
+        if (beat % 2 === 0) {
+            const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2)]);
+            new Tone(engine, { freq: melody, end: melody, duration: score.tempo * 0.8, gain: scene === 'menu' ? 0.035 : 0.07, type: 'triangle', bus: 'music', time: t });
+        }
+        if (beat === 0 && scene !== 'menu') new Tone(engine, { freq: scene === 'boss' ? 38 : 45, end: 28, duration: 0.16, gain: 0.22, type: 'sine', bus: 'music', time: t });
+        this.step++; this.nextBeat = t + score.tempo;
+    }
+}
+
+// audio/music/player.js
+const MUSIC_PATHS = {
+    menu: 'sound/Blackout Protocol - Main Menu.mp3',
+    waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
+    boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
+};
+
+// Local MP3 playback, separate from effects and procedural fallback.
+class MusicPlayer {
+    constructor(engine, { AudioClass = globalThis.Audio } = {}) {
+        this.engine = engine; this.AudioClass = AudioClass;
+        this.scene = 'menu'; this.current = null; this.tracks = new Map();
+        this.timers = new Set(); this.disposed = false;
+    }
+    fadeOut(track) {
+        if (!track) return;
+        track.gain.gain.setTargetAtTime(0, this.engine.ctx.currentTime, 0.08);
+        const timer = setTimeout(() => {
+            this.timers.delete(timer);
+            if (this.current !== track) track.audio.pause();
+        }, 350);
+        this.timers.add(timer);
+    }
+    setScene(scene) {
+        if (scene === this.scene) return;
+        this.scene = scene;
+        this.fadeOut(this.current);
+        this.current = null;
+        this.play();
+    }
+    play() {
+        const ctx = this.engine.ctx;
+        if (!ctx || this.disposed || !this.AudioClass || !MUSIC_PATHS[this.scene]) return;
+        if (this.current?.scene === this.scene) return;
+        let track = this.tracks.get(this.scene);
+        if (track?.status === 'failed') return;
+        try {
+            if (!track) {
+                const audio = new this.AudioClass(MUSIC_PATHS[this.scene]);
+                // HTTP preview assets may redirect across origins; file:// tracks
+                // must retain the game's original non-CORS media loading.
+                if (globalThis.location?.protocol !== 'file:') audio.crossOrigin = 'anonymous';
+                audio.loop = true; audio.preload = 'auto';
+                const source = ctx.createMediaElementSource(audio), gain = ctx.createGain();
+                gain.gain.value = 0; source.connect(gain); gain.connect(this.engine.bus('music'));
+                track = { audio, source, gain, scene: this.scene, status: 'loading', attempt: 0 };
+                this.tracks.set(this.scene, track);
+            }
+            this.current = track;
+            const attempt = ++track.attempt;
+            try { track.audio.currentTime = 0; } catch { /* Metadata may be pending. */ }
+            Promise.resolve(track.audio.play()).then(() => {
+                if (this.disposed || attempt !== track.attempt) return;
+                track.status = 'ready';
+                if (this.current !== track) { track.audio.pause(); return; }
+                track.gain.gain.setTargetAtTime(1, ctx.currentTime, 0.35);
+            }).catch(error => {
+                if (this.disposed || attempt !== track.attempt) return;
+                track.status = error?.name === 'AbortError' ? 'ready' : 'failed';
+                if (this.current === track) this.current = null;
+                track.audio.pause();
+                if (track.status === 'failed') console.warn(`Could not play music for ${track.scene}; using synthesized music.`);
+            });
+        } catch {
+            if (track) { track.status = 'failed'; track.audio.pause(); }
+            this.current = null;
+        }
+    }
+    dispose() {
+        this.disposed = true;
+        for (const timer of this.timers) clearTimeout(timer);
+        this.timers.clear();
+        for (const track of this.tracks.values()) {
+            track.audio.pause(); track.source.disconnect(); track.gain.disconnect();
+        }
+        this.tracks.clear(); this.current = null;
+    }
+}
+
+// audio/index.js
+
+
+const EFFECT_CLASSES = [GunShot, EnemyShot, AAShot, Hit, Explosion, Rocket, Missile, Flare, Dash,
+    Damage, LowHealthAlarm, MissileWarning, Arpeggio, WaveFanfare, UpgradeChime, Alert, UiBlip, Rotor];
+
+function createAudioEngine({ data = SOUND_DATA, random = Math.random } = {}) {
+    const engine = new AudioEngine({ random });
+    for (const Ctor of EFFECT_CLASSES) engine.register(Ctor.key, new Ctor(engine, data[Ctor.key]));
+    return { engine, rotor: engine.effect('rotor'), score: new ProceduralScore(engine) };
+}
+
 // audio.js
 
-// Music uses local soundtrack files, with synthesized scores as an offline fallback.
+// Compatibility facade: the game can keep sound.play(name, pan, gain).
 class SoundEngine {
-    constructor(settings) {
-        this.settings = settings; this.active = false; this.step = 0; this.nextBeat = 0;
-        this.musicScene = 'menu'; this.musicTrack = null; this.trackStates = new Map();
+    constructor(settings, options = {}) {
+        this.settings = settings;
+        Object.assign(this, createAudioEngine(options));
+        this.musicPlayer = new MusicPlayer(this.engine, options);
+        this.active = false;
+        this.musicScene = 'menu';
     }
+    get ctx() { return this.engine.ctx; }
+    get musicTrack() { return this.musicPlayer.current; }
 
     async init() {
         try {
-            if (!this.ctx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                this.ctx = new AudioContext();
-                this.master = this.ctx.createGain();
-                const limiter = this.ctx.createDynamicsCompressor();
-                limiter.threshold.value = -16; limiter.ratio.value = 8;
-                this.master.connect(limiter); limiter.connect(this.ctx.destination);
-                this.fx = this.ctx.createGain(); this.music = this.ctx.createGain(); this.rotor = this.ctx.createGain();
-                this.fx.connect(this.master); this.music.connect(this.master); this.rotor.connect(this.fx);
-                this.noise = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate);
-                const data = this.noise.getChannelData(0);
-                for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-                const noise = this.ctx.createBufferSource(); noise.buffer = this.noise; noise.loop = true;
-                const filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 240;
-                const rotorNoise = this.ctx.createGain(); rotorNoise.gain.value = 0.62;
-                const bladePulse = this.ctx.createOscillator(), bladePulseGain = this.ctx.createGain();
-                const bladeAir = this.ctx.createBiquadFilter(), bladeAirGain = this.ctx.createGain(), bladeAirPulseGain = this.ctx.createGain();
-                bladePulse.type = 'square'; bladePulse.frequency.value = 18; bladePulseGain.gain.value = 0.2;
-                bladeAir.type = 'bandpass'; bladeAir.frequency.value = 1550; bladeAir.Q.value = 1.2; bladeAirGain.gain.value = 0.09; bladeAirPulseGain.gain.value = 0.075;
-                noise.connect(filter); filter.connect(rotorNoise); rotorNoise.connect(this.rotor);
-                noise.connect(bladeAir); bladeAir.connect(bladeAirGain); bladeAirGain.connect(this.rotor);
-                bladePulse.connect(bladePulseGain); bladePulseGain.connect(rotorNoise.gain); noise.start(); bladePulse.start();
-                bladePulse.connect(bladeAirPulseGain); bladeAirPulseGain.connect(bladeAirGain.gain);
-                this.bladePulse = bladePulse; this.bladeAir = bladeAir;
-                const engine = this.ctx.createOscillator(); engine.type = 'triangle'; engine.frequency.value = 43;
-                const engineGain = this.ctx.createGain(); engineGain.gain.value = 0.12;
-                engine.connect(engineGain); engineGain.connect(this.rotor); engine.start();
-                this.rotor.gain.value = 0;
-            }
-            await this.ctx.resume(); this.configure(); this.playMusicTrack(this.musicScene);
-        } catch { /* The game remains playable when audio is unavailable. */ }
+            this.engine.init();
+            if (!this.ctx) return;
+            await this.engine.resume();
+            this.configure();
+            this.musicPlayer.play();
+            if (this.active && !this.settings.muted) this.rotor.start();
+        } catch (error) {
+            // Audio must not prevent a sortie starting.
+            console.warn('Audio unavailable; continuing without sound.', error);
+        }
     }
 
     configure() {
-        if (!this.ctx) return;
-        this.master.gain.setTargetAtTime(this.settings.muted ? 0 : this.settings.volume, this.ctx.currentTime, 0.03);
-        this.music.gain.setTargetAtTime(this.settings.music ? 0.25 : 0, this.ctx.currentTime, 0.1);
+        this.engine.configure(this.settings);
+        if (!this.active || this.settings.muted) this.rotor.stop();
+        else if (this.ctx?.state === 'running') this.rotor.start();
     }
-
     setActive(active) {
-        this.active = active;
-        if (this.ctx) this.rotor.gain.setTargetAtTime(active ? 0.26 : 0, this.ctx.currentTime, 0.2);
+        this.active = Boolean(active);
+        if (this.active && !this.settings.muted) this.rotor.start();
+        else this.rotor.stop();
     }
-
     setMusicScene(scene) {
-        if (this.musicScene === scene) return;
+        if (scene === this.musicScene) return;
         this.musicScene = scene;
-        this.step = 0;
-        this.nextBeat = 0;
-        if (this.musicTrack) {
-            this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
-            const previous = this.musicTrack;
-            this.musicTrack = null;
-            setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
-        }
-        this.playMusicTrack(scene);
+        this.score.setScene(scene);
+        this.musicPlayer.setScene(scene);
     }
-
-    playMusicTrack(scene) {
-        if (!this.ctx || !scene) return;
-        if (this.musicTrack?.scene === scene && !this.musicTrack.audio.paused) return;
-        const paths = {
-            menu: 'sound/Blackout Protocol - Main Menu.mp3',
-            waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
-            boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
-        };
-        const path = paths[scene];
-        const existing = this.trackStates.get(scene);
-        if (existing) {
-            if (existing.status === 'ready') this.startMusicTrack(existing.track);
-            return;
-        }
-        if (!path || typeof Audio === 'undefined') return;
-        try {
-            const audio = new Audio(path);
-            audio.loop = true; audio.preload = 'auto';
-            const source = this.ctx.createMediaElementSource(audio), gain = this.ctx.createGain();
-            gain.gain.value = 0; source.connect(gain); gain.connect(this.music);
-            const track = { audio, gain, scene };
-            this.trackStates.set(scene, { status: 'loading', track });
-            this.startMusicTrack(track);
-        } catch (error) {
-            this.trackStates.set(scene, { status: 'failed' });
-            console.warn(`Could not load music track: ${path}; using synthesized music.`, error);
-        }
+    play(name, panOrOptions = 0, gain = 1) {
+        if (this.settings.muted) return null;
+        return this.engine.play(name, typeof panOrOptions === 'object' && panOrOptions !== null
+            ? panOrOptions : { pan: panOrOptions, gain });
     }
-
-    startMusicTrack(track) {
-        if (this.musicScene !== track.scene) { track.audio.pause(); return; }
-        if (this.musicTrack && this.musicTrack !== track) {
-            this.musicTrack.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08);
-            const previous = this.musicTrack;
-            setTimeout(() => { if (this.musicTrack !== previous) previous.audio.pause(); }, 350);
-        }
-        this.musicTrack = track;
-        try { track.audio.currentTime = 0; } catch { /* Metadata may not be ready yet. */ }
-        track.audio.play().then(() => {
-            this.trackStates.set(track.scene, { status: 'ready', track });
-            if (this.musicTrack !== track) { track.audio.pause(); return; }
-            track.gain.gain.setTargetAtTime(1, this.ctx.currentTime, 0.35);
-        }).catch(error => {
-            // Switching scenes pauses a pending play(); that is not a load failure.
-            if (error?.name === 'AbortError') { this.trackStates.set(track.scene, { status: 'ready', track }); return; }
-            this.trackStates.set(track.scene, { status: 'failed' });
-            if (this.musicTrack === track) this.musicTrack = null;
-            track.audio.pause();
-            const path = {
-                menu: 'sound/Blackout Protocol - Main Menu.mp3',
-                waves: 'sound/Blackout Protocol - Enemy Waves.mp3',
-                boss: 'sound/Blackout Protocol - Goliath On The Run.mp3'
-            }[track.scene];
-            console.warn(`Could not play music track: ${path}; using synthesized music.`);
-        });
-    }
-
-    tone(freq, end, duration, volume = 0.1, type = 'sine', bus = this.fx, time = this.ctx?.currentTime) {
-        if (!this.ctx || this.ctx.state !== 'running') return;
-        const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-        osc.type = type; osc.frequency.setValueAtTime(freq, time); osc.frequency.exponentialRampToValueAtTime(Math.max(10, end), time + duration);
-        gain.gain.setValueAtTime(0, time); gain.gain.linearRampToValueAtTime(volume, time + 0.006); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc.connect(gain); gain.connect(bus); osc.start(time); osc.stop(time + duration + 0.03);
-    }
-
-    hiss(duration, volume, frequency, pan = 0, time = this.ctx?.currentTime) {
-        if (!this.ctx || this.ctx.state !== 'running') return;
-        const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
-        source.buffer = this.noise; filter.type = 'lowpass'; filter.frequency.value = frequency;
-        gain.gain.setValueAtTime(volume, time); gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        source.connect(filter); filter.connect(gain);
-        if (this.ctx.createStereoPanner) { const panner = this.ctx.createStereoPanner(); panner.pan.value = Math.max(-1, Math.min(1, pan)); gain.connect(panner); panner.connect(this.fx); }
-        else gain.connect(this.fx);
-        source.start(time, Math.random()); source.stop(time + duration);
-    }
-
-    play(name, pan = 0, gain = 1) {
-        if (!this.ctx || this.settings.muted) return;
-        const level = volume => volume * gain;
-        const random = (value, spread = 0.1) => value * (1 + (Math.random() * 2 - 1) * spread);
-        if (name === 'shot') { this.hiss(0.09, level(0.24), 4200, pan); this.hiss(0.04, level(0.12), 7200, pan); this.tone(180, 65, 0.06, level(0.07), 'sine'); }
-        if (name === 'enemy') { this.hiss(0.05, level(0.07), 1900, pan); this.tone(120, 45, 0.12, level(0.045), 'sawtooth'); }
-        if (name === 'aa') { this.hiss(0.035, level(0.018), 850, pan); this.tone(78, 48, 0.04, level(0.035), 'sine'); }
-        if (name === 'hit') { const pitch = random(1, 0.08), decay = random(1, 0.12), heavy = Math.random() < 1 / 20; this.hiss(0.01 * decay, level(0.07), 7200 * pitch, pan); this.hiss(0.028 * decay, level(0.17), 2800 * pitch, pan); this.hiss(0.045 * decay, level(0.1), 800 * pitch, pan); this.tone(85 * pitch, 28 * pitch, 0.055 * decay, level(0.14), 'sine'); this.tone(1050 * pitch, 680 * pitch, 0.025 * decay, level(0.016), 'sine'); if (heavy) { this.hiss(0.05 * decay, level(0.12), 1200 * pitch, pan); this.tone(58 * pitch, 22 * pitch, 0.07 * decay, level(0.13), 'sine'); this.tone(700 * pitch, 420 * pitch, 0.04 * decay, level(0.024), 'sine'); } }
-        if (name === 'explode') { const pitch = random(1, 0.16), decay = random(1, 0.14), crack = random(1, 0.2), debris = Math.random() < 0.45; this.hiss(0.055 * decay, level(0.24), 2400 * pitch * crack, pan); this.tone(82 * pitch, 26 * pitch, 0.16 * decay, level(0.28), 'sine'); this.tone(165 * pitch, 72 * pitch, 0.095 * decay, level(0.23), 'sine'); this.tone(310 * pitch, 130 * pitch, 0.04 * decay, level(0.1), 'sine'); this.hiss(0.82 * decay, level(0.48), 1000 * pitch, pan); this.tone(100 * pitch, 22 * pitch, 0.78 * decay, level(0.32)); this.hiss(0.22 * decay, level(0.2), 4200 * pitch * crack, pan); this.hiss(0.09 * decay, level(0.11), 6200 * pitch * crack, pan); if (debris) this.hiss(0.055 * decay, level(0.06), 7600 * pitch * crack, pan); }
-        if (name === 'rocket') { const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY, pitch = random(1, 0.08), duration = random(1, 0.1); this.hiss(0.06, level(0.24), 4200 * pitch, pan); this.tone(125 * pitch, 45 * pitch, 0.08, level(0.1), 'sine'); this.hiss(1.05 * duration, level(0.72), 1700 * pitch, pan, whooshAt); this.hiss(0.9 * duration, level(0.24), 650 * pitch, pan, whooshAt); }
-        if (name === 'missile') { const whooshAt = this.ctx.currentTime + ROCKET_IGNITION_DELAY, pitch = random(1, 0.08), duration = random(1, 0.1); this.hiss(0.05, level(0.18), 4000 * pitch, pan); this.tone(115 * pitch, 40 * pitch, 0.07, level(0.08), 'sine'); this.hiss(1.15 * duration, level(0.68), 1500 * pitch, pan, whooshAt); this.hiss(0.95 * duration, level(0.28), 650 * pitch, pan, whooshAt); }
-        if (name === 'flare') { const pitch = random(1, 0.1); this.hiss(0.025, level(0.13), 4000 * pitch, pan); this.tone(110 * pitch, 42 * pitch, 0.045, level(0.06), 'sine'); this.hiss(0.24, level(0.25), 1600 * pitch, pan); this.hiss(0.18, level(0.1), 650 * pitch, pan); }
-        if (name === 'dash') { this.hiss(0.28, level(0.2), 1400); this.tone(150, 60, 0.3, level(0.1)); }
-        if (name === 'damage') { this.hiss(0.22, level(0.3), 700); this.tone(160, 50, 0.25, level(0.16), 'sawtooth'); }
-        if (name === 'lowHealth') { const at = this.ctx.currentTime;[0, 0.62].forEach(offset => { this.hiss(0.42, level(0.12), 2400, 0, at + offset); this.tone(240, 110, 0.42, level(0.2), 'sawtooth', this.fx, at + offset); this.tone(420, 190, 0.35, level(0.08), 'square', this.fx, at + offset); }); }
-        if (name === 'missileAlert') { const at = this.ctx.currentTime;[0, 0.1, 0.2].forEach(offset => this.tone(980, 820, 0.05, level(0.16), 'sine', this.fx, at + offset)); }
-        if (name === 'pickup' || name === 'upgrade') [440, 554, 659].forEach((f, i) => this.tone(f, f, 0.3, level(0.1), 'sine', this.fx, this.ctx.currentTime + i * 0.08));
-        if (name === 'wave') [330, 440, 660].forEach((f, i) => this.tone(f, f, 0.2, level(0.1), 'triangle', this.fx, this.ctx.currentTime + i * 0.13));
-        if (name === 'alert') { this.tone(440, 330, 0.25, level(0.1), 'square'); }
-        if (name === 'ui') this.tone(700, 1000, 0.08, level(0.06));
-    }
-
+    setListener(options) { this.engine.setListener(options); }
     update(speed = 0, rotorUpgrade = 0) {
-        if (!this.ctx || this.ctx.state !== 'running') return;
-        const t = this.ctx.currentTime;
-        this.bladePulse?.frequency.setTargetAtTime(18 * Math.pow(1.12, rotorUpgrade), t, 0.06);
-        this.bladeAir?.frequency.setTargetAtTime(1550 * Math.pow(1.13, rotorUpgrade), t, 0.08);
-        if (this.active) this.rotor.gain.setTargetAtTime((0.24 + Math.sin(t * 42) * 0.045) + speed * 0.045, t, 0.015);
-        if (!this.settings.music || this.musicTrack || t < this.nextBeat) return;
-        const scores = {
-            menu: { tempo: 0.72, notes: [55, 65.41, 73.42, 49, 55, 82.41, 65.41, 49], type: 'sine' },
-            waves: { tempo: 0.32, notes: [55, 55, 82.41, 65.41, 55, 73.42, 65.41, 49], type: 'triangle' },
-            boss: { tempo: 0.24, notes: [49, 49, 73.42, 55, 46.25, 55, 65.41, 46.25], type: 'sawtooth' }
-        };
-        const score = scores[this.musicScene] || scores.menu;
-        const beat = this.step % 16, root = score.notes[Math.floor(this.step / 4) % score.notes.length];
-        if (beat % 4 === 0) this.tone(root, root * 0.98, score.tempo * 1.8, this.musicScene === 'boss' ? 0.22 : 0.16, score.type, this.music);
-        if (beat % 2 === 0) {
-            const melody = root * ([1, 1.5, 2, 1.5][Math.floor(beat / 2)]);
-            this.tone(melody, melody, score.tempo * 0.8, this.musicScene === 'menu' ? 0.035 : 0.07, 'triangle', this.music);
-        }
-        if (beat === 0 && this.musicScene !== 'menu') this.tone(this.musicScene === 'boss' ? 38 : 45, 28, 0.16, 0.22, 'sine', this.music);
-        this.step++; this.nextBeat = t + score.tempo;
+        if (this.ctx?.state !== 'running') return;
+        this.rotor.update({ speed, rotorUpgrade });
+        this.score.update(this.ctx.currentTime, this.settings.music && !this.settings.muted, this.musicScene, this.musicTrack);
     }
+    async dispose() { this.musicPlayer.dispose(); await this.engine.dispose(); }
 }
 
 // renderer.js
@@ -1166,7 +2156,7 @@ function fireSplinters(x,y,size){
 }
 function explosion(x,y,size=75){
   g.explosions.push({x,y,size,life:.65,maxLife:.65});burst(x,y,'#f9c57f',46,size/65);burst(x,y,'#28342a',16,.45,true);fireSplinters(x,y,size);
-  g.shake=Math.max(g.shake,size/6);sound.play('explode');
+  g.shake=Math.max(g.shake,size/6);sound.play('explode',{position:{x,y}});
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
 function updateEffects(dt){
@@ -1230,6 +2220,7 @@ function createLoop(runtime){
   function frame(time){
     const dt=Math.min((time-(runtime.lastTime||time))/1000,.05);runtime.lastTime=time;
     if(!document.hidden){
+      sound.setListener?.({x:g.player.x,y:g.player.y,panDistance:g.world.width*.35});
       if(g.state==='playing'){g.visualTime+=dt;runtime.update(dt);runtime.updateEffects(dt);}
       else if(g.state==='ready'||g.state==='over'){if(!matchMedia('(prefers-reduced-motion:reduce)').matches)g.visualTime+=dt;runtime.updateEffects(dt);}
       sound.update(g.state==='playing'?Math.hypot(g.player.vx,g.player.vy)/300:0,runtime.upgrades.engine||0);
@@ -1304,7 +2295,7 @@ function hitEnemy(e,damage){
     if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26,wreck:true,type:e.type,scale:ENEMIES[e.type].scale,turretAngle:(e.turret??e.angle)-e.angle,burnTime:18});if(g.decals.length>55)g.decals.shift();}
     if(!g.testRange&&(g.kills%4===0||e.type==='boss'))g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
-  }else sound.play('hit');
+  }else sound.play('hit',{position:{x:e.x,y:e.y}});
 }
 function damagePlayer(amount){
   const p=g.player;if(p.invulnerable>0||g.state!=='playing')return;
@@ -1632,5 +2623,21 @@ Object.assign(runtime, createCombat(runtime));
 Object.assign(runtime, createUpgrades(runtime));
 Object.assign(runtime, createInput(runtime));
 runtime.initialize();
+
+// Read-only QA state, opt-in so normal play exposes no debugging interface.
+if(typeof location!=='undefined'&&new URLSearchParams(location.search).has('debug')){
+  window.render_game_to_text=()=>JSON.stringify({
+    coordinates:'world units; origin top-left; x right; y down',
+    state:runtime.g.state,wave:runtime.g.wave,score:runtime.g.score,
+    player:{x:runtime.g.player.x,y:runtime.g.player.y,health:runtime.g.player.health,
+      rockets:runtime.g.player.rockets,heat:runtime.g.player.heat,dashCooldown:runtime.g.player.dashCooldown},
+    enemies:runtime.g.enemies.map(({x,y,type,health})=>({x,y,type,health})),
+    bullets:runtime.g.bullets.length,
+    audio:{state:runtime.sound.ctx?.state,muted:runtime.settings.muted,music:runtime.settings.music,
+      track:runtime.sound.musicTrack?.scene,trackStatus:runtime.sound.musicTrack?.status,
+      rotor:runtime.sound.rotor.running,
+      voices:Object.fromEntries([...runtime.sound.engine.effects].map(([key,effect])=>[key,effect.voiceCount]))}
+  });
+}
 
 })();

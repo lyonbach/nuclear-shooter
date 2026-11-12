@@ -62,6 +62,90 @@ Edit `weapons.csv` the same way as `enemies.csv` and run `npm run build`; the bu
 
 The soundtrack switches between menu, wave-combat, and boss music using the MP3 tracks in `sound/`. Missing or unsupported tracks fall back to the built-in synthesized scores. Music starts after the first user interaction and follows the music setting and master volume.
 
+## Audio library
+
+The project-specific library lives in `audio/`. Every effect has a class; the
+helicopter rotor is a `LoopingSound`. The root `audio.js` is the compatibility
+facade used by the game. It preserves `sound.play(name, pan, gain)`, `init()`,
+`configure()`, `setActive()`, `setMusicScene()` and `update()`.
+
+Edit `sounds.csv`, then run `npm run build` to regenerate both
+`audio/sound-data.js` and the offline `blackout.js` bundle. Commit the generated
+files together with the CSV. `npm run build:sounds` regenerates data only, not the
+game bundle.
+
+Each row is one numeric parameter. Set `spatial` and `maxVoices` on the first row
+of each effect, leaving those cells blank on subsequent rows. Repeated metadata
+is allowed only when identical. The parser rejects missing effects/parameters,
+duplicate rows, conflicting metadata, invalid values and unknown names.
+
+- `value`: base value, using seconds for durations and Hz for frequencies.
+- `spread`: fractional symmetric variation. A value of `1` with spread `0.16`
+  samples from `0.84` through `1.16`. Valid spreads are at least zero and below one.
+- `spatial`: true enables stereo placement for all layers; false centers the
+  effect. Positional sounds default to true, cockpit/UI sounds and rotor to false.
+- `maxVoices`: concurrent playbacks, not oscillator count. When full, new
+  playbacks return `null`; existing voices are not cut off. The cap includes
+  scheduled future layers and frees only when all sources end or are stopped.
+- `unit`: `duration`, `hertz`, `gain` or `ratio`.
+
+`randomize` defaults to `true`. The existing pitch/decay variation is retained;
+parameters that were fixed retain zero spread rather than introducing new
+variation everywhere. Set a nonzero spread to vary them. Disabling randomization
+uses base values, a fixed noise-buffer offset, and omits chance-based heavy/debris
+layers. Reproducible audio across separate engine instances additionally requires
+the same injected RNG seed, since each engine generates its shared noise buffer.
+
+```js
+// Existing signature still works:
+sound.play('enemy', -0.5, 0.7);
+
+// New options form; each call returns a stoppable voice or null.
+const voice = sound.play('explode', {
+  position: { x: 400, y: 300 },
+  randomize: false
+});
+voice?.stop();
+
+sound.engine.effect('explode').randomize = false; // Persistent instance setting
+sound.play('ui', { spatial: true, pan: 0.8 });     // Per-call override
+```
+
+For world positions, configure the listener using
+`sound.setListener({ x, y, panDistance, maxDistance })`. `panDistance` is the
+horizontal distance to full left/right; optional `maxDistance` gives linear
+distance attenuation. It defaults to `Infinity` (no attenuation). The game updates
+the listener to the player each frame; enemy gunfire keeps its existing externally
+computed distance gain. Hits and explosions now pass world positions.
+
+The public module entry also exports `createAudioEngine`, `AudioEngine`,
+`SoundEffect`, `LoopingSound`, `Tone`, `Noise`, `AudioVoice`, and effect classes.
+Direct class construction reads CSV defaults without sharing mutable settings:
+
+```js
+import { createAudioEngine, Explosion } from './audio/index.js';
+const { engine, rotor } = createAudioEngine();
+// Run these inside a click/tap handler:
+engine.init();
+await engine.resume();
+const explosion = new Explosion(engine, { randomize: true, maxVoices: 4 });
+explosion.play({ pan: -0.5 });
+rotor.start();
+rotor.update({ speed: 0.5, rotorUpgrade: 1 });
+rotor.stop();
+await engine.dispose();
+```
+
+MP3 playback and the procedural fallback remain separate in `audio/music/`.
+The library continues to use the game's `ROCKET_IGNITION_DELAY` constant so audio
+and projectile ignition cannot drift apart. It is not an npm package.
+
+Open the game with `?debug` for a read-only `window.render_game_to_text()` QA
+snapshot. Browser DSP tests can be run from an HTTP-served game:
+`await (await import('./tests/audio-browser.js')).runAudioBrowserChecks()`.
+These render every effect in a real `OfflineAudioContext`, compare deterministic
+samples within floating-point tolerance, and check panning and live voice release.
+
 ## Checks
 
 With Node.js 18 or later:

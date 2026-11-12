@@ -1,9 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { buildSounds } from './build-sounds.mjs';
 
 // Small, dependency-free packager for the ordered source modules.
 // The checked-in output also works over file:// and on GitHub Pages.
 const root=new URL('../',import.meta.url);
+await buildSounds(root);
 const csv=(await readFile(new URL('enemies.csv',root),'utf8')).trim().split(/\r?\n/);
 const columns=csv.shift().split(',');
 const expected='type,health,healthPerWave,speed,speedMultiplier,points,radius,scale,stopDistance,contactDamage,spawnWave,spawnModulo,spawnRemainder,projectileDamage,projectileSpeed,projectileSpeedPerWave,projectileSpeedCap,projectileLife,fireInterval,fireWaveReduction,fireWaveReductionCap,fireRandom,initialCooldown,initialRandom,spread,shotCount,explosionRadius,warningDelay,warningSpread,burstInterval,rocketTurn,rocketAcceleration,rocketMaxSpeed,easyInterval,normalInterval,hardInterval,speedPerWave,speedWaveCap,strafeSpeed,turnRate,turretRate,deathExplosion';
@@ -69,11 +71,15 @@ if(!weapons.gun.speed||!weapons.gun.life||!weapons.gun.cooldown||!weapons.gun.he
 await writeFile(new URL('weapon-data.js',root),`// Generated from weapons.csv by scripts/build.mjs. Do not edit.\nexport const WEAPON_DATA = ${JSON.stringify(weapons,null,2)};\n`);
 const data=`// Generated from enemies.csv by scripts/build.mjs. Do not edit.\nexport const ENEMY_DATA = ${JSON.stringify(enemies,null,2)};\n`;
 await writeFile(new URL('enemy-data.js',root),data);
-const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js','audio.js','renderer.js','game/constants.js','game/state.js','game/entities.js','game/waves.js','game/loop.js','game/combat.js','game/upgrades.js','game/input.js','game.js'];
+const audioFiles=['audio/sound-data.js','audio/core/engine.js','audio/core/primitives.js','audio/core/effect.js',
+  'audio/effects/gun-shot.js','audio/effects/enemy-shots.js','audio/effects/impacts.js','audio/effects/explosion.js',
+  'audio/effects/rocket.js','audio/effects/ui.js','audio/effects/rotor.js','audio/music/index.js','audio/music/player.js','audio/index.js'];
+const files=['enemy-data.js','level-data.js','weapon-data.js','i18n.js','core.js',...audioFiles,'audio.js','renderer.js','game/constants.js','game/state.js','game/entities.js','game/waves.js','game/loop.js','game/combat.js','game/upgrades.js','game/input.js','game.js'];
 const modules=[];
 for(const file of files){
   const source=(await readFile(new URL(file,root),'utf8'))
     .replace(/^import .*;\n/gm,'')
+    .replace(/^export \{[^}]*\}(?: from '[^']+')?;\n/gm,'')
     .replace(/^export (?=(?:const|function|class)\b)/gm,'');
   if(/^\s*(?:import|export)\s/m.test(source))throw new Error(`Unsupported module syntax in ${file}`);
   modules.push(`// ${file}\n${source}`);

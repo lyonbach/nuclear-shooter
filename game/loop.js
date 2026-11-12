@@ -3,6 +3,7 @@ export function createLoop(runtime){
   function frame(time){
     const dt=Math.min((time-(runtime.lastTime||time))/1000,.05);runtime.lastTime=time;
     if(!document.hidden){
+      sound.setListener?.({x:g.player.x,y:g.player.y,panDistance:g.world.width*.35});
       if(g.state==='playing'){g.visualTime+=dt;runtime.update(dt);runtime.updateEffects(dt);}
       else if(g.state==='ready'||g.state==='over'){if(!matchMedia('(prefers-reduced-motion:reduce)').matches)g.visualTime+=dt;runtime.updateEffects(dt);}
       sound.update(g.state==='playing'?Math.hypot(g.player.vx,g.player.vy)/300:0,runtime.upgrades.engine||0);

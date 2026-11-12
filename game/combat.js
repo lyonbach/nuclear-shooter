@@ -63,7 +63,7 @@ function hitEnemy(e,damage){
     if(e.type==='boss')sound.setMusicScene('waves');
     if(e.type!=='drone'&&e.type!=='kamikaze'){g.decals.push({x:e.x,y:e.y,angle:e.angle,size:e.type==='boss'?48:26,wreck:true,type:e.type,scale:ENEMIES[e.type].scale,turretAngle:(e.turret??e.angle)-e.angle,burnTime:18});if(g.decals.length>55)g.decals.shift();}
     if(!g.testRange&&(g.kills%4===0||e.type==='boss'))g.pickups.push({x:clamp(e.x,40,g.world.width-40),y:clamp(e.y,120,g.world.height-60),life:25});
-  }else sound.play('hit');
+  }else sound.play('hit',{position:{x:e.x,y:e.y}});
 }
 function damagePlayer(amount){
   const p=g.player;if(p.invulnerable>0||g.state!=='playing')return;

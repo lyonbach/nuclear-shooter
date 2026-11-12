@@ -6,8 +6,9 @@
   "description": "Blackout Protocol — a dependency-free tactical helicopter shooter",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:sounds": "node scripts/build-sounds.mjs",
     "start": "python3 -m http.server 8080 --bind 127.0.0.1",
     "test": "node --test tests/*.test.js",
-    "check": "node --check game.js && node --check game/*.js && node --check renderer.js && node --check audio.js && node --check i18n.js && node --check core.js && node --check blackout.js"
+    "check": "node scripts/check.mjs"
   }
 }

@@ -17,7 +17,7 @@ function fireSplinters(x,y,size){
 }
 function explosion(x,y,size=75){
   g.explosions.push({x,y,size,life:.65,maxLife:.65});burst(x,y,'#f9c57f',46,size/65);burst(x,y,'#28342a',16,.45,true);fireSplinters(x,y,size);
-  g.shake=Math.max(g.shake,size/6);sound.play('explode');
+  g.shake=Math.max(g.shake,size/6);sound.play('explode',{position:{x,y}});
 }
 function float(text,x,y,color='#e2eda9',big=false){g.floaters.push({text,x,y,life:1.2,color,big});}
 function updateEffects(dt){
