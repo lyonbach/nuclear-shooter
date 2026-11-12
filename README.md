@@ -64,6 +64,21 @@ The soundtrack switches between menu, wave-combat, and boss music using the MP3 
 
 ## Audio library
 
+### Audio test page
+
+Run `npm start` and open `http://localhost:8080/audio-test.html` to audition the
+18 effects without the game or music. Select an effect, then use Play, Burst ×5,
+or the rotor's start/stop control. Escape and Stop all cancel queued bursts as
+well as active voices.
+
+Randomization, spatial placement, panning, volume, and per-effect voice limits
+can be compared live. The waveform monitors the actual audio output, and the
+parameter table displays generated CSV defaults. Changes are session-only;
+Reset effect restores its defaults without changing master volume.
+Use an HTTP server for this ES-module page, not a `file://` URL.
+
+### Library API
+
 The project-specific library lives in `audio/`. Every effect has a class; the
 helicopter rotor is a `LoopingSound`. The root `audio.js` is the compatibility
 facade used by the game. It preserves `sound.play(name, pan, gain)`, `init()`,

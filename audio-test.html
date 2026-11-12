@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111511">
+  <meta name="description" content="Audition Nuclear Shooter's sound effects, randomization, stereo placement, and voice limits without running the game.">
+  <title>Nuclear Shooter | Audio Lab</title>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
+  <link rel="stylesheet" href="audio-test.css">
+</head>
+<body>
+  <a class="skip" href="#audition">Skip to playback controls</a>
+  <header class="topbar">
+    <div><span class="eyebrow">NUCLEAR SHOOTER / DEVELOPMENT</span><h1>Audio Lab</h1></div>
+    <div class="session"><span id="context-state">Audio idle</span><button id="stop-all">Stop all <kbd>Esc</kbd></button></div>
+  </header>
+  <main>
+    <section class="library" aria-labelledby="library-title">
+      <div class="section-heading"><h2 id="library-title">Sound effects</h2><span id="effect-count">18</span></div>
+      <label class="sr-only" for="search">Find a sound effect</label>
+      <input id="search" type="search" placeholder="Find a sound…" autocomplete="off">
+      <select id="mobile-effect" aria-label="Choose a sound effect"></select>
+      <div id="effect-list" aria-label="Choose an effect"></div>
+      <p id="no-results" hidden>No matching effects. Try a different name.</p>
+    </section>
+    <section id="audition" class="audition" aria-labelledby="effect-name">
+      <div class="effect-heading">
+        <div><span id="effect-class" class="eyebrow"></span><h2 id="effect-name"></h2></div>
+        <span id="effect-kind" class="tag"></span>
+      </div>
+      <p id="effect-description" class="description"></p>
+      <div class="scope">
+        <div class="scope-heading"><span>OUTPUT WAVEFORM</span><span id="voice-count">0 active voices</span></div>
+        <canvas id="waveform" width="960" height="180" aria-label="Live audio output waveform"></canvas>
+        <div class="scope-footer"><span>MONO MONITOR · POST LIMITER</span><span id="sample-rate">Waiting for playback</span></div>
+      </div>
+      <div class="transport">
+        <button id="play" class="primary" disabled>Play sound</button>
+        <button id="burst" disabled>Burst ×5</button>
+        <button id="reset">Reset effect</button>
+      </div>
+      <p id="status" role="status" aria-live="polite">Loading audio library…</p>
+      <div class="controls">
+        <fieldset>
+          <legend>Playback behavior</legend>
+          <label class="toggle"><span>Randomize <small>Use the ranges defined in the CSV</small></span><input id="randomize" type="checkbox" checked></label>
+          <label class="toggle"><span>Spatial audio <small>Enable left / right placement</small></span><input id="spatial" type="checkbox"></label>
+          <label class="number-row" for="max-voices"><span>Max voices <small>Simultaneous plays of this effect</small></span><input id="max-voices" type="number" min="1" max="32" step="1" value="8"></label>
+        </fieldset>
+        <fieldset>
+          <legend>Listening controls</legend>
+          <label class="range-label" for="volume">Master volume <output id="volume-value">35%</output></label>
+          <input id="volume" type="range" min="0" max="100" value="35">
+          <label class="range-label" for="pan">Stereo position <output id="pan-value">Center</output></label>
+          <input id="pan" type="range" min="-1" max="1" step="0.05" value="0">
+          <div class="range-ends"><span>Left</span><span>Right</span></div>
+          <div id="rotor-controls" hidden>
+            <label class="range-label" for="speed">Rotor speed <output id="speed-value">50%</output></label>
+            <input id="speed" type="range" min="0" max="1" step="0.05" value="0.5">
+          </div>
+        </fieldset>
+      </div>
+      <p class="note">Start at a low volume. Headphones make stereo placement easier to compare. Effect settings apply on the next play; restart a running rotor after changing them.</p>
+      <details>
+        <summary>CSV parameters <span id="parameter-count"></span></summary>
+        <div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Base value</th><th>Variation</th></tr></thead><tbody id="parameters"></tbody></table></div>
+        <p class="note">Read-only values from the generated sound data. Parameters with zero variation stay fixed even when randomization is on.</p>
+      </details>
+    </section>
+  </main>
+  <footer>Effects only · No game or music running <span>Session-only controls. Your CSV is unchanged.</span></footer>
+  <noscript>Enable JavaScript to use the audio test page.</noscript>
+  <script type="module" src="audio-test.js"></script>
+</body>
+</html>
