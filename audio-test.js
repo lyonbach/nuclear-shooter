@@ -1,5 +1,6 @@
 import { createAudioEngine, EFFECT_CLASSES } from './audio/index.js';
 import { SOUND_DATA } from './audio/sound-data.js';
+import { serializeSounds, validateParameter } from './audio/sound-csv.js';
 
 // Labels only: synthesis and defaults come directly from the production library.
 const catalog = {
@@ -27,6 +28,9 @@ const { engine, rotor } = createAudioEngine();
 let selected = 'shot', epoch = 0, burstTimer = null, analyser = null, samples = null;
 let readiness = null, frame = null, peak = 0;
 const pans = new Map();
+// Invalid text is retained per effect, but never sent to the audio engine/exporter.
+const invalidDrafts = new Map();
+let lastDownloaded = null;
 const canvas = $('waveform'), pen = canvas.getContext('2d');
 engine.configure({ volume: 0.35, music: false });
 const current = () => engine.effect(selected);
@@ -46,7 +50,88 @@ function stopAll(announce = true) {
 }
 function syncTransport() {
     $('play').textContent = selected === 'rotor' ? (rotor.running ? 'Stop rotor' : 'Start rotor') : 'Play sound';
-    $('burst').disabled = selected === 'rotor';
+    $('play').disabled = invalidDrafts.size > 0;
+    $('burst').disabled = selected === 'rotor' || invalidDrafts.size > 0;
+}
+function collectData() {
+    return Object.fromEntries(Object.keys(SOUND_DATA).map(key => {
+        const effect = engine.effect(key);
+        return [key, { spatial: effect.spatial, maxVoices: effect.maxVoices, ...effect.params }];
+    }));
+}
+function updateEditorState() {
+    const data = collectData();
+    const changed = Object.keys(data).filter(key => JSON.stringify(data[key]) !== JSON.stringify(SOUND_DATA[key]));
+    $('change-count').textContent = changed.length ? `${changed.length} effect${changed.length === 1 ? '' : 's'} modified` : 'No changes';
+    $('download-csv').disabled = invalidDrafts.size > 0;
+    syncTransport();
+    $('export-status').dataset.error = String(invalidDrafts.size > 0);
+    if (invalidDrafts.size) {
+        const effects = [...new Set([...invalidDrafts.keys()].map(key => label(key.split('.')[0])))];
+        $('export-status').textContent = `Fix invalid fields in ${effects.join(', ')} before playing or downloading.`;
+    } else {
+        const sameAsDownload = lastDownloaded === serializeSounds(data);
+        $('export-status').textContent = sameAsDownload
+            ? 'Download requested for these settings. Check your downloads, then replace sounds.csv in your project.'
+            : 'Download includes every effect, its parameters, spatial setting, and voice limit.';
+    }
+}
+function renderParameters() {
+    $('parameters').replaceChildren();
+    const effect = current();
+    const units = { duration: 'seconds', hertz: 'Hz', gain: 'gain', ratio: 'ratio' };
+    for (const [name, param] of Object.entries(effect.params)) {
+        const row = document.createElement('tr');
+        const heading = document.createElement('td'), unit = document.createElement('span');
+        unit.className = 'parameter-unit'; unit.textContent = units[param.unit];
+        heading.append(document.createTextNode(name), unit); row.append(heading);
+        for (const field of ['value', 'spread']) {
+            const id = `${selected}.${name}.${field}`;
+            const cell = document.createElement('td'), input = document.createElement('input'), error = document.createElement('p');
+            input.type = 'number'; input.className = 'parameter-input';
+            input.dataset.param = name; input.dataset.field = field;
+            input.min = 0; input.step = 'any';
+            if (field === 'spread') input.max = 99.999999;
+            if (name.endsWith('Chance')) {
+                input.max = field === 'value' ? 1 : 0;
+                if (field === 'spread') input.disabled = true;
+            }
+            input.setAttribute('aria-label', `${name} ${field === 'value' ? 'base value' : 'variation percent'}`);
+            input.value = invalidDrafts.get(id)?.raw ?? (field === 'value' ? param.value : Number((param.spread * 100).toFixed(10)));
+            error.id = `error-${id}`; error.className = 'field-error';
+            error.textContent = invalidDrafts.get(id)?.message || ''; error.hidden = !error.textContent;
+            input.setAttribute('aria-describedby', error.id);
+            input.setAttribute('aria-invalid', String(!error.hidden));
+            input.addEventListener('input', () => {
+                // Cancel pending layers/bursts before applying a new recipe.
+                stopAll(false);
+                const value = input.value === '' ? NaN : Number(input.value) / (field === 'spread' ? 100 : 1);
+                const message = validateParameter(name, { ...param, [field]: value });
+                if (message) invalidDrafts.set(id, { raw: input.value, message });
+                else { invalidDrafts.delete(id); param[field] = value; }
+                error.textContent = message; error.hidden = !message;
+                input.setAttribute('aria-invalid', String(Boolean(message)));
+                status(message || `${name} updated. Press Play to hear the change.`, Boolean(message));
+                updateEditorState();
+            });
+            cell.append(input, error); row.append(cell);
+        }
+        $('parameters').append(row);
+    }
+    $('parameter-count').textContent = `(${Object.keys(effect.params).length})`;
+}
+function downloadCsv() {
+    if (invalidDrafts.size) return;
+    try {
+        const csv = serializeSounds(collectData());
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        const anchor = document.createElement('a');
+        anchor.href = url; anchor.download = 'sounds.csv';
+        document.body.append(anchor); anchor.click(); anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        lastDownloaded = csv;
+        updateEditorState();
+    } catch (error) { $('export-status').textContent = error.message; $('export-status').dataset.error = 'true'; }
 }
 async function ready() {
     if (readiness) return readiness;
@@ -74,6 +159,7 @@ function playOne(key = selected) {
     return voice;
 }
 async function play() {
+    if (invalidDrafts.size) return;
     const ticket = epoch, key = selected;
     try {
         await ready();
@@ -84,7 +170,7 @@ async function play() {
     } catch (error) { status(error.message, true); }
 }
 async function burst() {
-    if (selected === 'rotor') return;
+    if (selected === 'rotor' || invalidDrafts.size) return;
     stopAll(false);
     const ticket = epoch, key = selected;
     try {
@@ -138,22 +224,19 @@ function select(key) {
     $('effect-description').textContent = catalog[key][2];
     $('randomize').checked = effect.randomize;
     $('spatial').checked = effect.spatial;
-    $('max-voices').value = effect.maxVoices;
+    const voiceDraft = invalidDrafts.get(`${key}.maxVoices`);
+    $('max-voices').value = voiceDraft?.raw ?? effect.maxVoices;
+    $('max-voices').setAttribute('aria-invalid', String(Boolean(voiceDraft)));
+    $('voices-error').textContent = voiceDraft?.message || '';
+    $('voices-error').hidden = !voiceDraft;
     $('pan').value = pans.get(key) || 0;
     $('rotor-controls').hidden = key !== 'rotor';
     syncPan();
     syncTransport();
     for (const button of $('effect-list').querySelectorAll('button')) button.setAttribute('aria-pressed', String(button.dataset.effect === key));
-    $('parameters').replaceChildren();
-    for (const [name, param] of Object.entries(effect.params)) {
-        const row = document.createElement('tr');
-        for (const value of [name, param.value, `±${Number((param.spread * 100).toFixed(2))}%`]) {
-            const cell = document.createElement('td'); cell.textContent = value; row.append(cell);
-        }
-        $('parameters').append(row);
-    }
-    $('parameter-count').textContent = `(${Object.keys(effect.params).length})`;
-    status('Ready. Press Play to hear this effect.');
+    renderParameters();
+    updateEditorState();
+    status(invalidDrafts.size ? $('export-status').textContent : 'Ready. Press Play to hear this effect.', invalidDrafts.size > 0);
 }
 function syncPan() {
     const value = Number($('pan').value);
@@ -190,30 +273,35 @@ $('stop-all').addEventListener('click', () => stopAll());
 $('search').addEventListener('input', renderList);
 $('mobile-effect').addEventListener('change', () => select($('mobile-effect').value));
 $('randomize').addEventListener('change', () => { current().randomize = $('randomize').checked; });
-$('spatial').addEventListener('change', () => { current().spatial = $('spatial').checked; syncPan(); });
+$('spatial').addEventListener('change', () => { stopAll(false); current().spatial = $('spatial').checked; syncPan(); updateEditorState(); });
 $('pan').addEventListener('input', syncPan);
 $('volume').addEventListener('input', () => {
     engine.configure({ volume: Number($('volume').value) / 100, music: false });
     $('volume-value').textContent = `${$('volume').value}%`;
 });
 $('speed').addEventListener('input', () => { $('speed-value').textContent = `${Math.round(Number($('speed').value) * 100)}%`; });
-$('max-voices').addEventListener('change', () => {
-    const value = Number($('max-voices').value);
-    if (!Number.isInteger(value) || value < 1 || value > 32) {
-        $('max-voices').value = current().maxVoices;
-        status('Max voices must be a whole number from 1 to 32.', true);
-        return;
-    }
+$('max-voices').addEventListener('input', () => {
     stopAll(false);
-    current().maxVoices = value;
-    status(`Voice limit set to ${value} for this session.`);
+    const value = Number($('max-voices').value);
+    const message = !Number.isInteger(value) || value < 1 || value > 128 ? 'Max voices must be a whole number from 1 to 128.' : '';
+    if (message) invalidDrafts.set(`${selected}.maxVoices`, { raw: $('max-voices').value, message });
+    else { invalidDrafts.delete(`${selected}.maxVoices`); current().maxVoices = value; }
+    $('max-voices').setAttribute('aria-invalid', String(Boolean(message)));
+    $('voices-error').textContent = message; $('voices-error').hidden = !message;
+    status(message || `Voice limit set to ${value}. Included in CSV download.`, Boolean(message));
+    updateEditorState();
 });
 $('reset').addEventListener('click', () => {
-    Object.assign(current(), { randomize: true, spatial: SOUND_DATA[selected].spatial, maxVoices: SOUND_DATA[selected].maxVoices });
+    stopAll(false);
+    const { spatial, maxVoices, ...params } = SOUND_DATA[selected];
+    Object.assign(current(), { randomize: true, spatial, maxVoices, params: structuredClone(params) });
+    for (const key of invalidDrafts.keys()) if (key.startsWith(`${selected}.`)) invalidDrafts.delete(key);
     pans.set(selected, 0);
     if (selected === 'rotor') { $('speed').value = .5; $('speed-value').textContent = '50%'; }
-    select(selected); status('Effect defaults restored. Master volume is unchanged.');
+    select(selected);
+    if (!invalidDrafts.size) status('Effect defaults restored. Master volume is unchanged.');
 });
+$('download-csv').addEventListener('click', downloadCsv);
 document.addEventListener('keydown', event => { if (event.key === 'Escape') stopAll(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopAll(false); });
 window.addEventListener('pagehide', () => {
@@ -227,7 +315,8 @@ window.audioLabSnapshot = () => ({
     selected, context: engine.ctx?.state || 'idle', voices: engine.voices.size,
     randomize: current().randomize, spatial: current().spatial, maxVoices: current().maxVoices,
     pan: pans.get(selected) || 0, volume: engine.volume, rotor: rotor.running, peak,
-    voicePans: [...current().voices].map(voice => voice.panner?.pan.value ?? 0)
+    voicePans: [...current().voices].map(voice => voice.panner?.pan.value ?? 0),
+    parameters: structuredClone(current().params), invalidFields: invalidDrafts.size
 });
 for (const [key, [name]] of Object.entries(catalog)) {
     const option = document.createElement('option');
@@ -235,5 +324,4 @@ for (const [key, [name]] of Object.entries(catalog)) {
     $('mobile-effect').append(option);
 }
 renderList(); select(selected);
-$('play').disabled = false;
 draw();

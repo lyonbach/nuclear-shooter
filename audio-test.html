@@ -46,7 +46,8 @@
           <legend>Playback behavior</legend>
           <label class="toggle"><span>Randomize <small>Use the ranges defined in the CSV</small></span><input id="randomize" type="checkbox" checked></label>
           <label class="toggle"><span>Spatial audio <small>Enable left / right placement</small></span><input id="spatial" type="checkbox"></label>
-          <label class="number-row" for="max-voices"><span>Max voices <small>Simultaneous plays of this effect</small></span><input id="max-voices" type="number" min="1" max="32" step="1" value="8"></label>
+          <label class="number-row" for="max-voices"><span>Max voices <small>Simultaneous plays; included in CSV</small></span><input id="max-voices" type="number" min="1" max="128" step="1" value="8" aria-describedby="voices-error"></label>
+          <p id="voices-error" class="field-error" hidden></p>
         </fieldset>
         <fieldset>
           <legend>Listening controls</legend>
@@ -62,14 +63,21 @@
         </fieldset>
       </div>
       <p class="note">Start at a low volume. Headphones make stereo placement easier to compare. Effect settings apply on the next play; restart a running rotor after changing them.</p>
-      <details>
-        <summary>CSV parameters <span id="parameter-count"></span></summary>
-        <div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Base value</th><th>Variation</th></tr></thead><tbody id="parameters"></tbody></table></div>
-        <p class="note">Read-only values from the generated sound data. Parameters with zero variation stay fixed even when randomization is on.</p>
+      <details open>
+        <summary>Edit CSV parameters <span id="parameter-count"></span></summary>
+        <p class="note">Edit a value, then press Play to compare. Duration is in seconds, frequency in Hz, and variation is ± percent. Zero variation stays fixed. Changes are kept when switching effects.</p>
+        <div class="table-wrap"><table><thead><tr><th>Parameter / unit</th><th>Base value</th><th>Variation %</th></tr></thead><tbody id="parameters"></tbody></table></div>
       </details>
+      <section class="save-panel" aria-labelledby="save-heading">
+        <div class="save-heading"><h3 id="save-heading">Save your sound library</h3><span id="change-count">No changes</span></div>
+        <p id="export-status" role="status">Download includes every effect, its parameters, spatial setting, and voice limit.</p>
+        <button id="download-csv">Download sounds.csv</button>
+        <p class="note">Replace your project's <code>sounds.csv</code> with the download, then run <code>npm run build</code>. This page cannot overwrite the file on your disk. Changes are lost on refresh unless downloaded.</p>
+        <p class="note">Master volume, panning, rotor speed, and the Randomize toggle are audition-only and are not saved in CSV.</p>
+      </section>
     </section>
   </main>
-  <footer>Effects only · No game or music running <span>Session-only controls. Your CSV is unchanged.</span></footer>
+  <footer>Effects only · No game or music running <span>Audition here. Download to keep your changes.</span></footer>
   <noscript>Enable JavaScript to use the audio test page.</noscript>
   <script type="module" src="audio-test.js"></script>
 </body>

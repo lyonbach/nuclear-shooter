@@ -72,9 +72,21 @@ or the rotor's start/stop control. Escape and Stop all cancel queued bursts as
 well as active voices.
 
 Randomization, spatial placement, panning, volume, and per-effect voice limits
-can be compared live. The waveform monitors the actual audio output, and the
-parameter table displays generated CSV defaults. Changes are session-only;
-Reset effect restores its defaults without changing master volume.
+can be compared live. The waveform monitors the actual audio output. Edit base
+values and variation percentages in the parameter table, then press Play to hear
+the changes immediately, without rebuilding. Switching effects retains edits.
+Invalid inputs block playback and export until fixed or reset.
+
+**Download sounds.csv** exports all effects, including edited parameters, spatial
+settings, and voice limits. Replace the project's `sounds.csv` with that download,
+run `npm run build`, and refresh the game or Audio Lab. The browser downloads a
+file; it does not overwrite the source CSV automatically. Variation is displayed
+as a percentage in the editor and saved as a fraction (20% becomes `0.2`).
+
+Master volume, panning, rotor speed, and the Randomize checkbox are audition-only
+and are not exported. Edits are lost on refresh unless downloaded.
+Reset effect restores that effect's parameters and metadata to the loaded defaults
+without resetting other effects or master volume.
 Use an HTTP server for this ES-module page, not a `file://` URL.
 
 ### Library API
